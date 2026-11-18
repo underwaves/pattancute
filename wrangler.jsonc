@@ -1,0 +1,26 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "pattancute",
+  "main": "src/worker.js",
+  "compatibility_date": "2024-11-12",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "binding": "ASSETS",
+    "directory": "./dist",
+    "not_found_handling": "single-page-application"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "pattancute-db",
+      "database_id": "4e90fae2-6cd7-4112-8db0-398e32fbac51",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "IMAGES_BUCKET",
+      "bucket_name": "pattancute-images"
+    }
+  ]
+}

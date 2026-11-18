@@ -1,0 +1,125 @@
+import sharp from 'sharp';
+import fs from 'fs';
+import path from 'path';
+
+const logoSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" width="500" height="500">
+  <defs>
+    <filter id="soft-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#5B86C8" flood-opacity="0.15"/>
+    </filter>
+    <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="70%" stop-color="#FFFDF7"/>
+      <stop offset="100%" stop-color="#FFF5FA"/>
+    </radialGradient>
+    <linearGradient id="candyRing" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#5B86C8"/>
+      <stop offset="50%" stop-color="#F58DB8"/>
+      <stop offset="100%" stop-color="#FFD95A"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Outer background circle with sunny pastel glow -->
+  <circle cx="250" cy="250" r="232" fill="url(#sunGlow)" stroke="url(#candyRing)" stroke-width="8" filter="url(#soft-shadow)"/>
+  <circle cx="250" cy="250" r="218" fill="none" stroke="#F58DB8" stroke-width="3.5" stroke-dasharray="10 8"/>
+
+  <!-- Decorative sparkles and stars around -->
+  <g fill="#FFD95A" stroke="#A8693F" stroke-width="2">
+    <!-- Top-left 4-point star -->
+    <path d="M 90 120 Q 90 135 75 135 Q 90 135 90 150 Q 90 135 105 135 Q 90 135 90 120 Z"/>
+    <!-- Top-right 4-point star -->
+    <path d="M 405 130 Q 405 145 390 145 Q 405 145 405 160 Q 405 145 420 145 Q 405 145 405 130 Z"/>
+    <!-- Mid-left sparkle -->
+    <path d="M 65 240 Q 65 250 55 250 Q 65 250 65 260 Q 65 250 75 250 Q 65 250 65 240 Z"/>
+    <!-- Mid-right sparkle -->
+    <path d="M 435 240 Q 435 250 425 250 Q 435 250 435 260 Q 435 250 445 250 Q 435 250 435 240 Z"/>
+  </g>
+
+  <!-- Cute little pink hearts -->
+  <g fill="#F58DB8">
+    <path d="M 125 180 C 120 170 105 170 105 185 C 105 198 125 210 125 210 C 125 210 145 198 145 185 C 145 170 130 170 125 180 Z"/>
+    <path d="M 375 180 C 370 170 355 170 355 185 C 355 198 375 210 375 210 C 375 210 395 198 395 185 C 395 170 380 170 375 180 Z"/>
+  </g>
+
+  <!-- MONKEY MASCOT (Center) -->
+  <g id="monkey-head">
+    <!-- Ears -->
+    <!-- Left outer ear -->
+    <circle cx="165" cy="205" r="39" fill="#C48A63" stroke="#A8693F" stroke-width="5"/>
+    <circle cx="165" cy="205" r="23" fill="#FFE5D6"/>
+    <ellipse cx="165" cy="207" rx="14" ry="9" fill="#F58DB8" opacity="0.35"/>
+    
+    <!-- Right outer ear -->
+    <circle cx="335" cy="205" r="39" fill="#C48A63" stroke="#A8693F" stroke-width="5"/>
+    <circle cx="335" cy="205" r="23" fill="#FFE5D6"/>
+    <ellipse cx="335" cy="207" rx="14" ry="9" fill="#F58DB8" opacity="0.35"/>
+
+    <!-- Head base -->
+    <circle cx="250" cy="210" r="83" fill="#C48A63" stroke="#A8693F" stroke-width="5.5"/>
+
+    <!-- Face muzzle (heart/peach shape) -->
+    <circle cx="224" cy="225" r="47" fill="#FFF5ED"/>
+    <circle cx="276" cy="225" r="47" fill="#FFF5ED"/>
+    <circle cx="250" cy="190" r="49" fill="#FFF5ED"/>
+    <ellipse cx="250" cy="245" rx="58" ry="38" fill="#FFF5ED"/>
+
+    <!-- Hair curl on top -->
+    <path d="M 246 128 C 248 112 260 112 255 128" fill="none" stroke="#A8693F" stroke-width="5" stroke-linecap="round"/>
+
+    <!-- Big sparkling eyes -->
+    <!-- Left Eye -->
+    <ellipse cx="222" cy="205" rx="10" ry="13.5" fill="#2E231F"/>
+    <circle cx="220" cy="200" r="4.5" fill="#FFFFFF"/>
+    <circle cx="225" cy="209" r="2" fill="#FFFFFF"/>
+
+    <!-- Right Eye -->
+    <ellipse cx="278" cy="205" rx="10" ry="13.5" fill="#2E231F"/>
+    <circle cx="276" cy="200" r="4.5" fill="#FFFFFF"/>
+    <circle cx="281" cy="209" r="2" fill="#FFFFFF"/>
+
+    <!-- Cute little nose -->
+    <ellipse cx="250" cy="224" rx="6.5" ry="4.5" fill="#A8693F"/>
+
+    <!-- Smiling Mouth -->
+    <path d="M 236 233 Q 250 249 264 233" fill="none" stroke="#A8693F" stroke-width="4.5" stroke-linecap="round"/>
+    <!-- Tongue -->
+    <path d="M 242 240 Q 250 249 258 240 Z" fill="#F58DB8"/>
+
+    <!-- Luminous Pink Cheeks -->
+    <ellipse cx="198" cy="227" rx="16" ry="10" fill="#F58DB8" opacity="0.9"/>
+    <ellipse cx="302" cy="227" rx="16" ry="10" fill="#F58DB8" opacity="0.9"/>
+    <line x1="192" y1="227" x2="204" y2="227" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
+    <line x1="296" y1="227" x2="308" y2="227" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
+
+    <!-- Yellow cute party star on head -->
+    <polygon points="250,115 264,140 236,140" fill="#FFD95A" stroke="#A8693F" stroke-width="3" stroke-linejoin="round"/>
+    <circle cx="250" cy="113" r="6" fill="#F58DB8"/>
+    <circle cx="250" cy="113" r="2.5" fill="#FFFFFF"/>
+  </g>
+
+  <!-- Typography: Pattan Cute -->
+  <text x="250" y="342" text-anchor="middle" font-family="'Mali', 'Prompt', 'Nunito', sans-serif" font-weight="900" font-size="46" fill="#5B86C8" letter-spacing="1">
+    Pattan Cute
+  </text>
+
+  <!-- Tagline Badge: REVIEWS & CREDITS -->
+  <rect x="135" y="364" width="230" height="32" rx="16" fill="#F58DB8" filter="url(#soft-shadow)"/>
+  <text x="250" y="385" text-anchor="middle" font-family="'Mali', 'Prompt', 'Nunito', sans-serif" font-weight="800" font-size="14" fill="#FFFFFF" letter-spacing="2">
+    ★ REVIEWS &amp; CREDITS ★
+  </text>
+  
+  <text x="250" y="422" text-anchor="middle" font-family="'Mali', 'Prompt', 'Nunito', sans-serif" font-weight="700" font-size="15" fill="#A8693F" letter-spacing="0.5">
+    Pattancute.shop
+  </text>
+</svg>`;
+
+async function main() {
+  fs.writeFileSync(path.resolve('public/logo.svg'), logoSvg.trim());
+  await sharp(Buffer.from(logoSvg))
+    .resize(512, 512)
+    .png()
+    .toFile(path.resolve('public/logo.png'));
+  console.log('Regenerated brighter public/logo.png & public/logo.svg');
+}
+
+main().catch(console.error);
