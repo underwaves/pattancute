@@ -5,8 +5,7 @@
 </p>
 
 <p align="center">
-  <a href="https://pattancute.shop"><img src="https://img.shields.io/badge/Live%20Demo-pattancute.shop-FF6B97?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Live Demo" /></a>
-  <a href="https://pattancute.wo-nad.workers.dev"><img src="https://img.shields.io/badge/Workers%20Dev-Preview-5B86C8?style=for-the-badge&logo=cloudflare&logoColor=white" alt="Workers Preview" /></a>
+  <a href="https://pattancute.wo-nad.workers.dev"><img src="https://img.shields.io/badge/Live%20Demo-pattancute.wo--nad.workers.dev-FF6B97?style=for-the-badge&logo=cloudflare&logoColor=white" alt="Live Demo" /></a>
   <img src="https://img.shields.io/badge/React%2018-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React 18" />
   <img src="https://img.shields.io/badge/Cloudflare%20Workers-F38020?style=for-the-badge&logo=cloudflare&logoColor=white" alt="Cloudflare Workers" />
   <img src="https://img.shields.io/badge/Cloudflare%20D1-Database-F38020?style=for-the-badge&logo=sqlite&logoColor=white" alt="Cloudflare D1" />
@@ -22,8 +21,7 @@
 
 ออกแบบด้วยคอนเซปต์ **Modern Kawaii & Bento Grid UI** ที่ผสานความน่ารักสดใส เข้ากับความเรียบหรู คมชัด และความเร็วในการโหลดระดับ Edge Global Network พร้อมระบบแดชบอร์ดหลังบ้าน (Admin Dashboard) เต็มรูปแบบที่จัดการข้อมูลร้านค้า เพลงพื้นหลัง โลโก้ และการกลั่นกรองรีวิวสแปมได้อย่างอิสระ
 
-🌐 **เว็บไซต์จริง:** [https://pattancute.shop](https://pattancute.shop)  
-🚀 **Workers Staging URL:** [https://pattancute.wo-nad.workers.dev](https://pattancute.wo-nad.workers.dev)
+🌐 **Live Demo (Cloudflare Workers):** [https://pattancute.wo-nad.workers.dev](https://pattancute.wo-nad.workers.dev)
 
 ---
 
