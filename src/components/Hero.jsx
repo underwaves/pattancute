@@ -94,7 +94,7 @@ export function Hero({
         aria-label="แตะน้องลิง Pattancute เพื่อรับความรัก"
       >
         {/* Luminous Soft Aurora Glow behind logo */}
-        <div className="absolute -inset-4 bg-gradient-to-tr from-[#CDF5B5]/40 via-[#E8B4D6]/40 to-[#D5DDF0]/50 rounded-full blur-2xl opacity-75 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+        <div className="absolute -inset-6 bg-gradient-to-tr from-[#FADCE8]/45 via-[#FFF3D0]/40 to-[#DCE7FC]/45 rounded-full blur-3xl opacity-80 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
         {/* Floating Hearts/Emojis when tapped */}
         {floatingEmojis.map((item) => (

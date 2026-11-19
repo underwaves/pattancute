@@ -27,35 +27,50 @@ export function Decorations() {
       {/* 1. Subtle Paper Texture Noise Overlay */}
       <div className="absolute inset-0 bg-noise-overlay pointer-events-none z-10" />
 
-      {/* 2. Slow Living Aurora Mesh Gradient Blobs (CSS animate-aurora) */}
-      {/* Mint Green Aura (Top Left) */}
-      <div
-        className="absolute -top-32 -left-28 w-[32rem] h-[32rem] sm:w-[44rem] sm:h-[44rem] rounded-full bg-[#CDF5B5]/60 dark:bg-[#1E3B28]/35 blur-[100px] animate-aurora"
-        style={{ animationDuration: '22s' }}
-      />
+      {/* 2. Seamless Ambient Mesh Wash Base (ให้สีฟุ้งนวลสม่ำเสมอทั่วทั้งหน้าจอ) */}
+      <div className="absolute inset-0 bg-gradient-to-tr from-[#FFF3D6]/25 via-[#FDF0F6]/30 to-[#EBF2FF]/30 dark:from-[#1A263D]/25 dark:via-[#261A2B]/20 dark:to-[#172338]/25 pointer-events-none" />
 
-      {/* Soft Purple & Blue Aura (Top Right) */}
+      {/* 3. Slow Living Aurora Mesh Gradient Blobs (ฟุ้ง นวล ละมุน สม่ำเสมอกัน) */}
+      {/* Top Center / Hero Glow (Warm Peach & Vanilla) */}
       <div
-        className="absolute -top-24 -right-28 w-[30rem] h-[30rem] sm:w-[42rem] sm:h-[42rem] rounded-full bg-[#D5DDF0]/70 dark:bg-[#1E2B4B]/35 blur-[100px] animate-aurora-slow"
-        style={{ animationDuration: '26s' }}
-      />
-
-      {/* Sweet Strawberry Pink Aura (Mid Left) */}
-      <div
-        className="absolute top-[38%] -left-36 w-[28rem] h-[28rem] sm:w-[40rem] sm:h-[40rem] rounded-full bg-[#E8B4D6]/60 dark:bg-[#431B34]/30 blur-[100px] animate-aurora"
+        className="absolute -top-28 left-1/2 -translate-x-1/2 w-[46rem] h-[34rem] sm:w-[60rem] sm:h-[42rem] rounded-full bg-[#FFF0E0]/45 dark:bg-[#3B261D]/20 blur-[150px] animate-aurora-slow"
         style={{ animationDuration: '24s' }}
       />
 
-      {/* Warm Sunny Butter Yellow Aura (Mid Right) */}
+      {/* Top Left (Strawberry Milk Pink) */}
       <div
-        className="absolute top-[55%] -right-32 w-[28rem] h-[28rem] sm:w-[38rem] sm:h-[38rem] rounded-full bg-[#FFF0A0]/70 dark:bg-[#3E3418]/35 blur-[95px] animate-aurora-slow"
+        className="absolute -top-20 -left-20 w-[42rem] h-[42rem] sm:w-[54rem] sm:h-[54rem] rounded-full bg-[#FADCE8]/45 dark:bg-[#3D1A30]/25 blur-[140px] animate-aurora"
+        style={{ animationDuration: '22s' }}
+      />
+
+      {/* Top Right (Baby Powder Blue) */}
+      <div
+        className="absolute -top-20 -right-20 w-[42rem] h-[42rem] sm:w-[54rem] sm:h-[54rem] rounded-full bg-[#DCE7FC]/50 dark:bg-[#1A2C4A]/25 blur-[140px] animate-aurora-slow"
+        style={{ animationDuration: '26s' }}
+      />
+
+      {/* Mid Center (Soft Lavender Dream) */}
+      <div
+        className="absolute top-[32%] left-1/2 -translate-x-1/2 w-[44rem] h-[44rem] sm:w-[58rem] sm:h-[58rem] rounded-full bg-[#EFE3FC]/40 dark:bg-[#2A1C3E]/20 blur-[150px] animate-aurora"
+        style={{ animationDuration: '25s' }}
+      />
+
+      {/* Mid Left (Soft Matcha Cream / Mint) */}
+      <div
+        className="absolute top-[48%] -left-24 w-[38rem] h-[38rem] sm:w-[50rem] sm:h-[50rem] rounded-full bg-[#E2F7DF]/40 dark:bg-[#183424]/20 blur-[140px] animate-aurora-slow"
         style={{ animationDuration: '28s' }}
       />
 
-      {/* Bottom Center Lavender / Mint Aura */}
+      {/* Mid Right (Warm Buttercream Glow) */}
       <div
-        className="absolute -bottom-36 left-[20%] w-[34rem] h-[34rem] rounded-full bg-[#D5DDF0]/55 dark:bg-[#1C2840]/30 blur-[110px] animate-aurora"
-        style={{ animationDuration: '20s' }}
+        className="absolute top-[52%] -right-24 w-[38rem] h-[38rem] sm:w-[50rem] sm:h-[50rem] rounded-full bg-[#FFF3D0]/45 dark:bg-[#382E16]/20 blur-[140px] animate-aurora"
+        style={{ animationDuration: '24s' }}
+      />
+
+      {/* Bottom Center (Soft Periwinkle & Rose Cushion) */}
+      <div
+        className="absolute -bottom-28 left-1/2 -translate-x-1/2 w-[46rem] h-[40rem] sm:w-[62rem] sm:h-[46rem] rounded-full bg-gradient-to-r from-[#FADCE8]/35 via-[#DCE7FC]/40 to-[#FFF3D0]/35 dark:from-[#3D1A30]/20 dark:via-[#1A2C4A]/20 dark:to-[#382E16]/20 blur-[150px] animate-aurora-slow"
+        style={{ animationDuration: '22s' }}
       />
 
       {/* 3. Floating Sticker Decors with Smooth Scroll Parallax */}
