@@ -105,11 +105,13 @@ export function InteractiveMonkey({
       ? 'animate-monkey-jump'
       : 'animate-monkey-idle';
 
+  const posClass = /\b(absolute|fixed)\b/.test(className) ? '' : 'relative';
+
   return (
     <button
       type="button"
       onClick={handleTap}
-      className={`group/monkey relative inline-flex items-center justify-center cursor-pointer select-none focus:outline-none ${className}`}
+      className={`group/monkey ${posClass} inline-flex items-center justify-center cursor-pointer select-none focus:outline-none ${className}`}
       title="แตะเล่นกับน้องลิงได้นะคะ"
       aria-label="แตะเล่นกับมาสคอตน้องลิง"
     >
