@@ -346,15 +346,6 @@ export function PricingSection({ pricing = defaultPricing, contacts }) {
                     : 'bg-white/80 dark:bg-slate-850/80 hover:bg-white dark:hover:bg-slate-800 border border-white/80 dark:border-slate-750 hover:shadow-xs hover:-translate-y-0.5'
                 }`}
               >
-                {/* Active Indicator Top Pill */}
-                {isSelected && (
-                  <div className="absolute -top-2 left-1/2 -translate-x-1/2 z-10">
-                    <span className="px-2 py-0.5 rounded-full text-[9px] font-black bg-gradient-to-r from-pattan-pink to-[#E06B9A] text-white shadow-xs whitespace-nowrap">
-                      เลือกอยู่ ✓
-                    </span>
-                  </div>
-                )}
-
                 {/* App Brand Icon Squircle Container */}
                 <div
                   className={`w-11 h-11 sm:w-12 sm:h-12 rounded-2xl flex items-center justify-center text-2xl mb-1.5 transition-transform group-hover:scale-105 shadow-xs overflow-hidden ${
