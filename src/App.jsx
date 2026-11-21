@@ -229,34 +229,40 @@ export function App() {
             </div>
           </div>
 
-          {/* Center: Dedicated Page Navigation Tabs (Desktop & Tablet) */}
-          <nav className="flex items-center p-1 rounded-full bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/60 dark:border-slate-700 shadow-inner-soft">
+          {/* Center: Dedicated Page Navigation Tabs (Desktop & Mobile) */}
+          <nav className="flex items-center p-1 rounded-full bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/60 dark:border-slate-700 shadow-inner-soft shrink-0">
             <button
               type="button"
               onClick={() => navigate('reviews')}
-              className={`px-3 sm:px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-200 flex items-center gap-1.5 cursor-pointer ${
+              className={`px-3 sm:px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-200 flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
                 currentPage === 'reviews'
                   ? 'bg-white dark:bg-slate-700 text-pattan-blue-deep dark:text-white shadow-sm font-black'
                   : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
               }`}
               aria-label="ไปยังหน้าเครดิตและรีวิวร้าน"
             >
-              <MessageSquare className={`w-3.5 h-3.5 ${currentPage === 'reviews' ? 'text-pattan-blue' : 'text-slate-400'}`} />
-              <span>รีวิว & เครดิตร้าน</span>
+              <MessageSquare className={`w-3.5 h-3.5 shrink-0 ${currentPage === 'reviews' ? 'text-pattan-blue' : 'text-slate-400'}`} />
+              <span className="whitespace-nowrap">
+                <span className="sm:hidden">รีวิวร้าน</span>
+                <span className="hidden sm:inline">รีวิว &amp; เครดิตร้าน</span>
+              </span>
             </button>
 
             <button
               type="button"
               onClick={() => navigate('pricing')}
-              className={`px-3 sm:px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-200 flex items-center gap-1.5 cursor-pointer ${
+              className={`px-3 sm:px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-200 flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
                 currentPage === 'pricing'
                   ? 'bg-gradient-to-r from-pattan-pink to-[#E06B9A] text-white shadow-sm font-black'
                   : 'text-slate-500 dark:text-slate-400 hover:text-pattan-pink'
               }`}
               aria-label="ไปยังหน้าเรทราคาหารแอพ"
             >
-              <Tag className={`w-3.5 h-3.5 ${currentPage === 'pricing' ? 'text-white' : 'text-slate-400'}`} />
-              <span>เรทราคาหารแอพ</span>
+              <Tag className={`w-3.5 h-3.5 shrink-0 ${currentPage === 'pricing' ? 'text-white' : 'text-slate-400'}`} />
+              <span className="whitespace-nowrap">
+                <span className="sm:hidden">เรทราคา</span>
+                <span className="hidden sm:inline">เรทราคาหารแอพ</span>
+              </span>
             </button>
           </nav>
 
@@ -265,7 +271,7 @@ export function App() {
             <button
               onClick={() => setShowAdminModal(true)}
               type="button"
-              className="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-full bg-white/85 dark:bg-slate-800/85 backdrop-blur-md border border-pattan-blue/20 dark:border-slate-700 text-pattan-blue-deep dark:text-pattan-blue-light hover:text-pattan-blue hover:scale-105 active:scale-95 transition-all shadow-xs flex items-center gap-1 text-xs font-bold cursor-pointer"
+              className="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-full bg-white/85 dark:bg-slate-800/85 backdrop-blur-md border border-pattan-blue/20 dark:border-slate-700 text-pattan-blue-deep dark:text-pattan-blue-light hover:text-pattan-blue hover:scale-105 active:scale-95 transition-all shadow-xs flex items-center gap-1 text-xs font-bold cursor-pointer whitespace-nowrap shrink-0"
               title="เข้าสู่ระบบหลังบ้าน (Admin Dashboard)"
               aria-label="เข้าสู่ระบบหลังบ้าน"
             >
@@ -280,7 +286,7 @@ export function App() {
               <button
                 onClick={scrollToForm}
                 type="button"
-                className="btn-jelly hidden sm:inline-flex items-center gap-1.5 min-h-[40px] px-4 py-2 rounded-full bg-gradient-to-r from-pattan-pink to-[#E26698] text-white font-bold text-xs sm:text-sm shadow-jelly-pink hover:shadow-lg transition-all cursor-pointer"
+                className="btn-jelly hidden md:inline-flex items-center gap-1.5 min-h-[40px] px-4 py-2 rounded-full bg-gradient-to-r from-pattan-pink to-[#E26698] text-white font-bold text-xs sm:text-sm shadow-jelly-pink hover:shadow-lg transition-all cursor-pointer whitespace-nowrap shrink-0"
               >
                 <Star className="w-3.5 h-3.5 fill-white text-white shrink-0" />
                 <span className="tracking-wide">ให้เครดิตร้าน</span>
@@ -290,7 +296,7 @@ export function App() {
                 href={lineUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-jelly hidden sm:inline-flex items-center gap-1.5 min-h-[40px] px-4 py-2 rounded-full bg-[#06C755] hover:bg-[#05b34c] text-white font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer"
+                className="btn-jelly hidden md:inline-flex items-center gap-1.5 min-h-[40px] px-4 py-2 rounded-full bg-[#06C755] hover:bg-[#05b34c] text-white font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer whitespace-nowrap shrink-0"
               >
                 <MessageCircle className="w-4 h-4 fill-white shrink-0" />
                 <span>สั่งซื้อทาง LINE</span>
