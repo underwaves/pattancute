@@ -24,8 +24,9 @@ import {
   Eye,
   EyeOff,
   KeyRound,
+  Tag,
 } from 'lucide-react';
-import { defaultSettings } from '../config';
+import { defaultSettings, defaultPricing } from '../config';
 
 export function AdminModal({
   isOpen,
@@ -45,6 +46,7 @@ export function AdminModal({
   const [newQuoteInput, setNewQuoteInput] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [statusMessage, setStatusMessage] = useState({ text: '', type: '' });
+  const [adminAppId, setAdminAppId] = useState('netflix');
 
   // Logo Tab State
   const [selectedLogoFile, setSelectedLogoFile] = useState(null);
@@ -73,6 +75,9 @@ export function AdminModal({
       setForm((prev) => ({
         ...prev,
         ...settings,
+        pricing: Array.isArray(settings.pricing) && settings.pricing.length > 0
+          ? settings.pricing
+          : (prev.pricing || defaultPricing),
         music: { ...prev.music, ...(settings.music || {}) },
         bento: { ...prev.bento, ...(settings.bento || {}) },
         contacts: {
@@ -532,6 +537,7 @@ export function AdminModal({
               {[
                 { id: 'overview', label: 'ภาพรวมระบบ', icon: BarChart3, desc: 'สถิติและสถานะร้าน' },
                 { id: 'content', label: 'ข้อมูลร้าน & ข้อความ', icon: Store, desc: 'ชื่อร้าน คำโปรย น้องลิง' },
+                { id: 'pricing', label: 'เรทราคาแอพ', icon: Tag, desc: 'แพ็กเกจและราคาแอพ' },
                 { id: 'logo', label: 'โลโก้ร้าน', icon: Camera, desc: 'อัปโหลดรูปโลโก้' },
                 { id: 'music', label: 'เพลงพื้นหลัง', icon: Music, desc: 'YouTube และระดับเสียง' },
                 { id: 'bento', label: 'การ์ด Bento ไฮไลท์', icon: Layers, desc: 'การันตี และคำขอบคุณ' },
@@ -1425,6 +1431,397 @@ export function AdminModal({
                     </div>
                   </div>
                 )}
+
+                {/* TAB: APP PRICING (เรทราคาแยกเป็นแอพ) */}
+                {activeTab === 'pricing' && (() => {
+                  const pricingList = Array.isArray(form.pricing) && form.pricing.length > 0
+                    ? form.pricing
+                    : defaultPricing;
+                  
+                  const activeApp = pricingList.find((a) => a.id === adminAppId) || pricingList[0] || {};
+                  const activeIndex = pricingList.findIndex((a) => a.id === (activeApp.id || adminAppId));
+
+                  const updateActiveApp = (updatedFields) => {
+                    const next = [...pricingList];
+                    if (activeIndex >= 0) {
+                      next[activeIndex] = { ...next[activeIndex], ...updatedFields };
+                      setForm({ ...form, pricing: next });
+                    }
+                  };
+
+                  const updatePlan = (planIdx, updatedFields) => {
+                    const currentPlans = [...(activeApp.plans || [])];
+                    currentPlans[planIdx] = { ...currentPlans[planIdx], ...updatedFields };
+                    updateActiveApp({ plans: currentPlans });
+                  };
+
+                  const deletePlan = (planIdx) => {
+                    const currentPlans = (activeApp.plans || []).filter((_, idx) => idx !== planIdx);
+                    updateActiveApp({ plans: currentPlans });
+                  };
+
+                  const addPlan = () => {
+                    const currentPlans = [...(activeApp.plans || [])];
+                    const newPlan = {
+                      id: `${activeApp.id}-plan-${Date.now()}`,
+                      name: 'แพ็กเกจใหม่ 30 วัน',
+                      price: '99',
+                      originalPrice: '',
+                      period: '30 วัน',
+                      badge: 'ยอดนิยม 🔥',
+                      features: ['รองรับทุกอุปกรณ์', 'ความชัดระดับคมชัดสูงสุด', 'มีประกันดูแลตลอดการใช้งาน'],
+                    };
+                    updateActiveApp({ plans: [...currentPlans, newPlan] });
+                  };
+
+                  const addNewApp = () => {
+                    const newId = `app-${Date.now()}`;
+                    const newApp = {
+                      id: newId,
+                      name: 'แอพใหม่',
+                      category: 'ความบันเทิง',
+                      icon: '📱',
+                      color: '#5B86C8',
+                      badge: 'ใหม่ ✨',
+                      description: 'คำอธิบายแพ็กเกจแอพพรีเมียม',
+                      plans: [
+                        {
+                          id: `${newId}-30d`,
+                          name: '30 วัน พรีเมียม',
+                          price: '59',
+                          originalPrice: '89',
+                          period: '30 วัน',
+                          badge: 'แนะนำ',
+                          features: ['ใช้งานได้ทันที', 'ไม่มีสะดุด', 'ดูแลตลอด 30 วัน'],
+                        },
+                      ],
+                    };
+                    const next = [...pricingList, newApp];
+                    setForm({ ...form, pricing: next });
+                    setAdminAppId(newId);
+                  };
+
+                  const deleteApp = (appId) => {
+                    if (pricingList.length <= 1) {
+                      alert('ต้องมีแอพอย่างน้อย 1 แอพในระบบค่ะ');
+                      return;
+                    }
+                    if (window.confirm(`ยืนยันการลบแอพ "${activeApp.name}" พร้อมแพ็กเกจทั้งหมดใช่หรือไม่คะ?`)) {
+                      const next = pricingList.filter((a) => a.id !== appId);
+                      setForm({ ...form, pricing: next });
+                      setAdminAppId(next[0]?.id || 'netflix');
+                    }
+                  };
+
+                  const resetToDefault = () => {
+                    if (window.confirm('ต้องการรีเซ็ตเรทราคาแอพทั้งหมดกลับเป็นค่าเริ่มต้นใช่หรือไม่คะ? (การแก้ไขก่อนหน้าจะถูกแทนที่)')) {
+                      setForm({ ...form, pricing: defaultPricing });
+                      setAdminAppId('netflix');
+                    }
+                  };
+
+                  return (
+                    <div className="space-y-6">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div>
+                          <h3 className="text-lg font-black text-pattan-blue-deep dark:text-white flex items-center gap-2">
+                            <Tag className="w-5 h-5 text-pattan-pink" />
+                            <span>จัดการเรทราคาแอพ (App Pricing)</span>
+                          </h3>
+                          <p className="text-xs text-slate-500">
+                            แก้ไขราคา แพ็กเกจ โปรโมชั่น และเพิ่ม/ลบแอพได้ตามต้องการค่ะ
+                          </p>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={addNewApp}
+                            className="btn-jelly px-3.5 py-1.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-xs font-bold shadow-xs flex items-center gap-1 cursor-pointer"
+                          >
+                            <Plus className="w-3.5 h-3.5" />
+                            <span>เพิ่มแอพใหม่</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={resetToDefault}
+                            className="px-3 py-1.5 rounded-full text-slate-500 hover:text-rose-600 dark:text-slate-400 text-xs font-semibold flex items-center gap-1 transition cursor-pointer"
+                            title="คืนค่าเรทราคาเป็นค่าเริ่มต้น"
+                          >
+                            <RotateCcw className="w-3.5 h-3.5" />
+                            <span className="hidden sm:inline">คืนค่าเริ่มต้น</span>
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* App Tabs Selector in Admin */}
+                      <div className="card-bento p-3 overflow-x-auto scrollbar-none">
+                        <div className="flex items-center gap-2 min-w-max">
+                          {pricingList.map((app) => {
+                            const isSelected = app.id === (activeApp.id || adminAppId);
+                            return (
+                              <button
+                                key={app.id}
+                                type="button"
+                                onClick={() => setAdminAppId(app.id)}
+                                className={`flex items-center gap-2 px-3.5 py-2 rounded-2xl text-xs font-bold transition-all cursor-pointer ${
+                                  isSelected
+                                    ? 'bg-pattan-blue text-white shadow-sm'
+                                    : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 border border-slate-200/60 dark:border-slate-700'
+                                }`}
+                              >
+                                <span className="text-base">{app.icon || '📱'}</span>
+                                <span>{app.name}</span>
+                                <span className={`text-[9px] px-1.5 py-0.2 rounded-full ${
+                                  isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-500'
+                                }`}>
+                                  {app.plans?.length || 0}
+                                </span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Active App Basic Info */}
+                      <div className="p-5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 space-y-4 shadow-xs">
+                        <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-700">
+                          <h4 className="text-sm font-black text-slate-800 dark:text-white flex items-center gap-2">
+                            <span>ข้อมูลแอพ: {activeApp.name}</span>
+                            <span className="text-xs font-normal text-slate-400">({activeApp.id})</span>
+                          </h4>
+                          {pricingList.length > 1 && (
+                            <button
+                              type="button"
+                              onClick={() => deleteApp(activeApp.id)}
+                              className="text-xs font-bold text-rose-500 hover:text-rose-700 flex items-center gap-1 cursor-pointer"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                              <span>ลบแอพนี้</span>
+                            </button>
+                          )}
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                          <div>
+                            <label className="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1">
+                              ชื่อแอพ (App Name)
+                            </label>
+                            <input
+                              type="text"
+                              value={activeApp.name || ''}
+                              onChange={(e) => updateActiveApp({ name: e.target.value })}
+                              className="w-full h-10 px-3 rounded-xl bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs font-bold"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1">
+                              ไอคอนอิโมจิ (Emoji Icon)
+                            </label>
+                            <input
+                              type="text"
+                              value={activeApp.icon || ''}
+                              onChange={(e) => updateActiveApp({ icon: e.target.value })}
+                              placeholder="เช่น 🍿, ▶️, 🏰, 🎵"
+                              className="w-full h-10 px-3 rounded-xl bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs font-bold text-center"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1">
+                              หมวดหมู่ (Category)
+                            </label>
+                            <input
+                              type="text"
+                              value={activeApp.category || ''}
+                              onChange={(e) => updateActiveApp({ category: e.target.value })}
+                              placeholder="เช่น ภาพยนตร์ & ซีรีส์"
+                              className="w-full h-10 px-3 rounded-xl bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div>
+                            <label className="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1">
+                              รหัสสีธีม (Accent Color Hex)
+                            </label>
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="color"
+                                value={activeApp.color || '#5B86C8'}
+                                onChange={(e) => updateActiveApp({ color: e.target.value })}
+                                className="w-10 h-10 rounded-xl cursor-pointer border-0 bg-transparent"
+                              />
+                              <input
+                                type="text"
+                                value={activeApp.color || '#5B86C8'}
+                                onChange={(e) => updateActiveApp({ color: e.target.value })}
+                                className="flex-1 h-10 px-3 rounded-xl bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs font-mono"
+                              />
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1">
+                              ป้ายกำกับบนแท็บ (Badge)
+                            </label>
+                            <input
+                              type="text"
+                              value={activeApp.badge || ''}
+                              onChange={(e) => updateActiveApp({ badge: e.target.value })}
+                              placeholder="เช่น ยอดนิยม 🔥, ขายดี, แนะนำ"
+                              className="w-full h-10 px-3 rounded-xl bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs"
+                            />
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1">
+                            คำบรรยายสั้น ๆ ใต้ชื่อแอพ (Description)
+                          </label>
+                          <input
+                            type="text"
+                            value={activeApp.description || ''}
+                            onChange={(e) => updateActiveApp({ description: e.target.value })}
+                            placeholder="เช่น คมชัดระดับ 4K Ultra HD ดูได้ทุกอุปกรณ์"
+                            className="w-full h-10 px-3 rounded-xl bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Plans List for this App */}
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-sm font-black text-slate-800 dark:text-white flex items-center gap-2">
+                            <span>แพ็กเกจราคาของ {activeApp.name} ({activeApp.plans?.length || 0} รายการ)</span>
+                          </h4>
+                          <button
+                            type="button"
+                            onClick={addPlan}
+                            className="btn-jelly px-3.5 py-1.5 rounded-full bg-gradient-to-r from-pattan-pink to-[#E26698] text-white text-xs font-bold shadow-xs flex items-center gap-1 cursor-pointer"
+                          >
+                            <Plus className="w-3.5 h-3.5" />
+                            <span>เพิ่มแพ็กเกจราคา</span>
+                          </button>
+                        </div>
+
+                        {(activeApp.plans || []).map((plan, pIdx) => {
+                          const featuresText = Array.isArray(plan.features) ? plan.features.join('\n') : '';
+
+                          return (
+                            <div
+                              key={plan.id || pIdx}
+                              className="p-4 sm:p-5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 space-y-3.5 shadow-xs relative"
+                            >
+                              <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-700">
+                                <span className="text-xs font-black text-pattan-blue dark:text-pattan-blue-light">
+                                  แพ็กเกจที่ {pIdx + 1}
+                                </span>
+                                <button
+                                  type="button"
+                                  onClick={() => deletePlan(pIdx)}
+                                  className="text-xs font-bold text-rose-500 hover:text-rose-700 flex items-center gap-1 cursor-pointer"
+                                  title="ลบแพ็กเกจนี้"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                  <span>ลบ</span>
+                                </button>
+                              </div>
+
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div>
+                                  <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-300 mb-1">
+                                    ชื่อแพ็กเกจ (Package Title)
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={plan.name || ''}
+                                    onChange={(e) => updatePlan(pIdx, { name: e.target.value })}
+                                    placeholder="เช่น 30 วัน จอหาร (Ultra HD 4K)"
+                                    className="w-full h-9 px-3 rounded-xl bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs font-bold"
+                                  />
+                                </div>
+
+                                <div>
+                                  <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-300 mb-1">
+                                    ระยะเวลา (Period)
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={plan.period || ''}
+                                    onChange={(e) => updatePlan(pIdx, { period: e.target.value })}
+                                    placeholder="เช่น 7 วัน, 30 วัน, 1 ปี"
+                                    className="w-full h-9 px-3 rounded-xl bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs"
+                                  />
+                                </div>
+                              </div>
+
+                              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                <div>
+                                  <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-300 mb-1">
+                                    ราคาขายจริง ฿ (Price)
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={plan.price || ''}
+                                    onChange={(e) => updatePlan(pIdx, { price: e.target.value })}
+                                    placeholder="เช่น 119"
+                                    className="w-full h-9 px-3 rounded-xl bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs font-black text-emerald-600 dark:text-emerald-400"
+                                  />
+                                </div>
+
+                                <div>
+                                  <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-300 mb-1">
+                                    ราคาเต็มขีดฆ่า ฿ (Original Price)
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={plan.originalPrice || ''}
+                                    onChange={(e) => updatePlan(pIdx, { originalPrice: e.target.value })}
+                                    placeholder="เช่น 149 (เว้นว่างได้)"
+                                    className="w-full h-9 px-3 rounded-xl bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs text-slate-400"
+                                  />
+                                </div>
+
+                                <div>
+                                  <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-300 mb-1">
+                                    ป้ายเด่น (Badge)
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={plan.badge || ''}
+                                    onChange={(e) => updatePlan(pIdx, { badge: e.target.value })}
+                                    placeholder="เช่น ขายดีสุด 🔥, เมลเดิม"
+                                    className="w-full h-9 px-3 rounded-xl bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs"
+                                  />
+                                </div>
+                              </div>
+
+                              <div>
+                                <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-300 mb-1">
+                                  จุดเด่น / รายละเอียดแพ็กเกจ (1 บรรทัด = 1 ข้อ)
+                                </label>
+                                <textarea
+                                  rows={3}
+                                  value={featuresText}
+                                  onChange={(e) => {
+                                    const lines = e.target.value.split('\n');
+                                    updatePlan(pIdx, { features: lines });
+                                  }}
+                                  placeholder="พิมพ์จุดเด่นบรรทัดละ 1 ข้อ เช่น&#10;ความชัดระดับ Ultra HD 4K&#10;ดูได้ทุกอุปกรณ์&#10;รับประกันตลอด 30 วัน"
+                                  className="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs leading-relaxed font-sans resize-y"
+                                />
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })()}
 
                 {/* TAB 7: REVIEW MODERATION ("ยกเว้นรีวิวลูกค้า") */}
                 {activeTab === 'reviews' && (

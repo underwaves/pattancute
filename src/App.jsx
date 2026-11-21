@@ -12,7 +12,8 @@ import { BottomNav } from './components/BottomNav';
 import { SectionDivider } from './components/SectionDivider';
 import { CuteSparkleTrail } from './components/CuteSparkleTrail';
 import { AdminModal } from './components/AdminModal';
-import { Star, Lock } from 'lucide-react';
+import { PricingSection } from './components/PricingSection';
+import { Star, Lock, Tag } from 'lucide-react';
 import { defaultSettings } from './config';
 
 export function App() {
@@ -39,6 +40,9 @@ export function App() {
           setSettings((prev) => ({
             ...prev,
             ...data.settings,
+            pricing: Array.isArray(data.settings.pricing) && data.settings.pricing.length > 0
+              ? data.settings.pricing
+              : (prev.pricing || defaultSettings.pricing),
             music: { ...prev.music, ...(data.settings.music || {}) },
             bento: { ...prev.bento, ...(data.settings.bento || {}) },
             contacts: {
@@ -123,6 +127,16 @@ export function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const scrollToPricing = (appId) => {
+    const el = document.getElementById('pricing-section');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+    if (appId) {
+      window.location.hash = `#pricing-${appId}`;
+    }
+  };
+
   const scrollToForm = () => {
     const el = document.getElementById('review-form');
     if (el) {
@@ -136,6 +150,36 @@ export function App() {
       el.scrollIntoView({ behavior: 'smooth' });
     }
   };
+
+  // Deep linking handler: #reviews, #pricing, #pricing-<app>, #review-form, #contacts
+  useEffect(() => {
+    const handleDeepLink = () => {
+      const hash = window.location.hash.toLowerCase();
+      if (!hash) return;
+
+      const timer = setTimeout(() => {
+        if (hash === '#reviews' || hash === '#reviews-section') {
+          const el = document.getElementById('reviews-section') || document.getElementById('reviews');
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        } else if (hash === '#pricing' || hash === '#pricing-section' || hash.startsWith('#pricing-')) {
+          const el = document.getElementById('pricing-section');
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        } else if (hash === '#review-form' || hash === '#form' || hash === '#rate') {
+          const el = document.getElementById('review-form');
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        } else if (hash === '#contact' || hash === '#contacts' || hash === '#contact-section') {
+          const el = document.getElementById('contact-section');
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 250);
+
+      return () => clearTimeout(timer);
+    };
+
+    handleDeepLink();
+    window.addEventListener('hashchange', handleDeepLink);
+    return () => window.removeEventListener('hashchange', handleDeepLink);
+  }, []);
 
   const currentLogo = settings.logoUrl || '/logo.png';
   const currentShopName = settings.shopName || 'Pattancute';
@@ -170,8 +214,28 @@ export function App() {
             </div>
           </div>
 
-          {/* Actions: Admin Panel + Theme Toggle + Jump to Form */}
-          <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
+          {/* Navigation Links (Desktop) & Actions: Admin Panel + Theme Toggle + Jump to Form */}
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+            {/* Quick Section Nav (Desktop) */}
+            <div className="hidden md:flex items-center gap-1 mr-1">
+              <button
+                type="button"
+                onClick={() => scrollToPricing()}
+                className="px-3 py-1.5 rounded-full text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-pattan-pink hover:bg-pink-50/70 dark:hover:bg-slate-800 transition flex items-center gap-1.5 cursor-pointer"
+              >
+                <Tag className="w-3.5 h-3.5 text-pattan-pink" />
+                <span>เรทราคาแอพ</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={scrollToReviews}
+                className="px-3 py-1.5 rounded-full text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-pattan-blue hover:bg-blue-50/70 dark:hover:bg-slate-800 transition flex items-center gap-1.5 cursor-pointer"
+              >
+                <span>💬 รีวิวลูกค้า</span>
+              </button>
+            </div>
+
             <button
               onClick={() => setShowAdminModal(true)}
               type="button"
@@ -215,6 +279,12 @@ export function App() {
         {/* Section Divider: Soft Wave */}
         <SectionDivider variant="wave" />
 
+        {/* App-by-app Pricing Rate Cards Section */}
+        <PricingSection pricing={settings.pricing} contacts={settings.contacts} />
+
+        {/* Section Divider: Cute Cloud */}
+        <SectionDivider />
+
         {/* Review Form Section */}
         <ReviewForm onReviewSubmitted={handleReviewSubmitted} />
 
@@ -245,6 +315,7 @@ export function App() {
       {/* 6. Mobile Bottom Floating Glass Nav Pill */}
       <BottomNav
         onScrollToTop={scrollToTop}
+        onScrollToPricing={scrollToPricing}
         onScrollToReviews={scrollToReviews}
         onScrollToForm={scrollToForm}
       />

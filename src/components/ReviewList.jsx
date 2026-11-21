@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Star, MessageCircle, ChevronDown, Sparkles, Image as ImageIcon, CheckCircle2, Pencil, X } from 'lucide-react';
+import { Star, MessageCircle, ChevronDown, Sparkles, Image as ImageIcon, CheckCircle2, Pencil, X, Share2, Check } from 'lucide-react';
 import { CuteMonkey } from './CuteMonkey';
 import { ImageModal } from './ImageModal';
 import { getEditToken, decodeHtml } from '../myReviews';
@@ -319,6 +319,28 @@ export function ReviewList({
   const [activeImage, setActiveImage] = useState(null);
   const [editingReview, setEditingReview] = useState(null);
   const [selectedStar, setSelectedStar] = useState(null); // null = All, 5, 4, 3, 2, 1
+  const [copiedReviewsLink, setCopiedReviewsLink] = useState(false);
+
+  // Copy direct link to reviews section (#reviews)
+  const handleCopyReviewsLink = async () => {
+    const url = `${window.location.origin}/#reviews`;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(url);
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = url;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+      setCopiedReviewsLink(true);
+      setTimeout(() => setCopiedReviewsLink(false), 3000);
+    } catch (e) {
+      console.warn('Copy link failed', e);
+    }
+  };
 
   // Filter reviews client-side
   const filteredReviews = selectedStar
@@ -326,7 +348,10 @@ export function ReviewList({
     : reviews;
 
   return (
-    <section id="reviews-section" className="w-full max-w-3xl mx-auto px-4 mb-16 scroll-mt-6 font-sans">
+    <section id="reviews-section" className="relative w-full max-w-3xl mx-auto px-4 mb-16 scroll-mt-20 font-sans">
+      {/* Anchor for #reviews deep link */}
+      <span id="reviews" className="absolute -top-24" />
+
       {/* Section Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
         <div className="flex items-center gap-3">
@@ -344,11 +369,32 @@ export function ReviewList({
           </div>
         </div>
 
-        {reviews.length > 0 && (
-          <span className="self-start sm:self-auto text-xs font-bold px-3.5 py-1.5 rounded-full bg-white dark:bg-slate-800 border border-pattan-blue/20 text-pattan-blue-deep shadow-xs">
-            ทั้งหมด {reviews.length} รีวิว
-          </span>
-        )}
+        <div className="flex items-center gap-2 self-start sm:self-auto">
+          {reviews.length > 0 && (
+            <span className="text-xs font-bold px-3 py-1.5 rounded-full bg-white dark:bg-slate-800 border border-pattan-blue/20 text-pattan-blue-deep dark:text-pattan-blue-light shadow-xs">
+              ทั้งหมด {reviews.length} รีวิว
+            </span>
+          )}
+
+          <button
+            type="button"
+            onClick={handleCopyReviewsLink}
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 hover:text-pattan-blue hover:border-pattan-blue/50 active:scale-95 transition shadow-xs cursor-pointer"
+            title="คัดลอกลิงก์ตรงมาหน้ารีวิวนี้"
+          >
+            {copiedReviewsLink ? (
+              <>
+                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                <span className="text-emerald-600 dark:text-emerald-400 font-extrabold">คัดลอกลิงก์แล้ว! ✨</span>
+              </>
+            ) : (
+              <>
+                <Share2 className="w-3.5 h-3.5 text-pattan-blue" />
+                <span>แชร์ลิงก์รีวิว</span>
+              </>
+            )}
+          </button>
+        </div>
       </div>
 
       {/* Star Filter Chips */}
