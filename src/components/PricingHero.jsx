@@ -37,9 +37,9 @@ export function PricingHero({ shopName = 'Pattancute', totalApps = 15, onOpenAdm
                 <span className="text-pattan-blue-deep dark:text-pattan-blue-light">{totalApps} แอพแท้ลิขสิทธิ์</span>
               </div>
 
-              <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-pattan-blue-deep dark:text-white tracking-tight font-display leading-tight">
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-pattan-blue-deep dark:text-white tracking-tight font-display leading-normal">
                 เรทราคาหารแอพ{' '}
-                <span className="font-brand font-bold text-brand-gradient tracking-normal">
+                <span className="inline-block font-brand font-bold text-brand-gradient tracking-normal">
                   {shopName}
                 </span>
               </h1>

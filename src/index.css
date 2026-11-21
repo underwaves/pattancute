@@ -99,12 +99,15 @@
   background: linear-gradient(135deg, #C75182 0%, #AE3F6D 100%);
 }
 
-/* Signature Brand Text Gradient */
+/* Signature Brand Text Gradient (with safe top/bottom padding so Thai tone marks never clip) */
 .text-brand-gradient {
   background: linear-gradient(120deg, #1B2A4A 10%, #4B72B0 55%, #C85383 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  padding-top: 0.32em;
+  padding-bottom: 0.14em;
+  line-height: 1.45;
 }
 
 .dark .text-brand-gradient {

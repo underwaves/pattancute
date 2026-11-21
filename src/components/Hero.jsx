@@ -60,7 +60,7 @@ export function Hero({
       </div>
 
       {/* 3. Signature Cute Brand Name Typography */}
-      <h1 className="mt-6 text-4xl sm:text-5xl font-bold text-brand-gradient font-brand tracking-normal leading-tight">
+      <h1 className="mt-4 text-4xl sm:text-5xl font-bold text-brand-gradient font-brand tracking-normal">
         {displayTitle}
       </h1>
       <p className="mt-2.5 text-sm sm:text-base font-medium text-slate-500 dark:text-slate-400 max-w-xl leading-relaxed">
