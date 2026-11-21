@@ -1,7 +1,132 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Star, MessageCircle, ChevronDown, Sparkles, Image as ImageIcon, CheckCircle2 } from 'lucide-react';
+import { Star, MessageCircle, ChevronDown, Sparkles, Image as ImageIcon, CheckCircle2, Pencil, X } from 'lucide-react';
 import { CuteMonkey } from './CuteMonkey';
 import { ImageModal } from './ImageModal';
+import { getEditToken, decodeHtml } from '../myReviews';
+
+// Modal: customer edits their own review (name, stars, comment)
+function EditReviewModal({ review, onClose, onSaved }) {
+  const [name, setName] = useState(decodeHtml(review.name));
+  const [rating, setRating] = useState(review.rating);
+  const [comment, setComment] = useState(decodeHtml(review.comment));
+  const [isSaving, setIsSaving] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSave = async (e) => {
+    e.preventDefault();
+    setError('');
+    if (!name.trim()) return setError('กรุณากรอกชื่อของคุณ');
+    if (!comment.trim()) return setError('กรุณากรอกข้อความรีวิว');
+
+    setIsSaving(true);
+    try {
+      const res = await fetch(`/api/reviews/${review.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          editToken: getEditToken(review.id),
+          name: name.trim(),
+          rating,
+          comment: comment.trim(),
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'แก้ไขรีวิวไม่สำเร็จ กรุณาลองใหม่ค่ะ');
+      onSaved({ ...review, ...data.review });
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  return (
+    <div
+      onClick={onClose}
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fade-in font-sans"
+    >
+      <form
+        onClick={(e) => e.stopPropagation()}
+        onSubmit={handleSave}
+        className="bg-white dark:bg-slate-800 rounded-3xl p-6 max-w-md w-full shadow-2xl border border-white/80 dark:border-slate-700 animate-modal-pop"
+      >
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-base font-black text-pattan-blue-deep dark:text-white flex items-center gap-2">
+            <Pencil className="w-4 h-4 text-pattan-pink" />
+            แก้ไขรีวิวของฉัน
+          </h3>
+          <button
+            type="button"
+            onClick={onClose}
+            className="w-8 h-8 rounded-full hover:bg-slate-100 dark:hover:bg-slate-700 flex items-center justify-center text-slate-400"
+            aria-label="ปิด"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        <label className="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1">ชื่อที่แสดง</label>
+        <input
+          type="text"
+          value={name}
+          maxLength={40}
+          onChange={(e) => setName(e.target.value)}
+          className="w-full h-10 px-3.5 mb-4 rounded-xl bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-sm font-semibold"
+        />
+
+        <label className="block text-xs font-bold text-slate-700 dark:text-slate-200 mb-1">คะแนน</label>
+        <div className="flex items-center gap-1 mb-4">
+          {[1, 2, 3, 4, 5].map((s) => (
+            <button
+              key={s}
+              type="button"
+              onClick={() => setRating(s)}
+              className="p-0.5 active:scale-90 transition-transform"
+              aria-label={`${s} ดาว`}
+            >
+              <Star
+                className={`w-7 h-7 ${
+                  s <= rating ? 'text-pattan-yellow fill-pattan-yellow' : 'text-slate-200 fill-slate-200 dark:text-slate-600 dark:fill-slate-600'
+                }`}
+              />
+            </button>
+          ))}
+        </div>
+
+        <div className="flex items-center justify-between mb-1">
+          <label className="text-xs font-bold text-slate-700 dark:text-slate-200">ข้อความรีวิว</label>
+          <span className="text-[11px] text-slate-400">{comment.length}/500</span>
+        </div>
+        <textarea
+          value={comment}
+          maxLength={500}
+          rows={4}
+          onChange={(e) => setComment(e.target.value)}
+          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-sm resize-none"
+        />
+
+        {error && <p className="mt-2 text-xs font-semibold text-rose-500">{error}</p>}
+
+        <div className="grid grid-cols-2 gap-2.5 mt-5">
+          <button
+            type="button"
+            onClick={onClose}
+            className="h-10 rounded-full bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 text-xs font-bold text-slate-600 dark:text-slate-300"
+          >
+            ยกเลิก
+          </button>
+          <button
+            type="submit"
+            disabled={isSaving}
+            className="h-10 rounded-full bg-gradient-to-r from-pattan-blue to-pattan-pink text-white text-xs font-bold shadow-sm disabled:opacity-50"
+          >
+            {isSaving ? 'กำลังบันทึก...' : 'บันทึกการแก้ไข'}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}
 
 // Helper: Format Thai Relative Time (e.g. "เมื่อวานนี้", "2 วันที่แล้ว")
 function formatThaiRelativeTime(isoString) {
@@ -49,9 +174,10 @@ function getAvatarStyle(name) {
 }
 
 // Animated Review Card Component with IntersectionObserver
-function AnimatedReviewCard({ review, index, onImageClick }) {
+function AnimatedReviewCard({ review, index, onImageClick, onEdit }) {
   const cardRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
+  const canEdit = !!getEditToken(review.id);
 
   useEffect(() => {
     // Respect reduced motion
@@ -122,10 +248,15 @@ function AnimatedReviewCard({ review, index, onImageClick }) {
           </div>
         </div>
 
-        {/* Thai Relative Date badge */}
-        <span className="text-xs font-bold text-pattan-text-muted bg-white/80 dark:bg-slate-700/60 px-2.5 py-1 rounded-full border border-slate-100 shadow-xs">
-          {formatThaiRelativeTime(review.created_at)}
-        </span>
+        {/* Thai Relative Date badge (+ edited mark) */}
+        <div className="flex flex-col items-end gap-1 shrink-0">
+          <span className="text-xs font-bold text-pattan-text-muted bg-white/80 dark:bg-slate-700/60 px-2.5 py-1 rounded-full border border-slate-100 shadow-xs">
+            {formatThaiRelativeTime(review.created_at)}
+          </span>
+          {review.updated_at && (
+            <span className="text-[10px] font-semibold text-slate-400">(แก้ไขแล้ว)</span>
+          )}
+        </div>
       </div>
 
       {/* Comment Text */}
@@ -158,6 +289,20 @@ function AnimatedReviewCard({ review, index, onImageClick }) {
           ))}
         </div>
       )}
+
+      {/* Owner-only edit action */}
+      {canEdit && (
+        <div className="mt-4 flex justify-end">
+          <button
+            type="button"
+            onClick={() => onEdit(review)}
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-pattan-pink-soft dark:bg-slate-700 border border-pink-200/80 dark:border-slate-600 text-xs font-bold text-pattan-pink-deep dark:text-pattan-pink hover:bg-pattan-pink-light active:scale-95 transition"
+          >
+            <Pencil className="w-3.5 h-3.5" />
+            แก้ไขรีวิวของฉัน
+          </button>
+        </div>
+      )}
     </article>
   );
 }
@@ -169,8 +314,10 @@ export function ReviewList({
   hasMore,
   onLoadMore,
   onScrollToForm,
+  onReviewUpdated,
 }) {
   const [activeImage, setActiveImage] = useState(null);
+  const [editingReview, setEditingReview] = useState(null);
   const [selectedStar, setSelectedStar] = useState(null); // null = All, 5, 4, 3, 2, 1
 
   // Filter reviews client-side
@@ -313,6 +460,7 @@ export function ReviewList({
               review={rev}
               index={index}
               onImageClick={(imgUrl) => setActiveImage(imgUrl)}
+              onEdit={(r) => setEditingReview(r)}
             />
           ))}
 
@@ -347,6 +495,18 @@ export function ReviewList({
         <ImageModal
           src={activeImage}
           onClose={() => setActiveImage(null)}
+        />
+      )}
+
+      {/* Customer Edit Review Modal */}
+      {editingReview && (
+        <EditReviewModal
+          review={editingReview}
+          onClose={() => setEditingReview(null)}
+          onSaved={(updated) => {
+            setEditingReview(null);
+            if (onReviewUpdated) onReviewUpdated(updated);
+          }}
         />
       )}
     </section>

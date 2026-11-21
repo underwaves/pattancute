@@ -10,7 +10,7 @@ function jsonResponse(data, status = 200, extraHeaders = {}) {
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
       'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type, Authorization',
       ...extraHeaders,
     },
@@ -46,6 +46,23 @@ async function hashIp(ip) {
   return Array.from(new Uint8Array(buf))
     .map((b) => b.toString(16).padStart(2, '0'))
     .join('');
+}
+
+// Helper: Hash a customer's review edit token (raw token is never stored)
+async function hashEditToken(token) {
+  const enc = new TextEncoder().encode(String(token) + '_pattancute_edit');
+  const buf = await crypto.subtle.digest('SHA-256', enc);
+  return Array.from(new Uint8Array(buf))
+    .map((b) => b.toString(16).padStart(2, '0'))
+    .join('');
+}
+
+// Helper: Constant-time string comparison
+function safeEqual(a, b) {
+  if (typeof a !== 'string' || typeof b !== 'string' || a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  return diff === 0;
 }
 
 // Helper: Validate image magic bytes (strictly check JPEG, PNG, WebP)
@@ -123,7 +140,7 @@ export default {
         status: 204,
         headers: {
           'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, DELETE, OPTIONS',
+          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
           'Access-Control-Allow-Headers': 'Content-Type, Authorization',
           'Access-Control-Max-Age': '86400',
         },
@@ -214,7 +231,7 @@ async function handleApi(request, env, url) {
     let reviewsStmt;
     if (cursor) {
       reviewsStmt = env.DB.prepare(`
-        SELECT id, name, rating, comment, created_at
+        SELECT id, name, rating, comment, created_at, updated_at
         FROM reviews
         WHERE hidden = 0 AND created_at < ?
         ORDER BY created_at DESC
@@ -222,7 +239,7 @@ async function handleApi(request, env, url) {
       `).bind(cursor, limit + 1);
     } else {
       reviewsStmt = env.DB.prepare(`
-        SELECT id, name, rating, comment, created_at
+        SELECT id, name, rating, comment, created_at, updated_at
         FROM reviews
         WHERE hidden = 0
         ORDER BY created_at DESC
@@ -374,11 +391,15 @@ async function handleApi(request, env, url) {
     const reviewId = crypto.randomUUID();
     const nowIso = new Date().toISOString();
 
+    // Secret edit token: returned once to the customer, only its hash is stored
+    const editToken = `${crypto.randomUUID()}${crypto.randomUUID()}`.replace(/-/g, '');
+    const editTokenHash = await hashEditToken(editToken);
+
     const stmts = [
       env.DB.prepare(`
-        INSERT INTO reviews (id, name, rating, comment, created_at, hidden)
-        VALUES (?, ?, ?, ?, ?, 0)
-      `).bind(reviewId, cleanName, rawRating, cleanComment, nowIso),
+        INSERT INTO reviews (id, name, rating, comment, created_at, hidden, edit_token_hash)
+        VALUES (?, ?, ?, ?, ?, 0, ?)
+      `).bind(reviewId, cleanName, rawRating, cleanComment, nowIso, editTokenHash),
       env.DB.prepare(`
         INSERT INTO rate_limits (ip_hash, created_at)
         VALUES (?, ?)
@@ -400,6 +421,7 @@ async function handleApi(request, env, url) {
       {
         success: true,
         message: 'ขอบคุณสำหรับรีวิวและเครดิตร้าน Pattancute ค่ะ!',
+        editToken,
         review: {
           id: reviewId,
           name: cleanName,
@@ -411,6 +433,72 @@ async function handleApi(request, env, url) {
       },
       201
     );
+  }
+
+  // 3.1 PUT /api/reviews/:id - Customer edits their own review (requires secret edit token)
+  if (method === 'PUT' && path.startsWith('/api/reviews/')) {
+    const id = path.slice('/api/reviews/'.length);
+    if (!/^[a-f0-9-]{36}$/i.test(id)) {
+      return jsonResponse({ error: 'รหัสรีวิวไม่ถูกต้อง' }, 400);
+    }
+
+    let body;
+    try {
+      body = await request.json();
+    } catch {
+      return jsonResponse({ error: 'รูปแบบข้อมูลไม่ถูกต้อง' }, 400);
+    }
+
+    const editToken = (body?.editToken || '').toString();
+    if (!editToken) {
+      return jsonResponse({ error: 'ไม่มีสิทธิ์แก้ไขรีวิวนี้' }, 403);
+    }
+
+    const existing = await env.DB.prepare(
+      'SELECT id, edit_token_hash, created_at FROM reviews WHERE id = ? AND hidden = 0'
+    ).bind(id).first();
+
+    if (!existing) {
+      return jsonResponse({ error: 'ไม่พบรีวิวนี้ อาจถูกลบไปแล้วค่ะ' }, 404);
+    }
+
+    const providedHash = await hashEditToken(editToken);
+    if (!existing.edit_token_hash || !safeEqual(providedHash, existing.edit_token_hash)) {
+      return jsonResponse({ error: 'ไม่มีสิทธิ์แก้ไขรีวิวนี้ (แก้ได้เฉพาะรีวิวของตัวเองจากเครื่องที่ใช้ส่งรีวิว)' }, 403);
+    }
+
+    const rawName = (body?.name || '').toString().trim();
+    const rawRating = parseInt(body?.rating || '0', 10);
+    const rawComment = (body?.comment || '').toString().trim();
+
+    if (!rawName) return jsonResponse({ error: 'กรุณากรอกชื่อของคุณ' }, 400);
+    if (rawName.length > 40) return jsonResponse({ error: 'ชื่อต้องมีความยาวไม่เกิน 40 ตัวอักษร' }, 400);
+    if (!rawRating || rawRating < 1 || rawRating > 5) {
+      return jsonResponse({ error: 'กรุณาให้คะแนนดาวระหว่าง 1 ถึง 5 ดาว' }, 400);
+    }
+    if (!rawComment) return jsonResponse({ error: 'กรุณากรอกข้อความรีวิว/ความประทับใจ' }, 400);
+    if (rawComment.length > 500) return jsonResponse({ error: 'ข้อความรีวิวต้องไม่เกิน 500 ตัวอักษร' }, 400);
+
+    const cleanName = escapeHtml(rawName);
+    const cleanComment = escapeHtml(rawComment);
+    const nowIso = new Date().toISOString();
+
+    await env.DB.prepare(
+      'UPDATE reviews SET name = ?, rating = ?, comment = ?, updated_at = ? WHERE id = ?'
+    ).bind(cleanName, rawRating, cleanComment, nowIso, id).run();
+
+    return jsonResponse({
+      success: true,
+      message: 'แก้ไขรีวิวเรียบร้อยแล้วค่ะ ✨',
+      review: {
+        id,
+        name: cleanName,
+        rating: rawRating,
+        comment: cleanComment,
+        created_at: existing.created_at,
+        updated_at: nowIso,
+      },
+    });
   }
 
   // 4. DELETE /api/reviews/:id (Admin Token Authorization)

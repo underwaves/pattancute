@@ -52,6 +52,7 @@
 - **Interactive Monkey Mascot:** มาสคอตน้องลิงประจำร้าน ตอบสนองต่อการคลิก/สัมผัสด้วยแอนิเมชันเด้งดึ๋ง หัวใจลอย และคำพูดทักทายแบบสุ่ม
 - **Jelly Specular Buttons & Confetti:** ปุ่มกดเจลลี่พร้อมแสงสะท้อนเงาวาว และเอฟเฟกต์เฉลิมฉลอง Confetti รูปดาวและหัวใจพาสเทลเมื่อส่งรีวิวสำเร็จ
 - **Photo Reviews Lightbox:** ลูกค้าสามารถแนบรูปถ่ายสินค้าจริง พร้อมระบบพรีวิวรูป และขยายดูภาพแบบ High-Res Lightbox
+- **Customer Self-Service Review Editing:** ลูกค้าสามารถกดแก้ไขรีวิวของตนเองได้ (แก้ไขชื่อ, ดาว, และข้อความ) โดยระบบใช้ Secret Edit Token ที่ผูกกับเครื่องเพื่อความปลอดภัย และแสดงป้าย "(แก้ไขแล้ว)" อัตโนมัติ
 - **Dynamic Star Filtering & Thai Relative Time:** ค้นหาและกรองรีวิวตามระดับดาว (5★, 4★...) พร้อมแสดงเวลาแบบภาษาไทย ("เมื่อสักครู่", "2 วันที่แล้ว")
 
 ### ⚙️ 2. Comprehensive 8-Tab Bento Admin Dashboard
@@ -100,7 +101,10 @@ CREATE TABLE IF NOT EXISTS reviews (
   rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
   comment TEXT NOT NULL,
   ip_hash TEXT NOT NULL,
-  created_at TEXT NOT NULL
+  created_at TEXT NOT NULL,
+  updated_at TEXT,
+  edit_token_hash TEXT,
+  hidden INTEGER DEFAULT 0
 );
 
 -- 2. ตารางจัดเก็บรูปภาพแนบในแต่ละรีวิว (เชื่อมกับ Cloudflare R2)
@@ -134,7 +138,8 @@ CREATE TABLE IF NOT EXISTS rate_limits (
 | Method | Endpoint | คำอธิบาย |
 | :--- | :--- | :--- |
 | `GET` | `/api/reviews` | ดึงรายการรีวิวทั้งหมด พร้อมคะแนนเฉลี่ย และรูปภาพประกอบ |
-| `POST` | `/api/reviews` | ส่งรีวิวใหม่ (รองรับข้อความ, ดาว 1-5, และรูปภาพแนบไม่เกิน 3 รูป) |
+| `POST` | `/api/reviews` | ส่งรีวิวใหม่ (รองรับข้อความ, ดาว 1-5, และรูปภาพแนบไม่เกิน 3 รูป พร้อมส่งคืน Edit Token) |
+| `PUT` | `/api/reviews/:id` | แก้ไขรีวิวของตนเอง (ตรวจสอบสิทธิ์ด้วย Secret Edit Token) |
 | `GET` | `/api/settings` | ดึงข้อมูลการตั้งค่าร้านค้า (ชื่อร้าน, โลโก้, เพลง, โซเชียล) |
 | `GET` | `/api/images/:key` | สตรีมรูปภาพรีวิวและโลโก้จาก Cloudflare R2 Bucket |
 

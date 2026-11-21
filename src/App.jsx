@@ -111,6 +111,13 @@ export function App() {
     fetchReviews(null, false);
   };
 
+  // Called when a customer edits their own review
+  const handleReviewUpdated = (updated) => {
+    setReviews((prev) => prev.map((r) => (r.id === updated.id ? { ...r, ...updated } : r)));
+    // Refresh stats in case the star rating changed
+    fetchReviews(null, false);
+  };
+
   // Scroll Helpers
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -222,6 +229,7 @@ export function App() {
           hasMore={hasMore}
           onLoadMore={handleLoadMore}
           onScrollToForm={scrollToForm}
+          onReviewUpdated={handleReviewUpdated}
         />
 
         {/* Contact Shop Section */}

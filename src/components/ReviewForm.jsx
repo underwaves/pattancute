@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Star, Camera, X, Send, AlertCircle, CheckCircle2, Check, Sparkles, Heart } from 'lucide-react';
 import { CuteMonkey } from './CuteMonkey';
 import { Confetti } from './Confetti';
+import { saveEditToken } from '../myReviews';
 
 const RATING_LABELS = {
   5: 'ประทับใจมากที่สุด รักเลย ❤️✨',
@@ -156,6 +157,9 @@ export function ReviewForm({ onReviewSubmitted }) {
       }
 
       // Success
+      if (data.review?.id && data.editToken) {
+        saveEditToken(data.review.id, data.editToken);
+      }
       setSuccessMessage(data.message || 'ขอบคุณสำหรับรีวิวและเครดิตร้าน Pattancute ค่ะ!');
       setShowConfetti(true);
 
