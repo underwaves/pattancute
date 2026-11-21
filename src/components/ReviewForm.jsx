@@ -417,12 +417,12 @@ export function ReviewForm({ onReviewSubmitted }) {
             )}
           </div>
 
-          {/* 5. Refined Submit Button */}
+          {/* 5. Signature Midnight Blueberry Submit Button */}
           <div className="pt-2">
             <button
               type="submit"
               disabled={isSubmitting}
-              className="btn-jelly w-full min-h-[48px] px-6 py-3 rounded-2xl bg-slate-900 dark:bg-white hover:bg-pattan-blue-deep dark:hover:bg-slate-100 disabled:opacity-60 disabled:cursor-not-allowed text-white dark:text-slate-900 font-bold text-sm shadow-jelly flex items-center justify-center gap-2 cursor-pointer"
+              className="btn-jelly btn-signature w-full min-h-[48px] px-6 py-3 rounded-2xl disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold text-sm flex items-center justify-center gap-2 cursor-pointer"
             >
               {isSubmitting ? (
                 <>
@@ -431,7 +431,7 @@ export function ReviewForm({ onReviewSubmitted }) {
                 </>
               ) : (
                 <>
-                  <Send className="w-4 h-4 text-pattan-pink dark:text-pattan-pink-deep" />
+                  <Send className="w-4 h-4 text-pattan-pink-light" />
                   <span>ส่งรีวิวให้เครดิตร้าน</span>
                 </>
               )}

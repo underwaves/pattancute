@@ -1,5 +1,6 @@
 import React from 'react';
 import { Star, ShieldCheck, CheckCircle2, ArrowDown, PenLine } from 'lucide-react';
+import { BoutiqueSeal } from './BoutiqueSeal';
 
 export function Hero({
   onScrollToForm,
@@ -22,36 +23,44 @@ export function Hero({
 
   return (
     <header className="relative pt-8 sm:pt-12 pb-8 px-4 text-center max-w-3xl mx-auto flex flex-col items-center font-sans">
-      {/* 1. Refined Status Pill */}
-      <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/85 dark:bg-slate-800/85 backdrop-blur-md border border-slate-200/80 dark:border-slate-700/80 shadow-xs text-[11px] sm:text-xs font-semibold text-slate-600 dark:text-slate-300 mb-6 max-w-full">
-        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+      {/* 1. Boutique Club Status Pill */}
+      <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/85 dark:bg-[#131C30]/85 backdrop-blur-md border border-pattan-pink/25 dark:border-slate-700/80 shadow-xs text-[11px] sm:text-xs font-semibold text-pattan-blue-deep dark:text-slate-200 mb-6 max-w-full">
+        <span className="w-1.5 h-1.5 rounded-full bg-pattan-pink-deep shrink-0" />
         <span className="truncate">{welcomeChip}</span>
       </div>
 
-      {/* 2. Clean Brand Emblem Centerpiece */}
+      {/* 2. Signature Boutique Club Medallion + Rotating Typographic Seal */}
       <div className="relative my-1">
-        <div className="absolute -inset-5 bg-gradient-to-tr from-pattan-pink/20 via-transparent to-pattan-blue/20 rounded-full blur-2xl opacity-75 pointer-events-none" />
+        <div className="absolute -inset-6 bg-gradient-to-tr from-pattan-pink/25 via-transparent to-pattan-blue/25 rounded-full blur-2xl opacity-80 pointer-events-none" />
 
-        <div className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-3xl p-2 bg-white/95 dark:bg-slate-800 shadow-bento border border-slate-200/80 dark:border-slate-700 flex items-center justify-center overflow-hidden">
-          <img
-            src={logoUrl || '/logo.png'}
-            alt={displayTitle}
-            className="w-full h-full object-contain rounded-2xl"
-            loading="eager"
-          />
+        {/* Rotating Boutique Verification Seal orbiting top-right */}
+        <div className="absolute -top-6 -right-10 sm:-right-12 z-20 text-pattan-blue-deep/75 dark:text-pattan-blue-light/75">
+          <BoutiqueSeal size={78} text="VERIFIED CLUB · 100% REAL · CREDITS · " />
+        </div>
+
+        {/* Layered Double-Frame Logo Medallion */}
+        <div className="relative p-1.5 rounded-[28px] bg-gradient-to-br from-white via-pattan-pink-soft to-pattan-blue-soft dark:from-slate-800 dark:via-slate-800 dark:to-slate-900 shadow-bento border border-white/90 dark:border-slate-700">
+          <div className="w-28 h-28 sm:w-32 sm:h-32 rounded-[22px] p-2 bg-white dark:bg-slate-900 flex items-center justify-center overflow-hidden">
+            <img
+              src={logoUrl || '/logo.png'}
+              alt={displayTitle}
+              className="w-full h-full object-contain rounded-xl"
+              loading="eager"
+            />
+          </div>
         </div>
 
         {/* Crisp Verified Mark */}
         <div
-          className="absolute -bottom-1.5 -right-1.5 w-8 h-8 rounded-full bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-700 shadow-sm flex items-center justify-center"
+          className="absolute -bottom-1.5 -left-1.5 w-8 h-8 rounded-full bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-700 shadow-sm flex items-center justify-center"
           title="ร้านค้ายืนยันตัวตนแล้ว"
         >
           <CheckCircle2 className="w-5 h-5 text-emerald-500 fill-emerald-50 dark:fill-emerald-950" />
         </div>
       </div>
 
-      {/* 3. Cute Brand Name Typography */}
-      <h1 className="mt-5 text-4xl sm:text-5xl font-bold text-pattan-blue-deep dark:text-white font-brand tracking-normal leading-tight">
+      {/* 3. Signature Cute Brand Name Typography */}
+      <h1 className="mt-6 text-4xl sm:text-5xl font-bold text-brand-gradient font-brand tracking-normal leading-tight">
         {displayTitle}
       </h1>
       <p className="mt-2.5 text-sm sm:text-base font-medium text-slate-500 dark:text-slate-400 max-w-xl leading-relaxed">
@@ -61,42 +70,42 @@ export function Hero({
       {/* 4. Clean Trust & Rating Metrics */}
       <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs font-semibold">
         {totalReviews > 0 ? (
-          <div className="inline-flex items-center gap-1.5 bg-white/90 dark:bg-slate-800/90 px-3.5 py-1.5 rounded-full border border-slate-200/80 dark:border-slate-700 shadow-xs text-slate-700 dark:text-slate-200">
+          <div className="inline-flex items-center gap-1.5 bg-white/90 dark:bg-[#131C30]/90 px-3.5 py-1.5 rounded-full border border-white dark:border-slate-700 shadow-xs text-slate-700 dark:text-slate-200">
             <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500 shrink-0" />
             <span className="tabular-nums font-bold">{averageRating.toFixed(1)}</span>
             <span className="text-slate-300 dark:text-slate-600">·</span>
             <span className="text-slate-500 dark:text-slate-400">จากทั้งหมด {totalReviews} รีวิว</span>
           </div>
         ) : (
-          <div className="inline-flex items-center gap-1.5 bg-white/90 dark:bg-slate-800/90 px-3.5 py-1.5 rounded-full border border-slate-200/80 dark:border-slate-700 shadow-xs text-slate-600 dark:text-slate-300">
+          <div className="inline-flex items-center gap-1.5 bg-white/90 dark:bg-[#131C30]/90 px-3.5 py-1.5 rounded-full border border-white dark:border-slate-700 shadow-xs text-slate-600 dark:text-slate-300">
             <Star className="w-3.5 h-3.5 text-amber-500 fill-amber-500 shrink-0" />
             <span>{badgeTrust1}</span>
           </div>
         )}
 
-        <div className="inline-flex items-center gap-1.5 bg-white/90 dark:bg-slate-800/90 px-3.5 py-1.5 rounded-full border border-slate-200/80 dark:border-slate-700 shadow-xs text-slate-700 dark:text-slate-200">
+        <div className="inline-flex items-center gap-1.5 bg-white/90 dark:bg-[#131C30]/90 px-3.5 py-1.5 rounded-full border border-white dark:border-slate-700 shadow-xs text-slate-700 dark:text-slate-200">
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
           <span>{badgeTrust2}</span>
         </div>
       </div>
 
-      {/* 5. Refined Primary & Secondary Actions */}
+      {/* 5. Signature Midnight Blueberry & Frosted Secondary Actions */}
       <div className="mt-7 flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
         <button
           onClick={onScrollToForm}
           type="button"
-          className="btn-jelly w-full sm:w-auto min-h-[46px] px-7 py-3 rounded-2xl bg-slate-900 dark:bg-white hover:bg-pattan-blue-deep dark:hover:bg-slate-100 text-white dark:text-slate-900 font-bold text-sm shadow-jelly flex items-center justify-center gap-2 cursor-pointer"
+          className="btn-jelly btn-signature w-full sm:w-auto min-h-[46px] px-7 py-3 rounded-2xl text-white font-bold text-sm flex items-center justify-center gap-2 cursor-pointer"
         >
-          <PenLine className="w-4 h-4 text-pattan-pink dark:text-pattan-pink-deep shrink-0" />
+          <PenLine className="w-4 h-4 text-pattan-pink-light shrink-0" />
           <span>{heroCtaText}</span>
         </button>
 
         <a
           href="#reviews-section"
-          className="w-full sm:w-auto min-h-[46px] px-6 py-3 rounded-2xl bg-white/90 dark:bg-slate-800/90 hover:bg-white dark:hover:bg-slate-800 active:scale-[0.98] text-slate-700 dark:text-slate-200 font-semibold text-sm border border-slate-200/80 dark:border-slate-700 shadow-xs transition-all duration-200 flex items-center justify-center gap-1.5"
+          className="w-full sm:w-auto min-h-[46px] px-6 py-3 rounded-2xl bg-white/85 dark:bg-[#131C30]/85 hover:bg-white dark:hover:bg-slate-800 active:scale-[0.98] text-pattan-blue-deep dark:text-slate-200 font-semibold text-sm border border-white dark:border-slate-700 shadow-xs transition-all duration-200 flex items-center justify-center gap-1.5"
         >
           <span>ดูรีวิวทั้งหมด ({totalReviews})</span>
-          <ArrowDown className="w-3.5 h-3.5 text-slate-400" />
+          <ArrowDown className="w-3.5 h-3.5 text-pattan-pink-deep" />
         </a>
       </div>
     </header>

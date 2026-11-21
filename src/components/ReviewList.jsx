@@ -206,10 +206,17 @@ function AnimatedReviewCard({ review, index, onImageClick, onEdit }) {
     <article
       ref={cardRef}
       style={{ transitionDelay: `${Math.min(index * 60, 300)}ms` }}
-      className={`card-bento p-5 sm:p-6 transition-all duration-500 ease-out ${
+      className={`card-bento relative overflow-hidden p-5 sm:p-6 transition-all duration-500 ease-out hover:border-pattan-pink/35 ${
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
       }`}
     >
+      {/* Subtle Editorial Quotation Watermark */}
+      <span
+        aria-hidden="true"
+        className="pointer-events-none select-none absolute -top-2 right-5 text-7xl font-serif leading-none text-pattan-pink/12 dark:text-pattan-pink/10"
+      >
+        &ldquo;
+      </span>
       {/* Review Header: Avatar, Name, Rating, Date */}
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex items-center gap-3">
@@ -469,9 +476,9 @@ export function ReviewList({
           <button
             onClick={onScrollToForm}
             type="button"
-            className="btn-jelly mt-5 min-h-[44px] px-6 py-2.5 rounded-xl bg-slate-900 dark:bg-white hover:bg-pattan-blue-deep dark:hover:bg-slate-100 text-white dark:text-slate-900 font-bold text-xs shadow-sm inline-flex items-center justify-center gap-2 cursor-pointer"
+            className="btn-jelly btn-signature mt-5 min-h-[44px] px-6 py-2.5 rounded-xl text-white font-bold text-xs inline-flex items-center justify-center gap-2 cursor-pointer"
           >
-            <MessageSquarePlus className="w-4 h-4 text-pattan-pink dark:text-pattan-pink-deep" />
+            <MessageSquarePlus className="w-4 h-4 text-pattan-pink-light" />
             <span>เขียนรีวิวคนแรก</span>
           </button>
         </div>

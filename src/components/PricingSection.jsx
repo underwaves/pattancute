@@ -281,8 +281,8 @@ export function PricingSection({ pricing = defaultPricing, contacts, onOpenAdmin
                   onClick={() => selectApp(app.id)}
                   className={`snap-start shrink-0 h-10 pl-2 pr-3.5 rounded-full flex items-center gap-2 text-xs font-bold transition-all cursor-pointer active:scale-95 ${
                     isSelected
-                      ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-md'
-                      : 'bg-white/85 dark:bg-slate-800/85 text-slate-700 dark:text-slate-200 border border-slate-200/70 dark:border-slate-700 hover:bg-white'
+                      ? 'btn-signature text-white'
+                      : 'bg-white/85 dark:bg-[#131C30]/85 text-pattan-blue-deep dark:text-slate-200 border border-white dark:border-slate-700 hover:bg-white'
                   }`}
                 >
                   <AppIconBox app={app} size="xs" />
@@ -296,10 +296,20 @@ export function PricingSection({ pricing = defaultPricing, contacts, onOpenAdmin
 
       {/* ==================== MASTER-DETAIL WORKSPACE ==================== */}
       <div className="grid grid-cols-1 lg:grid-cols-[276px_1fr] gap-5 items-start">
-        {/* ---------- LEFT SIDEBAR: STICKY APP DIRECTORY (Desktop) ---------- */}
-        <aside className="hidden lg:flex lg:flex-col sticky top-20 bg-white/85 dark:bg-slate-900/80 backdrop-blur-xl border border-white/90 dark:border-slate-800 rounded-[26px] shadow-bento overflow-hidden">
+        {/* ---------- LEFT SIDEBAR: STICKY BOUTIQUE CLUB DIRECTORY (Desktop) ---------- */}
+        <aside className="hidden lg:flex lg:flex-col sticky top-24 bg-white/85 dark:bg-[#131C30]/85 backdrop-blur-xl border border-white/90 dark:border-slate-700/60 rounded-[26px] shadow-bento overflow-hidden">
+          {/* Directory Micro Header */}
+          <div className="px-4 pt-3.5 pb-2 flex items-center justify-between">
+            <span className="text-[10px] font-extrabold tracking-[0.16em] text-pattan-blue-deep/55 dark:text-slate-400 uppercase">
+              Club Directory
+            </span>
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-pattan-pink-soft dark:bg-pink-950/50 text-pattan-pink-deep dark:text-pattan-pink">
+              {apps.length} แอพ
+            </span>
+          </div>
+
           {/* Sidebar Search + Category Filter */}
-          <div className="p-3.5 border-b border-slate-100 dark:border-slate-800 space-y-2.5">
+          <div className="px-3.5 pb-3.5 border-b border-slate-100 dark:border-slate-800 space-y-2.5">
             <div className="relative">
               <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
@@ -307,7 +317,7 @@ export function PricingSection({ pricing = defaultPricing, contacts, onOpenAdmin
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="ค้นหาแอพที่ต้องการ..."
-                className="w-full h-9 pl-8 pr-7 rounded-xl bg-slate-100/80 dark:bg-slate-800 border border-transparent focus:border-pattan-pink/40 focus:bg-white dark:focus:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-100 placeholder:text-slate-400 focus:outline-none transition"
+                className="w-full h-9 pl-8 pr-7 rounded-xl bg-pattan-blue-soft/60 dark:bg-slate-800 border border-transparent focus:border-pattan-pink/40 focus:bg-white dark:focus:bg-slate-800 text-xs font-semibold text-pattan-blue-deep dark:text-slate-100 placeholder:text-slate-400 focus:outline-none transition"
               />
               {searchQuery && (
                 <button
@@ -331,8 +341,8 @@ export function PricingSection({ pricing = defaultPricing, contacts, onOpenAdmin
                     onClick={() => setCategoryFilter(chip.id)}
                     className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition cursor-pointer ${
                       active
-                        ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xs'
-                        : 'bg-slate-100/80 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+                        ? 'btn-signature text-white'
+                        : 'bg-pattan-blue-soft/60 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-pattan-blue-deep dark:hover:text-slate-200'
                     }`}
                   >
                     {chip.label} ({chip.count})
@@ -408,21 +418,21 @@ export function PricingSection({ pricing = defaultPricing, contacts, onOpenAdmin
           </div>
         </aside>
 
-        {/* ---------- RIGHT PANEL: MODERN RATE SHEET STUDIO ---------- */}
-        <div className="min-w-0 bg-white/90 dark:bg-slate-900/85 backdrop-blur-xl border border-white dark:border-slate-800 rounded-[28px] shadow-bento overflow-hidden">
+        {/* ---------- RIGHT PANEL: VIP STREAMING PASS STUDIO ---------- */}
+        <div className="min-w-0 bg-white/90 dark:bg-[#131C30]/85 backdrop-blur-xl border border-white/95 dark:border-slate-700/60 rounded-[28px] shadow-bento overflow-hidden">
           {/* Thin Dynamic Brand Color Top Ribbon */}
           <div
-            className="h-1 w-full transition-colors duration-300 opacity-85"
+            className="h-1.5 w-full transition-colors duration-300 opacity-90"
             style={{
               background: `linear-gradient(90deg, ${brandColor}, #DF6E9B, #4B72B0)`,
             }}
           />
 
-          {/* 1. Selected App Identity Header */}
-          <div className="relative p-5 sm:p-6 border-b border-slate-100 dark:border-slate-800/80 overflow-hidden">
+          {/* 1. Selected App VIP Pass Header */}
+          <div className="relative card-holographic p-5 sm:p-6 border-b border-dashed border-slate-200/85 dark:border-slate-700/80 overflow-hidden">
             {/* Soft Dynamic Ambient Glow */}
             <div
-              className="absolute -top-16 -right-16 w-56 h-56 rounded-full blur-3xl opacity-15 pointer-events-none transition-colors duration-500"
+              className="absolute -top-16 -right-16 w-60 h-60 rounded-full blur-3xl opacity-20 pointer-events-none transition-colors duration-500"
               style={{ backgroundColor: brandColor }}
             />
 
@@ -430,17 +440,22 @@ export function PricingSection({ pricing = defaultPricing, contacts, onOpenAdmin
               <div className="flex items-start sm:items-center gap-3.5 min-w-0">
                 <AppIconBox app={selectedApp} size="lg" />
                 <div className="min-w-0">
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-[9px] font-extrabold tracking-[0.2em] uppercase text-pattan-blue/70 dark:text-pattan-blue-light/70">
+                      PASS NO. {String(Math.max(1, apps.findIndex((a) => a.id === selectedApp.id) + 1)).padStart(2, '0')} · OFFICIAL RATE
+                    </span>
+                  </div>
                   <div className="flex items-center gap-2 flex-wrap">
                     <h2 className="text-xl sm:text-2xl font-black text-pattan-blue-deep dark:text-white font-display tracking-tight">
                       {selectedApp.name}
                     </h2>
                     {selectedApp.badge && (
-                      <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-pattan-pink-soft text-pattan-pink-deep dark:bg-pink-950/60 dark:text-pink-300 border border-pattan-pink/20">
+                      <span className="text-[10px] font-black px-2.5 py-0.5 rounded-full bg-pattan-pink-soft text-pattan-pink-deep dark:bg-pink-950/60 dark:text-pink-300 border border-pattan-pink/25">
                         {selectedApp.badge}
                       </span>
                     )}
                     {selectedApp.category && (
-                      <span className="hidden sm:inline-block text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">
+                      <span className="hidden sm:inline-block text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-pattan-blue-soft/80 dark:bg-slate-800 text-pattan-blue-deep/75 dark:text-slate-300">
                         {selectedApp.category}
                       </span>
                     )}
@@ -553,15 +568,15 @@ export function PricingSection({ pricing = defaultPricing, contacts, onOpenAdmin
                       onClick={() => setSelectedSubGroup(grp)}
                       className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
                         active
-                          ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xs'
-                          : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+                          ? 'btn-signature text-white'
+                          : 'text-slate-500 dark:text-slate-400 hover:text-pattan-blue-deep dark:hover:text-slate-200'
                       }`}
                     >
                       <span>{grp}</span>
                       <span
                         className={`text-[10px] px-1.5 py-0.2 rounded-full ${
                           active
-                            ? 'bg-white/20 dark:bg-slate-900/15 text-white dark:text-slate-900'
+                            ? 'bg-white/20 text-white'
                             : 'bg-slate-200/80 dark:bg-slate-700 text-slate-500'
                         }`}
                       >
@@ -657,22 +672,30 @@ export function PricingSection({ pricing = defaultPricing, contacts, onOpenAdmin
                         return (
                           <div
                             key={planKey}
-                            className={`group relative rounded-2xl p-3.5 sm:px-4 sm:py-3.5 transition-all duration-200 border ${
+                            className={`group relative rounded-2xl p-3.5 sm:px-4 sm:py-3.5 transition-all duration-200 border overflow-hidden ${
                               isPopular
-                                ? 'bg-gradient-to-r from-pattan-pink-soft/80 via-white to-white dark:from-pink-950/25 dark:via-slate-800/90 dark:to-slate-800/90 border-pattan-pink/45 dark:border-pattan-pink/35 shadow-xs'
-                                : 'bg-slate-50/70 dark:bg-slate-800/55 hover:bg-white dark:hover:bg-slate-800 border-slate-200/70 dark:border-slate-700/70 hover:border-pattan-blue/35 hover:shadow-xs'
+                                ? 'bg-gradient-to-r from-pattan-pink-soft/90 via-white to-white dark:from-pink-950/30 dark:via-[#182238] dark:to-[#182238] border-pattan-pink/45 dark:border-pattan-pink/35 shadow-xs'
+                                : 'bg-[#FAF8F5]/90 dark:bg-slate-800/55 hover:bg-white dark:hover:bg-slate-800 border-slate-200/80 dark:border-slate-700/70 hover:border-pattan-blue/35 hover:shadow-xs'
                             }`}
                           >
-                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                              {/* Left & Middle: Period Pill + Title + Inline Perks */}
+                            {/* Subtle Left Brand Ticket Strip */}
+                            <span
+                              className="absolute left-0 top-2.5 bottom-2.5 w-[3px] rounded-r-full transition-opacity"
+                              style={{
+                                backgroundColor: isPopular ? '#DF6E9B' : brandColor,
+                                opacity: isPopular ? 0.95 : 0.45,
+                              }}
+                            />
+
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pl-1.5">
+                              {/* Left & Middle: Duration Stamp + Title + Inline Perks */}
                               <div className="flex items-start gap-3 min-w-0 flex-1">
-                                {/* Fixed-width Duration Badge */}
+                                {/* Fixed-width Duration Stamp */}
                                 <div
-                                  className="min-w-[66px] px-2.5 py-1.5 rounded-xl text-center shrink-0 font-black text-xs border"
+                                  className="min-w-[68px] px-2.5 py-1.5 rounded-xl text-center shrink-0 font-extrabold text-xs border"
                                   style={{
-                                    backgroundColor: isPopular ? '#F58DB820' : `${brandColor}12`,
-                                    color: isPopular ? '#D45B8B' : undefined,
-                                    borderColor: isPopular ? '#F58DB840' : `${brandColor}25`,
+                                    backgroundColor: isPopular ? '#DF6E9B1C' : `${brandColor}12`,
+                                    borderColor: isPopular ? '#DF6E9B45' : `${brandColor}28`,
                                   }}
                                 >
                                   <span className={isPopular ? 'text-pattan-pink-deep dark:text-pattan-pink' : 'text-pattan-blue-deep dark:text-white'}>
@@ -683,14 +706,14 @@ export function PricingSection({ pricing = defaultPricing, contacts, onOpenAdmin
                                 {/* Title + Badges + Compact Features */}
                                 <div className="min-w-0 flex-1">
                                   <div className="flex items-center gap-2 flex-wrap">
-                                    <h4 className="text-sm font-black text-slate-800 dark:text-white leading-snug">
+                                    <h4 className="text-sm font-extrabold text-pattan-blue-deep dark:text-white leading-snug">
                                       {formatPlanTitle(plan)}
                                     </h4>
                                     {plan.badge && (
                                       <span
-                                        className={`text-[10px] font-black px-2 py-0.5 rounded-full whitespace-nowrap ${
+                                        className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full whitespace-nowrap ${
                                           isPopular
-                                            ? 'bg-gradient-to-r from-pattan-pink to-[#E06B9A] text-white shadow-xs'
+                                            ? 'btn-rose text-white'
                                             : 'bg-white dark:bg-slate-700 text-slate-600 dark:text-slate-200 border border-slate-200/80 dark:border-slate-600'
                                         }`}
                                       >
@@ -731,8 +754,8 @@ export function PricingSection({ pricing = defaultPricing, contacts, onOpenAdmin
                                 </div>
                               </div>
 
-                              {/* Right: Crisp Tabular Price + Order CTA */}
-                              <div className="flex items-center justify-between sm:justify-end gap-3.5 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-200/60 dark:border-slate-700/60 shrink-0">
+                              {/* Right: Perforated VIP Ticket Stub (Price + Order CTA) */}
+                              <div className="ticket-stub-divider flex items-center justify-between sm:justify-end gap-3.5 pt-2.5 sm:pt-0 sm:pl-5 border-t sm:border-t-0 sm:border-l border-dashed border-slate-300/80 dark:border-slate-700 shrink-0">
                                 <div className="text-left sm:text-right">
                                   <div className="flex items-baseline sm:justify-end gap-1.5">
                                     {plan.originalPrice && (
@@ -740,7 +763,7 @@ export function PricingSection({ pricing = defaultPricing, contacts, onOpenAdmin
                                         ฿{plan.originalPrice}
                                       </span>
                                     )}
-                                    <span className="text-xl sm:text-2xl font-black text-pattan-blue-deep dark:text-white font-display tabular-nums leading-none">
+                                    <span className="text-xl sm:text-2xl font-extrabold text-pattan-blue-deep dark:text-white font-display tabular-nums leading-none">
                                       ฿{plan.price}
                                     </span>
                                   </div>

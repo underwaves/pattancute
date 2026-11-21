@@ -11,14 +11,14 @@
   }
 
   body {
-    @apply font-sans bg-[#F9F8F6] text-[#1E293B] min-h-screen relative overflow-x-hidden antialiased;
+    @apply font-sans bg-[#FAF6F0] text-[#1B2A4A] min-h-screen relative overflow-x-hidden antialiased;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
     max-width: 100vw;
   }
 
-  /* Dark mode with refined slate aesthetic */
+  /* Dark mode with midnight velvet blueberry aesthetic */
   .dark body {
-    @apply bg-[#0F172A] text-slate-100;
+    @apply bg-[#0D1322] text-slate-100;
   }
 }
 
@@ -27,7 +27,7 @@
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.032'/%3E%3C/svg%3E");
 }
 
-/* Fine Architectural Dot Pattern (Masked softly for editorial depth) */
+/* Fine Architectural Dot Pattern */
 .bg-editorial-dots {
   background-image: radial-gradient(rgba(75, 114, 176, 0.16) 1px, transparent 1px);
   background-size: 26px 26px;
@@ -53,13 +53,65 @@
   background-size: 64px 64px;
 }
 
-/* Refined Glass Surface Card */
+/* Signature Boutique Glass Card with Subtle Warm Rim */
 .card-bento {
-  @apply bg-white/85 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/75 dark:border-slate-800 rounded-bento-lg shadow-bento transition-all duration-200 ease-out;
+  @apply bg-white/85 dark:bg-[#131C30]/85 backdrop-blur-xl border border-white/90 dark:border-slate-700/60 rounded-bento-lg shadow-bento transition-all duration-200 ease-out;
+  box-shadow:
+    0 12px 32px -14px rgba(27, 42, 74, 0.1),
+    0 1px 2px rgba(27, 42, 74, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.85);
+}
+
+.dark .card-bento {
+  box-shadow:
+    0 14px 36px -14px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
 }
 
 .card-bento:hover {
   @apply shadow-bento-hover;
+}
+
+/* Signature Midnight Blueberry Primary Action Button */
+.btn-signature {
+  background: linear-gradient(135deg, #1E325C 0%, #2D477B 60%, #3A568E 100%);
+  box-shadow:
+    0 10px 22px -6px rgba(27, 42, 74, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+.btn-signature:hover {
+  background: linear-gradient(135deg, #17274A 0%, #253C6B 60%, #344F85 100%);
+  box-shadow:
+    0 14px 26px -6px rgba(27, 42, 74, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+
+/* Signature Rose Velvet Accent Button */
+.btn-rose {
+  background: linear-gradient(135deg, #D45E8E 0%, #BE4B7A 100%);
+  box-shadow:
+    0 10px 22px -6px rgba(190, 75, 122, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28);
+}
+
+.btn-rose:hover {
+  background: linear-gradient(135deg, #C75182 0%, #AE3F6D 100%);
+}
+
+/* Signature Brand Text Gradient */
+.text-brand-gradient {
+  background: linear-gradient(120deg, #1B2A4A 10%, #4B72B0 55%, #C85383 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.dark .text-brand-gradient {
+  background: linear-gradient(120deg, #F8FAFC 10%, #A9C4EE 55%, #F29BBE 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 /* Clean Confident Tactile Button */
@@ -70,11 +122,46 @@
 }
 
 .btn-jelly:hover {
-  transform: translateY(-1px);
+  transform: translateY(-1.5px);
 }
 
 .btn-jelly:active {
   transform: translateY(0px) scale(0.985);
+}
+
+/* Signature VIP Cinema Ticket Perforation Divider (Desktop horizontal stub) */
+.ticket-stub-divider {
+  position: relative;
+}
+
+@media (min-width: 640px) {
+  .ticket-stub-divider::before,
+  .ticket-stub-divider::after {
+    content: '';
+    position: absolute;
+    left: -7px;
+    width: 13px;
+    height: 13px;
+    border-radius: 9999px;
+    background-color: #FFFFFF;
+    border: 1px solid rgba(203, 213, 225, 0.75);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  .dark .ticket-stub-divider::before,
+  .dark .ticket-stub-divider::after {
+    background-color: #131C30;
+    border-color: rgba(51, 65, 85, 0.85);
+  }
+
+  .ticket-stub-divider::before {
+    top: -20px;
+  }
+
+  .ticket-stub-divider::after {
+    bottom: -20px;
+  }
 }
 
 /* Hide scrollbars cleanly */
@@ -84,6 +171,32 @@
 }
 .scrollbar-none::-webkit-scrollbar {
   display: none;
+}
+
+/* Smooth Editorial Marquee Ticker */
+@keyframes marqueeScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marqueeScroll 34s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Ultra-Slow Boutique Seal Rotation */
+@keyframes spinSlow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spinSlow 24s linear infinite;
 }
 
 /* Respect Reduced Motion */
@@ -117,7 +230,7 @@
   background: rgba(100, 116, 139, 0.7);
 }
 
-/* Subtle Sheen Effect */
+/* Signature Iridescent Velvet Sheen */
 .card-holographic {
   position: relative;
   overflow: hidden;
@@ -130,12 +243,12 @@
   background: linear-gradient(
     115deg,
     transparent 30%,
-    rgba(223, 110, 155, 0.08) 45%,
-    rgba(75, 114, 176, 0.08) 55%,
+    rgba(223, 110, 155, 0.1) 45%,
+    rgba(75, 114, 176, 0.1) 55%,
     transparent 70%
   );
   transform: rotate(25deg) translateY(-50%);
-  animation: holoShimmer 12s ease-in-out infinite alternate;
+  animation: holoShimmer 11s ease-in-out infinite alternate;
   pointer-events: none;
 }
 

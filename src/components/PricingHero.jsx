@@ -1,65 +1,107 @@
 import React from 'react';
-import { Sparkles, ShieldCheck, Zap, Smartphone, Lock, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, Zap, Smartphone, Lock, CheckCircle2, Ticket } from 'lucide-react';
+import { BoutiqueSeal } from './BoutiqueSeal';
+
+const MARQUEE_ITEMS = [
+  'NETFLIX 4K',
+  'DISNEY+ HOTSTAR',
+  'IQIYI VIP',
+  'WETV VIP',
+  'VIU PREMIUM',
+  'AMAZON PRIME',
+  'HBO MAX 4K',
+  'YOUTUBE PREMIUM',
+  'SPOTIFY PREMIUM',
+  'CANVA PRO',
+  'BILIBILI',
+  'MONOMAX',
+  'ONED',
+];
 
 export function PricingHero({ shopName = 'Pattancute', totalApps = 15, onOpenAdmin }) {
   return (
     <section className="relative pt-5 sm:pt-7 pb-3 px-4 overflow-hidden font-sans">
-      {/* Subtle Ambient Aura */}
-      <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-[420px] h-40 bg-gradient-to-r from-pattan-pink/20 via-pattan-blue/15 to-pattan-yellow/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="relative z-10 max-w-6xl mx-auto space-y-4">
+        {/* Main Editorial Pass Header Card */}
+        <div className="relative overflow-hidden rounded-[26px] bg-white/75 dark:bg-[#131C30]/80 backdrop-blur-xl border border-white/90 dark:border-slate-700/60 shadow-bento p-5 sm:p-6">
+          {/* Subtle Silk Brand Aura */}
+          <div className="absolute -top-20 -right-12 w-72 h-72 rounded-full bg-gradient-to-br from-pattan-pink/20 to-pattan-blue/20 blur-3xl pointer-events-none" />
 
-      <div className="relative z-10 max-w-6xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-4 border-b border-slate-200/70 dark:border-slate-800/80">
-          {/* Left: Clean Modern Title & Subtitle */}
-          <div className="space-y-1.5">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 shadow-xs text-[11px] font-semibold text-slate-600 dark:text-slate-300">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
-              <span>ศูนย์รวมเรทราคาหารแอพแท้ 100%</span>
-              <span className="text-slate-300 dark:text-slate-600">•</span>
-              <span className="text-pattan-blue-deep dark:text-pattan-blue-light font-bold">{totalApps} แอพยอดนิยม</span>
+          <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            {/* Left: Signature Pass Title & Trust Strip */}
+            <div className="space-y-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-pattan-pink-soft/90 dark:bg-pink-950/40 border border-pattan-pink/25 text-[11px] font-bold text-pattan-pink-deep dark:text-pattan-pink">
+                <Ticket className="w-3.5 h-3.5 shrink-0" />
+                <span>VIP STREAMING PASS</span>
+                <span className="opacity-40">•</span>
+                <span className="text-pattan-blue-deep dark:text-pattan-blue-light">{totalApps} แอพแท้ลิขสิทธิ์</span>
+              </div>
+
+              <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-pattan-blue-deep dark:text-white tracking-tight font-display leading-tight">
+                เรทราคาหารแอพ{' '}
+                <span className="font-brand font-bold text-brand-gradient tracking-normal">
+                  {shopName}
+                </span>
+              </h1>
+
+              {/* Compact Single-Line Trust Strip */}
+              <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 pt-0.5 text-[11px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400">
+                <span className="inline-flex items-center gap-1">
+                  <Zap className="w-3.5 h-3.5 text-amber-500" />
+                  ส่งไว 5–10 นาที
+                </span>
+                <span className="inline-flex items-center gap-1">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
+                  มีประกันดูแลตลอด
+                </span>
+                <span className="inline-flex items-center gap-1">
+                  <Smartphone className="w-3.5 h-3.5 text-pattan-blue" />
+                  มือถือ / ไอแพด / คอม / ทีวี
+                </span>
+                <span className="inline-flex items-center gap-1">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-pattan-pink-deep" />
+                  คมชัด 4K HDR
+                </span>
+              </div>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-pattan-blue-deep dark:text-white tracking-tight font-display leading-tight">
-              เรทราคาหารแอพ{' '}
-              <span className="font-brand font-bold text-pattan-pink-deep dark:text-pattan-pink tracking-normal">
-                {shopName}
-              </span>
-            </h1>
+            {/* Right: Rotating Seal + Signature Admin Access */}
+            <div className="flex items-center gap-4 shrink-0">
+              <div className="hidden lg:block text-pattan-blue-deep/55 dark:text-pattan-blue-light/60">
+                <BoutiqueSeal size={74} text="OFFICIAL RATES · FAST DELIVERY · VIP · " />
+              </div>
 
-            {/* Compact Single-Line Trust Strip */}
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-1.5 pt-1 text-[11px] sm:text-xs font-semibold text-slate-500 dark:text-slate-400">
-              <span className="inline-flex items-center gap-1">
-                <Zap className="w-3.5 h-3.5 text-amber-500" />
-                ส่งไว 5–10 นาที
-              </span>
-              <span className="inline-flex items-center gap-1">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-                มีประกันดูแลตลอดการใช้งาน
-              </span>
-              <span className="inline-flex items-center gap-1">
-                <Smartphone className="w-3.5 h-3.5 text-pattan-blue" />
-                มือถือ / ไอแพด / คอม / ทีวี
-              </span>
-              <span className="inline-flex items-center gap-1">
-                <CheckCircle2 className="w-3.5 h-3.5 text-pattan-pink" />
-                ลิขสิทธิ์แท้ คมชัด 4K
-              </span>
+              {onOpenAdmin && (
+                <button
+                  type="button"
+                  onClick={onOpenAdmin}
+                  className="btn-jelly btn-signature inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-white text-xs font-bold transition-all cursor-pointer whitespace-nowrap"
+                  title="เข้าสู่ระบบหลังบ้านเพื่อแก้ไขเรทราคาและรูปภาพแอพ"
+                >
+                  <Lock className="w-3.5 h-3.5 text-pattan-pink-light" />
+                  <span>เข้าหลังบ้าน / แก้ไขราคา</span>
+                </button>
+              )}
             </div>
           </div>
+        </div>
 
-          {/* Right: Prominent Admin / Manage Rates Button */}
-          {onOpenAdmin && (
-            <div className="flex items-center gap-2 shrink-0">
-              <button
-                type="button"
-                onClick={onOpenAdmin}
-                className="btn-jelly inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-pattan-blue-deep dark:hover:bg-slate-100 text-xs font-bold shadow-md transition-all cursor-pointer whitespace-nowrap"
-                title="เข้าสู่ระบบหลังบ้านเพื่อแก้ไขเรทราคาและรูปภาพแอพ"
+        {/* Signature Editorial Marquee Ribbon (Unmistakable Boutique Cinema Touch) */}
+        <div className="relative overflow-hidden rounded-2xl bg-white/65 dark:bg-[#131C30]/65 backdrop-blur-md border border-white/80 dark:border-slate-800/80 py-2">
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-10 bg-gradient-to-r from-[#FAF6F0] dark:from-[#0D1322] to-transparent z-10" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-10 bg-gradient-to-l from-[#FAF6F0] dark:from-[#0D1322] to-transparent z-10" />
+
+          <div className="animate-marquee flex items-center gap-6">
+            {[...MARQUEE_ITEMS, ...MARQUEE_ITEMS].map((item, idx) => (
+              <span
+                key={idx}
+                className="inline-flex items-center gap-6 text-[10px] sm:text-[11px] font-bold tracking-[0.18em] text-pattan-blue-deep/65 dark:text-slate-400 whitespace-nowrap"
               >
-                <Lock className="w-3.5 h-3.5 text-pattan-pink dark:text-pattan-pink-deep" />
-                <span>เข้าหลังบ้าน / แก้ไขราคา</span>
-              </button>
-            </div>
-          )}
+                <span>{item}</span>
+                <span className="text-pattan-pink text-[9px]">✦</span>
+              </span>
+            ))}
+          </div>
         </div>
       </div>
     </section>

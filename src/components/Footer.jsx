@@ -26,10 +26,10 @@ export function Footer({ onOpenAdmin, settings }) {
         <button
           onClick={onOpenAdmin}
           type="button"
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-900 dark:bg-white hover:bg-pattan-blue-deep dark:hover:bg-slate-100 text-white dark:text-slate-900 text-xs font-bold shadow-xs transition active:scale-95 cursor-pointer shrink-0"
+          className="btn-jelly btn-signature inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-white text-xs font-bold transition active:scale-95 cursor-pointer shrink-0"
           title="เข้าสู่ระบบจัดการหลังบ้าน (Admin)"
         >
-          <Lock className="w-3.5 h-3.5 text-pattan-pink dark:text-pattan-pink-deep" />
+          <Lock className="w-3.5 h-3.5 text-pattan-pink-light" />
           <span>เข้าสู่ระบบหลังบ้าน</span>
         </button>
       </div>

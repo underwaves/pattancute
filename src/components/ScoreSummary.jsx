@@ -1,5 +1,6 @@
 import React from 'react';
 import { Star, Award, ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { BoutiqueSeal } from './BoutiqueSeal';
 
 /**
  * Score Summary Section in Refined Glass Bento Style
@@ -22,9 +23,12 @@ export function ScoreSummary({ stats, bento }) {
   return (
     <section className="w-full max-w-4xl mx-auto px-4 mb-12 font-sans">
       <div className="grid grid-cols-1 md:grid-cols-12 gap-4">
-        {/* Bento 1: Overall Score Card */}
-        <div className="md:col-span-5 card-bento p-6 flex flex-col justify-between relative overflow-hidden">
-          <div className="absolute -top-12 -right-12 w-32 h-32 rounded-full bg-pattan-pink/10 blur-2xl pointer-events-none" />
+        {/* Bento 1: Overall Score Dossier Card with Iridescent Velvet Sheen */}
+        <div className="md:col-span-5 card-bento card-holographic p-6 flex flex-col justify-between relative overflow-hidden">
+          <div className="absolute -top-12 -right-12 w-36 h-36 rounded-full bg-pattan-pink/15 blur-2xl pointer-events-none" />
+          <div className="absolute top-3 right-3 text-pattan-blue-deep/20 dark:text-pattan-blue-light/20 pointer-events-none">
+            <BoutiqueSeal size={68} text="REAL REVIEWS · 100% VERIFIED · " />
+          </div>
 
           <div>
             <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-50/90 dark:bg-amber-950/40 border border-amber-200/60 dark:border-amber-800/40 text-[11px] font-bold text-amber-800 dark:text-amber-300 mb-3">

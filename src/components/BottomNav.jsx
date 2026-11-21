@@ -60,14 +60,14 @@ export function BottomNav({
         <span className="text-[10px] mt-0.5">เรทราคา</span>
       </button>
 
-      {/* 3. Leave Credit (Highlighted Button) */}
+      {/* 3. Leave Credit (Signature Button) */}
       <button
         onClick={onScrollToForm}
         type="button"
-        className="flex items-center justify-center gap-1 px-3.5 h-9 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xs active:scale-95 transition shrink-0 cursor-pointer"
+        className="btn-signature flex items-center justify-center gap-1 px-3.5 h-9 rounded-xl text-white active:scale-95 transition shrink-0 cursor-pointer"
         aria-label="ให้คะแนนและรีวิวร้าน"
       >
-        <Star className="w-3.5 h-3.5 text-pattan-pink fill-pattan-pink" />
+        <Star className="w-3.5 h-3.5 text-pattan-pink-light fill-pattan-pink-light" />
         <span className="text-[11px] font-bold tracking-tight">ให้คะแนน</span>
       </button>
 

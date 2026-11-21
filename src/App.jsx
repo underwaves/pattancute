@@ -212,128 +212,130 @@ export function App() {
       {/* 1. Refined Ambient Mesh Background */}
       <Decorations />
 
-      {/* 2. Glass Sticky Top Nav Bar */}
-      <header className="sticky top-0 z-40 w-full bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border-b border-slate-200/70 dark:border-slate-800 transition-colors">
-        <div className="max-w-6xl mx-auto px-3 sm:px-4 h-14 sm:h-16 flex items-center justify-between gap-2">
-          {/* Brand Logo & Name */}
-          <div
-            className="flex items-center gap-2.5 cursor-pointer group min-w-0 shrink"
-            onClick={() => navigate('reviews')}
-          >
-            <div className="w-9 h-9 rounded-xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-xs p-0.5 overflow-hidden flex items-center justify-center transition-transform group-hover:scale-105 shrink-0">
-              <img src={currentLogo} alt={currentShopName} className="w-full h-full object-contain rounded-lg" />
-            </div>
-            <div className="min-w-0">
-              <span className="font-bold text-base sm:text-xl text-pattan-blue-deep dark:text-white tracking-normal block leading-tight font-brand truncate">
-                {currentShopName}
-              </span>
-              <span className="hidden sm:block text-[10px] font-semibold text-slate-400 tracking-wide truncate mt-0.5">
-                {currentShopSubtitle}
-              </span>
-            </div>
-          </div>
-
-          {/* Center (Desktop md+): Dedicated Page Navigation Tabs */}
-          <nav className="hidden md:flex items-center p-1 rounded-xl bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/70 dark:border-slate-700 shrink-0 select-none">
-            <button
-              type="button"
+      {/* 2. Floating Frosted Boutique Top Nav Dock */}
+      <div className="sticky top-0 sm:top-2.5 z-40 w-full sm:px-4 transition-all">
+        <header className="max-w-6xl mx-auto bg-white/85 dark:bg-[#131C30]/85 backdrop-blur-xl sm:rounded-2xl border-b sm:border border-white/90 dark:border-slate-700/60 shadow-[0_8px_30px_-12px_rgba(27,42,74,0.12)] transition-colors">
+          <div className="px-3 sm:px-4 h-14 sm:h-16 flex items-center justify-between gap-2">
+            {/* Brand Logo & Cute Signature Shop Name */}
+            <div
+              className="flex items-center gap-2.5 cursor-pointer group min-w-0 shrink"
               onClick={() => navigate('reviews')}
-              className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
-                currentPage === 'reviews'
-                  ? 'bg-white dark:bg-slate-700 text-pattan-blue-deep dark:text-white shadow-xs'
-                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
-              }`}
-              aria-label="ไปยังหน้าเครดิตและรีวิวร้าน"
             >
-              <MessageSquare className={`w-3.5 h-3.5 shrink-0 ${currentPage === 'reviews' ? 'text-pattan-blue' : 'text-slate-400'}`} />
-              <span className="whitespace-nowrap leading-none">รีวิว &amp; เครดิตร้าน</span>
-            </button>
+              <div className="w-9 h-9 rounded-xl bg-white dark:bg-slate-800 border border-pattan-pink/25 dark:border-slate-700 shadow-xs p-0.5 overflow-hidden flex items-center justify-center transition-transform group-hover:scale-105 shrink-0">
+                <img src={currentLogo} alt={currentShopName} className="w-full h-full object-contain rounded-lg" />
+              </div>
+              <div className="min-w-0">
+                <span className="font-bold text-base sm:text-xl text-brand-gradient tracking-normal block leading-tight font-brand truncate">
+                  {currentShopName}
+                </span>
+                <span className="hidden sm:block text-[10px] font-semibold text-slate-400 tracking-wide truncate">
+                  {currentShopSubtitle}
+                </span>
+              </div>
+            </div>
 
-            <button
-              type="button"
-              onClick={() => navigate('pricing')}
-              className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
-                currentPage === 'pricing'
-                  ? 'bg-white dark:bg-slate-700 text-pattan-blue-deep dark:text-white shadow-xs'
-                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
-              }`}
-              aria-label="ไปยังหน้าเรทราคาหารแอพ"
-            >
-              <Tag className={`w-3.5 h-3.5 shrink-0 ${currentPage === 'pricing' ? 'text-pattan-pink-deep dark:text-pattan-pink' : 'text-slate-400'}`} />
-              <span className="whitespace-nowrap leading-none">เรทราคาหารแอพ</span>
-            </button>
-          </nav>
-
-          {/* Right Actions: Prominent Admin Panel Button + Theme Toggle + Page CTA */}
-          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-            <button
-              onClick={() => openAdmin(currentPage === 'pricing' ? 'pricing' : 'overview')}
-              type="button"
-              className="h-9 px-3 sm:px-3.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-pattan-blue-deep dark:hover:bg-slate-100 active:scale-[0.98] transition-all shadow-xs flex items-center gap-1.5 text-xs font-bold cursor-pointer whitespace-nowrap shrink-0"
-              title="เข้าสู่ระบบหลังบ้าน (Admin Dashboard)"
-              aria-label="เข้าสู่ระบบหลังบ้าน"
-            >
-              <Lock className="w-3.5 h-3.5 text-pattan-pink dark:text-pattan-pink-deep shrink-0" />
-              <span className="text-[11px] sm:text-xs font-bold">หลังบ้าน</span>
-            </button>
-
-            <ThemeToggle />
-
-            {/* Dynamic CTA button depending on current page */}
-            {currentPage === 'reviews' ? (
+            {/* Center (Desktop md+): Dedicated Page Navigation Tabs */}
+            <nav className="hidden md:flex items-center p-1 rounded-xl bg-pattan-blue-soft/75 dark:bg-slate-800/90 border border-pattan-blue/10 dark:border-slate-700 shrink-0 select-none">
               <button
-                onClick={scrollToForm}
                 type="button"
-                className="btn-jelly hidden lg:inline-flex items-center gap-1.5 h-9 px-4 rounded-xl bg-pattan-pink-deep hover:bg-pattan-pink-dark text-white font-bold text-xs shadow-xs transition-all cursor-pointer whitespace-nowrap shrink-0"
+                onClick={() => navigate('reviews')}
+                className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
+                  currentPage === 'reviews'
+                    ? 'bg-white dark:bg-slate-700 text-pattan-blue-deep dark:text-white shadow-xs'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-pattan-blue-deep dark:hover:text-slate-200'
+                }`}
+                aria-label="ไปยังหน้าเครดิตและรีวิวร้าน"
               >
-                <Star className="w-3.5 h-3.5 fill-white text-white shrink-0" />
-                <span>ให้เครดิตร้าน</span>
+                <MessageSquare className={`w-3.5 h-3.5 shrink-0 ${currentPage === 'reviews' ? 'text-pattan-blue' : 'text-slate-400'}`} />
+                <span className="whitespace-nowrap leading-none">รีวิว &amp; เครดิตร้าน</span>
               </button>
-            ) : (
-              <a
-                href={lineUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-jelly hidden lg:inline-flex items-center gap-1.5 h-9 px-4 rounded-xl bg-[#06C755] hover:bg-[#05b34c] text-white font-bold text-xs shadow-xs transition-all cursor-pointer whitespace-nowrap shrink-0"
+
+              <button
+                type="button"
+                onClick={() => navigate('pricing')}
+                className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
+                  currentPage === 'pricing'
+                    ? 'bg-white dark:bg-slate-700 text-pattan-blue-deep dark:text-white shadow-xs'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-pattan-pink-deep dark:hover:text-slate-200'
+                }`}
+                aria-label="ไปยังหน้าเรทราคาหารแอพ"
               >
-                <MessageCircle className="w-4 h-4 fill-white shrink-0" />
-                <span>สั่งซื้อทาง LINE</span>
-              </a>
-            )}
+                <Tag className={`w-3.5 h-3.5 shrink-0 ${currentPage === 'pricing' ? 'text-pattan-pink-deep dark:text-pattan-pink' : 'text-slate-400'}`} />
+                <span className="whitespace-nowrap leading-none">เรทราคาหารแอพ</span>
+              </button>
+            </nav>
+
+            {/* Right Actions: Signature Midnight Blueberry Admin Button + Theme Toggle + Page CTA */}
+            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+              <button
+                onClick={() => openAdmin(currentPage === 'pricing' ? 'pricing' : 'overview')}
+                type="button"
+                className="btn-jelly btn-signature h-9 px-3 sm:px-3.5 rounded-xl text-white active:scale-[0.98] transition-all flex items-center gap-1.5 text-xs font-bold cursor-pointer whitespace-nowrap shrink-0"
+                title="เข้าสู่ระบบหลังบ้าน (Admin Dashboard)"
+                aria-label="เข้าสู่ระบบหลังบ้าน"
+              >
+                <Lock className="w-3.5 h-3.5 text-pattan-pink-light shrink-0" />
+                <span className="text-[11px] sm:text-xs font-bold">หลังบ้าน</span>
+              </button>
+
+              <ThemeToggle />
+
+              {/* Dynamic CTA button depending on current page */}
+              {currentPage === 'reviews' ? (
+                <button
+                  onClick={scrollToForm}
+                  type="button"
+                  className="btn-jelly btn-rose hidden lg:inline-flex items-center gap-1.5 h-9 px-4 rounded-xl text-white font-bold text-xs transition-all cursor-pointer whitespace-nowrap shrink-0"
+                >
+                  <Star className="w-3.5 h-3.5 fill-white text-white shrink-0" />
+                  <span>ให้เครดิตร้าน</span>
+                </button>
+              ) : (
+                <a
+                  href={lineUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-jelly hidden lg:inline-flex items-center gap-1.5 h-9 px-4 rounded-xl bg-[#06C755] hover:bg-[#05b34c] text-white font-bold text-xs shadow-xs transition-all cursor-pointer whitespace-nowrap shrink-0"
+                >
+                  <MessageCircle className="w-4 h-4 fill-white shrink-0" />
+                  <span>สั่งซื้อทาง LINE</span>
+                </a>
+              )}
+            </div>
           </div>
-        </div>
 
-        {/* Mobile Sub-Row (< md): Clean Full-Width Segmented Page Switcher */}
-        <div className="md:hidden px-3 pb-2.5">
-          <nav className="grid grid-cols-2 p-1 rounded-xl bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/70 dark:border-slate-700 select-none">
-            <button
-              type="button"
-              onClick={() => navigate('reviews')}
-              className={`py-1.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap ${
-                currentPage === 'reviews'
-                  ? 'bg-white dark:bg-slate-700 text-pattan-blue-deep dark:text-white shadow-xs'
-                  : 'text-slate-500 dark:text-slate-400'
-              }`}
-            >
-              <MessageSquare className={`w-3.5 h-3.5 shrink-0 ${currentPage === 'reviews' ? 'text-pattan-blue' : 'text-slate-400'}`} />
-              <span>รีวิว &amp; เครดิตร้าน</span>
-            </button>
+          {/* Mobile Sub-Row (< md): Clean Full-Width Segmented Page Switcher */}
+          <div className="md:hidden px-3 pb-2.5">
+            <nav className="grid grid-cols-2 p-1 rounded-xl bg-pattan-blue-soft/80 dark:bg-slate-800/90 border border-pattan-blue/10 dark:border-slate-700 select-none">
+              <button
+                type="button"
+                onClick={() => navigate('reviews')}
+                className={`py-1.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap ${
+                  currentPage === 'reviews'
+                    ? 'bg-white dark:bg-slate-700 text-pattan-blue-deep dark:text-white shadow-xs'
+                    : 'text-slate-500 dark:text-slate-400'
+                }`}
+              >
+                <MessageSquare className={`w-3.5 h-3.5 shrink-0 ${currentPage === 'reviews' ? 'text-pattan-blue' : 'text-slate-400'}`} />
+                <span>รีวิว &amp; เครดิตร้าน</span>
+              </button>
 
-            <button
-              type="button"
-              onClick={() => navigate('pricing')}
-              className={`py-1.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap ${
-                currentPage === 'pricing'
-                  ? 'bg-white dark:bg-slate-700 text-pattan-blue-deep dark:text-white shadow-xs'
-                  : 'text-slate-500 dark:text-slate-400'
-              }`}
-            >
-              <Tag className={`w-3.5 h-3.5 shrink-0 ${currentPage === 'pricing' ? 'text-pattan-pink-deep dark:text-pattan-pink' : 'text-slate-400'}`} />
-              <span>เรทราคาหารแอพ</span>
-            </button>
-          </nav>
-        </div>
-      </header>
+              <button
+                type="button"
+                onClick={() => navigate('pricing')}
+                className={`py-1.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap ${
+                  currentPage === 'pricing'
+                    ? 'bg-white dark:bg-slate-700 text-pattan-blue-deep dark:text-white shadow-xs'
+                    : 'text-slate-500 dark:text-slate-400'
+                }`}
+              >
+                <Tag className={`w-3.5 h-3.5 shrink-0 ${currentPage === 'pricing' ? 'text-pattan-pink-deep dark:text-pattan-pink' : 'text-slate-400'}`} />
+                <span>เรทราคาหารแอพ</span>
+              </button>
+            </nav>
+          </div>
+        </header>
+      </div>
 
       {/* 4. Main Content Flow (Separated Pages) */}
       <main className="flex-1 relative z-10">
