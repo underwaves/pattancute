@@ -25,6 +25,9 @@ import {
   EyeOff,
   KeyRound,
   Tag,
+  Upload,
+  Image as ImageIcon,
+  Loader2,
 } from 'lucide-react';
 import { defaultSettings, defaultPricing } from '../config';
 
@@ -53,6 +56,12 @@ export function AdminModal({
   const [logoPreviewUrl, setLogoPreviewUrl] = useState('');
   const [isUploadingLogo, setIsUploadingLogo] = useState(false);
   const logoInputRef = useRef(null);
+
+  // App Image & Rate Poster Upload State
+  const [isUploadingAppIcon, setIsUploadingAppIcon] = useState(false);
+  const [isUploadingAppPoster, setIsUploadingAppPoster] = useState(false);
+  const appIconInputRef = useRef(null);
+  const appPosterInputRef = useRef(null);
 
   // Reviews Tab State
   const [reviewsList, setReviewsList] = useState([]);
@@ -340,6 +349,69 @@ export function AdminModal({
       setStatusMessage({ text: err.message, type: 'error' });
     } finally {
       setIsUploadingLogo(false);
+    }
+  };
+
+  // 2.1 Upload Image for App Icon or Rate Poster to Cloudflare R2
+  const handleUploadAppFile = async (file, type, currentActiveId) => {
+    if (!file) return;
+
+    if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type.toLowerCase())) {
+      setStatusMessage({ text: 'รองรับเฉพาะไฟล์รูปภาพ JPG, PNG หรือ WebP ค่ะ', type: 'error' });
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      setStatusMessage({ text: 'ขนาดไฟล์ต้องไม่เกิน 10MB ค่ะ', type: 'error' });
+      return;
+    }
+
+    if (type === 'icon') setIsUploadingAppIcon(true);
+    else setIsUploadingAppPoster(true);
+    setStatusMessage({ text: '', type: '' });
+
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const res = await fetch('/api/admin/upload-image', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${token.trim()}`,
+        },
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'อัปโหลดรูปภาพไม่สำเร็จ');
+
+      setForm((prev) => {
+        const pricingList = Array.isArray(prev.pricing) ? [...prev.pricing] : [...defaultPricing];
+        const idx = pricingList.findIndex((a) => a.id === currentActiveId);
+        if (idx >= 0) {
+          if (type === 'icon') {
+            pricingList[idx] = { ...pricingList[idx], imageUrl: data.imageUrl };
+          } else {
+            pricingList[idx] = { ...pricingList[idx], posterUrl: data.imageUrl };
+          }
+        }
+        return { ...prev, pricing: pricingList };
+      });
+
+      setStatusMessage({
+        text: type === 'icon' ? 'อัปโหลดรูปไอคอนแอพเรียบร้อยแล้วค่ะ! ✨' : 'อัปโหลดรูปป้ายเรทราคาเรียบร้อยแล้วค่ะ! 🖼️✨',
+        type: 'success',
+      });
+    } catch (err) {
+      console.error(err);
+      setStatusMessage({ text: err.message || 'เกิดข้อผิดพลาดในการอัปโหลด', type: 'error' });
+    } finally {
+      if (type === 'icon') {
+        setIsUploadingAppIcon(false);
+        if (appIconInputRef.current) appIconInputRef.current.value = '';
+      } else {
+        setIsUploadingAppPoster(false);
+        if (appPosterInputRef.current) appPosterInputRef.current.value = '';
+      }
     }
   };
 
@@ -1689,6 +1761,186 @@ export function AdminModal({
                             placeholder="เช่น คมชัดระดับ 4K Ultra HD ดูได้ทุกอุปกรณ์"
                             className="w-full h-10 px-3 rounded-xl bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs"
                           />
+                        </div>
+                      </div>
+
+                      {/* App Images: Logo & Rate Chart / Poster */}
+                      <div className="p-5 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 space-y-4 shadow-xs">
+                        <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-700">
+                          <h4 className="text-sm font-black text-slate-800 dark:text-white flex items-center gap-2">
+                            <ImageIcon className="w-4 h-4 text-pattan-pink" />
+                            <span>รูปภาพของ {activeApp.name} (ไอคอนแอพ &amp; ป้ายเรทราคา)</span>
+                          </h4>
+                          <span className="text-[11px] font-bold text-slate-400">อัปโหลดไฟล์หรือวางลิงก์รูปภาพ</span>
+                        </div>
+
+                        {/* Hidden File Inputs */}
+                        <input
+                          ref={appIconInputRef}
+                          type="file"
+                          accept="image/jpeg,image/png,image/webp"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) handleUploadAppFile(file, 'icon', activeApp.id);
+                          }}
+                        />
+                        <input
+                          ref={appPosterInputRef}
+                          type="file"
+                          accept="image/jpeg,image/png,image/webp"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) handleUploadAppFile(file, 'poster', activeApp.id);
+                          }}
+                        />
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {/* 1. App Logo / Icon Image */}
+                          <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-750 border border-slate-200/60 dark:border-slate-700 space-y-3">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-black text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
+                                <span>1. รูปไอคอนแอพ (App Icon Image)</span>
+                              </span>
+                              {activeApp.imageUrl && (
+                                <button
+                                  type="button"
+                                  onClick={() => updateActiveApp({ imageUrl: '' })}
+                                  className="text-[11px] font-bold text-rose-500 hover:text-rose-700 cursor-pointer"
+                                >
+                                  ลบรูป (ใช้อิโมจิแทน)
+                                </button>
+                              )}
+                            </div>
+
+                            {/* Preview */}
+                            <div className="flex items-center gap-3">
+                              <div
+                                className="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl shadow-xs border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 overflow-hidden shrink-0"
+                                style={{ backgroundColor: `${activeApp.color || '#5B86C8'}15` }}
+                              >
+                                {activeApp.imageUrl ? (
+                                  <img
+                                    src={activeApp.imageUrl}
+                                    alt={activeApp.name}
+                                    className="w-full h-full object-contain p-1"
+                                  />
+                                ) : (
+                                  <span>{activeApp.icon || '📱'}</span>
+                                )}
+                              </div>
+                              <div className="flex-1 space-y-1.5">
+                                <button
+                                  type="button"
+                                  disabled={isUploadingAppIcon}
+                                  onClick={() => appIconInputRef.current?.click()}
+                                  className="btn-jelly w-full h-9 rounded-xl bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 text-slate-700 dark:text-slate-200 text-xs font-bold shadow-xs hover:border-pattan-pink flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+                                >
+                                  {isUploadingAppIcon ? (
+                                    <>
+                                      <Loader2 className="w-3.5 h-3.5 animate-spin text-pattan-pink" />
+                                      <span>กำลังอัปโหลด...</span>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Upload className="w-3.5 h-3.5 text-pattan-pink" />
+                                      <span>อัปโหลดรูปไอคอนแอพ</span>
+                                    </>
+                                  )}
+                                </button>
+                                <p className="text-[10px] text-slate-400 leading-tight">
+                                  ขนาดแนะนำ: สี่เหลี่ยมจัตุรัส 200x200px (PNG/JPG/WebP)
+                                </p>
+                              </div>
+                            </div>
+
+                            {/* Direct URL input */}
+                            <div>
+                              <label className="block text-[10px] font-bold text-slate-500 mb-1">
+                                หรือวางลิงก์รูปไอคอน (Image URL)
+                              </label>
+                              <input
+                                type="text"
+                                value={activeApp.imageUrl || ''}
+                                onChange={(e) => updateActiveApp({ imageUrl: e.target.value })}
+                                placeholder="https://... หรือ /api/images/..."
+                                className="w-full h-8 px-2.5 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs font-mono"
+                              />
+                            </div>
+                          </div>
+
+                          {/* 2. Rate Poster / Promo Image */}
+                          <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-750 border border-slate-200/60 dark:border-slate-700 space-y-3">
+                            <div className="flex items-center justify-between">
+                              <span className="text-xs font-black text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
+                                <span>2. รูปป้ายเรทราคา / โปรโมชั่น (Rate Poster)</span>
+                              </span>
+                              {activeApp.posterUrl && (
+                                <button
+                                  type="button"
+                                  onClick={() => updateActiveApp({ posterUrl: '' })}
+                                  className="text-[11px] font-bold text-rose-500 hover:text-rose-700 cursor-pointer"
+                                >
+                                  ลบรูปป้ายเรทราคา
+                                </button>
+                              )}
+                            </div>
+
+                            {/* Poster Preview */}
+                            {activeApp.posterUrl ? (
+                              <div className="relative rounded-xl overflow-hidden border border-slate-200 dark:border-slate-600 bg-white dark:bg-slate-800 max-h-32 flex items-center justify-center">
+                                <img
+                                  src={activeApp.posterUrl}
+                                  alt={`ป้ายเรทราคา ${activeApp.name}`}
+                                  className="w-full h-auto max-h-32 object-contain"
+                                />
+                              </div>
+                            ) : (
+                              <div className="h-20 rounded-xl border border-dashed border-slate-300 dark:border-slate-600 flex flex-col items-center justify-center text-slate-400 gap-1 bg-white/50 dark:bg-slate-800/50">
+                                <ImageIcon className="w-5 h-5 text-slate-300" />
+                                <span className="text-[11px]">ยังไม่มีรูปป้ายเรทราคา</span>
+                              </div>
+                            )}
+
+                            <div className="space-y-1.5">
+                              <button
+                                type="button"
+                                disabled={isUploadingAppPoster}
+                                onClick={() => appPosterInputRef.current?.click()}
+                                className="btn-jelly w-full h-9 rounded-xl bg-gradient-to-r from-pattan-pink to-[#E06B9A] text-white text-xs font-bold shadow-xs hover:shadow-md flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+                              >
+                                {isUploadingAppPoster ? (
+                                  <>
+                                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                    <span>กำลังอัปโหลดรูปป้ายเรทราคา...</span>
+                                  </>
+                                ) : (
+                                  <>
+                                    <Upload className="w-3.5 h-3.5" />
+                                    <span>อัปโหลดรูปป้ายเรทราคา (ไฟล์ภาพ)</span>
+                                  </>
+                                )}
+                              </button>
+                              <p className="text-[10px] text-slate-400 leading-tight">
+                                ป้ายเรทราคานี้จะแสดงในหน้าร้านของ {activeApp.name} ให้ลูกค้าคลิกซูมดูรูปใหญ่ได้
+                              </p>
+                            </div>
+
+                            {/* Direct URL input */}
+                            <div>
+                              <label className="block text-[10px] font-bold text-slate-500 mb-1">
+                                หรือวางลิงก์รูปป้ายเรทราคา (Poster URL)
+                              </label>
+                              <input
+                                type="text"
+                                value={activeApp.posterUrl || ''}
+                                onChange={(e) => updateActiveApp({ posterUrl: e.target.value })}
+                                placeholder="https://... หรือ /api/images/..."
+                                className="w-full h-8 px-2.5 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs font-mono"
+                              />
+                            </div>
+                          </div>
                         </div>
                       </div>
 

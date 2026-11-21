@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Tag, Check, Sparkles, Share2, Copy, CheckCircle2, MessageCircle, ArrowRight } from 'lucide-react';
+import { Tag, Check, Sparkles, Share2, Copy, CheckCircle2, MessageCircle, ArrowRight, Image as ImageIcon, Maximize2, X } from 'lucide-react';
 import { defaultPricing } from '../config';
 
 export function PricingSection({ pricing = defaultPricing, contacts }) {
@@ -7,6 +7,7 @@ export function PricingSection({ pricing = defaultPricing, contacts }) {
   const [selectedAppId, setSelectedAppId] = useState(apps[0]?.id || 'netflix');
   const [selectedSubGroup, setSelectedSubGroup] = useState('all');
   const [copiedLink, setCopiedLink] = useState(false);
+  const [zoomImageUrl, setZoomImageUrl] = useState('');
 
   // Sync with URL hash if it contains #pricing-<appId>
   useEffect(() => {
@@ -148,14 +149,25 @@ export function PricingSection({ pricing = defaultPricing, contacts }) {
 
               {/* App Brand Icon Squircle Container */}
               <div
-                className={`w-11 h-11 sm:w-13 sm:h-13 rounded-2xl flex items-center justify-center text-2xl sm:text-3xl mb-1.5 transition-transform group-hover:scale-105 shadow-xs ${
+                className={`w-11 h-11 sm:w-13 sm:h-13 rounded-2xl flex items-center justify-center text-2xl sm:text-3xl mb-1.5 transition-transform group-hover:scale-105 shadow-xs overflow-hidden ${
                   isSelected ? 'ring-2 ring-pattan-pink/30 dark:ring-slate-700' : ''
                 }`}
                 style={{
                   backgroundColor: `${app.color}15`,
                 }}
               >
-                {app.icon || '📱'}
+                {app.imageUrl ? (
+                  <img
+                    src={app.imageUrl}
+                    alt={app.name}
+                    className="w-full h-full object-contain p-1"
+                    onError={(e) => {
+                      e.target.style.display = 'none';
+                    }}
+                  />
+                ) : (
+                  <span>{app.icon || '📱'}</span>
+                )}
               </div>
 
               {/* App Name */}
@@ -183,10 +195,21 @@ export function PricingSection({ pricing = defaultPricing, contacts }) {
         <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="flex items-center gap-3.5">
             <div
-              className="w-13 h-13 rounded-2xl flex items-center justify-center text-3xl shadow-md border-2 border-white dark:border-slate-700 shrink-0"
+              className="w-13 h-13 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center text-3xl shadow-md border-2 border-white dark:border-slate-700 shrink-0 overflow-hidden"
               style={{ backgroundColor: `${selectedApp.color}18` }}
             >
-              {selectedApp.icon || '📱'}
+              {selectedApp.imageUrl ? (
+                <img
+                  src={selectedApp.imageUrl}
+                  alt={selectedApp.name}
+                  className="w-full h-full object-contain p-1.5"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
+                />
+              ) : (
+                <span>{selectedApp.icon || '📱'}</span>
+              )}
             </div>
             <div>
               <div className="flex items-center gap-2 flex-wrap">
@@ -215,6 +238,44 @@ export function PricingSection({ pricing = defaultPricing, contacts }) {
           </div>
         </div>
       </div>
+
+      {/* 3.1 App Rate Poster / Promotional Graphic Banner (If uploaded from Admin) */}
+      {selectedApp.posterUrl && (
+        <div className="mb-6 p-4 sm:p-5 rounded-3xl bg-white/90 dark:bg-slate-800/90 border border-white dark:border-slate-700 shadow-bento">
+          <div className="flex items-center justify-between mb-3 px-1">
+            <div className="flex items-center gap-2">
+              <ImageIcon className="w-4 h-4 text-pattan-pink" />
+              <h4 className="text-xs sm:text-sm font-black text-slate-800 dark:text-white">
+                ภาพป้ายเรทราคา &amp; โปรโมชั่น: {selectedApp.name}
+              </h4>
+            </div>
+            <button
+              type="button"
+              onClick={() => setZoomImageUrl(selectedApp.posterUrl)}
+              className="text-xs font-bold text-pattan-pink hover:text-pattan-pink-deep flex items-center gap-1 cursor-pointer transition"
+            >
+              <Maximize2 className="w-3.5 h-3.5" />
+              <span>แตะซูมดูรูปใหญ่</span>
+            </button>
+          </div>
+
+          <div
+            onClick={() => setZoomImageUrl(selectedApp.posterUrl)}
+            className="group relative rounded-2xl overflow-hidden cursor-zoom-in border border-slate-150 dark:border-slate-700 bg-slate-50 dark:bg-slate-900/50 flex items-center justify-center max-h-[380px]"
+          >
+            <img
+              src={selectedApp.posterUrl}
+              alt={`ป้ายเรทราคา ${selectedApp.name}`}
+              className="w-full h-auto max-h-[380px] object-contain transition-transform duration-300 group-hover:scale-[1.01]"
+              loading="lazy"
+            />
+            <div className="absolute inset-0 bg-slate-900/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 text-white text-xs font-black backdrop-blur-[2px]">
+              <Maximize2 className="w-4 h-4" />
+              <span>แตะเพื่อดูรูปภาพขนาดเต็มจอ 🔍</span>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* 4. Subcategory Group Filter Pills (e.g. เมลปิดรับเคลม / เมลปิดไม่เคลม, Gold VIP / Premium 4K) */}
       {uniqueGroups.length > 1 && (
@@ -364,6 +425,52 @@ export function PricingSection({ pricing = defaultPricing, contacts }) {
           <div className="bg-emerald-500 text-white px-4 py-2.5 rounded-full shadow-xl flex items-center gap-2 text-xs font-bold justify-center border border-emerald-400">
             <CheckCircle2 className="w-4 h-4" />
             <span>คัดลอกลิงก์เรทราคา {selectedApp.name} แล้ว! สามารถแชร์ได้เลยค่ะ 📋✨</span>
+          </div>
+        </div>
+      )}
+
+      {/* Image Lightbox Modal */}
+      {zoomImageUrl && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/85 backdrop-blur-md animate-fade-in"
+          onClick={() => setZoomImageUrl('')}
+        >
+          <div
+            className="relative max-w-4xl max-h-[92vh] w-full flex flex-col items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setZoomImageUrl('')}
+              className="absolute -top-12 right-0 p-2 rounded-full bg-white/20 hover:bg-white/40 text-white transition cursor-pointer backdrop-blur-sm"
+              title="ปิดรูปภาพ (ESC)"
+            >
+              <X className="w-6 h-6" />
+            </button>
+
+            <img
+              src={zoomImageUrl}
+              alt="ภาพขยายใหญ่"
+              className="max-h-[85vh] max-w-full rounded-2xl object-contain shadow-2xl border border-white/20 bg-black/20"
+            />
+
+            <div className="mt-3 flex items-center gap-2.5">
+              <a
+                href={zoomImageUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-4 py-1.5 rounded-full bg-white/20 hover:bg-white/30 text-white text-xs font-bold transition flex items-center gap-1.5 backdrop-blur-sm"
+              >
+                <span>เปิดรูปภาพในแท็บใหม่ ↗</span>
+              </a>
+              <button
+                type="button"
+                onClick={() => setZoomImageUrl('')}
+                className="px-4 py-1.5 rounded-full bg-pattan-pink hover:bg-pink-600 text-white text-xs font-bold transition shadow-sm cursor-pointer"
+              >
+                ปิดหน้าต่าง (X)
+              </button>
+            </div>
           </div>
         </div>
       )}

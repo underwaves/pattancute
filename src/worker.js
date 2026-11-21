@@ -809,5 +809,49 @@ async function handleApi(request, env, url) {
     });
   }
 
+  // 10. POST /api/admin/upload-image - Upload any image for apps/posters to R2 (Protected by ADMIN_TOKEN)
+  if (method === 'POST' && (path === '/api/admin/upload-image' || path === '/api/upload-image')) {
+    if (!await verifyAdminAuth(request, env)) {
+      return jsonResponse({ error: 'ไม่มีสิทธิ์ในการจัดการ (Admin Token ไม่ถูกต้อง)' }, 401);
+    }
+
+    const contentType = request.headers.get('content-type') || '';
+    if (!contentType.includes('multipart/form-data')) {
+      return jsonResponse({ error: 'รูปแบบข้อมูลไม่ถูกต้อง (ต้องเป็น multipart/form-data)' }, 400);
+    }
+
+    const formData = await request.formData();
+    const file = formData.get('image') || formData.get('file');
+    if (!file || typeof file !== 'object' || typeof file.size !== 'number' || file.size <= 0) {
+      return jsonResponse({ error: 'กรุณาเลือกไฟล์รูปภาพ' }, 400);
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      return jsonResponse({ error: 'ขนาดไฟล์รูปภาพต้องไม่เกิน 10MB' }, 400);
+    }
+
+    const buffer = await file.arrayBuffer();
+    const format = detectImageFormat(buffer);
+    if (!format) {
+      return jsonResponse({ error: 'ไฟล์ต้องเป็นรูปภาพ JPG, PNG หรือ WebP เท่านั้น' }, 400);
+    }
+
+    const key = `app_${crypto.randomUUID()}.${format.ext}`;
+    await env.IMAGES_BUCKET.put(key, buffer, {
+      httpMetadata: {
+        contentType: format.mime,
+      },
+    });
+
+    const imageUrl = `/api/images/${key}`;
+
+    return jsonResponse({
+      success: true,
+      message: 'อัปโหลดรูปภาพเรียบร้อยแล้วค่ะ',
+      url: imageUrl,
+      imageUrl,
+    });
+  }
+
   return jsonResponse({ error: 'Endpoint not found' }, 404);
 }
