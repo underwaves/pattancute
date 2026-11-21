@@ -43,7 +43,7 @@ export function PricingSection({ pricing = defaultPricing, contacts }) {
   // Copy app-specific pricing deep link
   const handleCopyAppLink = async () => {
     const cleanOrigin = window.location.origin;
-    const url = `${cleanOrigin}/#pricing-${selectedApp.id}`;
+    const url = `${cleanOrigin}/pricing#pricing-${selectedApp.id}`;
     try {
       if (navigator.clipboard && navigator.clipboard.writeText) {
         await navigator.clipboard.writeText(url);
@@ -125,7 +125,7 @@ export function PricingSection({ pricing = defaultPricing, contacts }) {
                   setSelectedAppId(app.id);
                   setSelectedSubGroup('all');
                   if (window.history && window.history.replaceState) {
-                    window.history.replaceState(null, '', `#pricing-${app.id}`);
+                    window.history.replaceState(null, '', `/pricing#pricing-${app.id}`);
                   }
                 }}
                 className={`group relative flex items-center gap-2 px-3.5 py-2.5 rounded-2xl font-bold text-xs sm:text-sm transition-all duration-200 active:scale-95 cursor-pointer shrink-0 ${

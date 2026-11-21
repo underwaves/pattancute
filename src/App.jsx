@@ -12,8 +12,9 @@ import { BottomNav } from './components/BottomNav';
 import { SectionDivider } from './components/SectionDivider';
 import { CuteSparkleTrail } from './components/CuteSparkleTrail';
 import { AdminModal } from './components/AdminModal';
+import { PricingHero } from './components/PricingHero';
 import { PricingSection } from './components/PricingSection';
-import { Star, Lock, Tag } from 'lucide-react';
+import { Star, Lock, Tag, MessageSquare, MessageCircle, Sparkles } from 'lucide-react';
 import { defaultSettings } from './config';
 
 export function App() {
@@ -29,6 +30,18 @@ export function App() {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [settings, setSettings] = useState(defaultSettings);
   const [showAdminModal, setShowAdminModal] = useState(false);
+
+  // Separate Pages State: 'reviews' (Credit & Review Page) | 'pricing' (App Rates Page)
+  const getInitialPage = () => {
+    const pathname = window.location.pathname.toLowerCase();
+    const hash = window.location.hash.toLowerCase();
+    if (pathname.startsWith('/pricing') || hash.startsWith('#pricing')) {
+      return 'pricing';
+    }
+    return 'reviews';
+  };
+
+  const [currentPage, setCurrentPage] = useState(getInitialPage);
 
   // Fetch full settings from backend
   const fetchSettings = useCallback(async () => {
@@ -99,7 +112,7 @@ export function App() {
     }
   }, []);
 
-  // Initial load
+  // Initial load reviews
   useEffect(() => {
     fetchReviews();
   }, [fetchReviews]);
@@ -118,72 +131,74 @@ export function App() {
   // Called when a customer edits their own review
   const handleReviewUpdated = (updated) => {
     setReviews((prev) => prev.map((r) => (r.id === updated.id ? { ...r, ...updated } : r)));
-    // Refresh stats in case the star rating changed
     fetchReviews(null, false);
   };
 
-  // Scroll Helpers
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  // Page Navigation Router
+  const navigate = (page, options = {}) => {
+    setCurrentPage(page);
 
-  const scrollToPricing = (appId) => {
-    const el = document.getElementById('pricing-section');
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
+    let targetUrl = page === 'pricing' ? '/pricing' : '/';
+    if (options.hash) {
+      targetUrl += options.hash;
+    } else if (page === 'reviews' && options.scrollToForm) {
+      targetUrl += '#review-form';
     }
-    if (appId) {
-      window.location.hash = `#pricing-${appId}`;
-    }
-  };
 
-  const scrollToForm = () => {
-    const el = document.getElementById('review-form');
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
+    if (window.history && window.history.pushState) {
+      window.history.pushState({ page }, '', targetUrl);
     }
-  };
 
-  const scrollToReviews = () => {
-    const el = document.getElementById('reviews-section');
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth' });
+    if (options.scrollToForm) {
+      setTimeout(() => {
+        const el = document.getElementById('review-form');
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      }, 150);
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
-  // Deep linking handler: #reviews, #pricing, #pricing-<app>, #review-form, #contacts
+  // URL PopState & Hash Listener
   useEffect(() => {
-    const handleDeepLink = () => {
+    const handleUrlChange = () => {
+      const pathname = window.location.pathname.toLowerCase();
       const hash = window.location.hash.toLowerCase();
-      if (!hash) return;
 
-      const timer = setTimeout(() => {
-        if (hash === '#reviews' || hash === '#reviews-section') {
-          const el = document.getElementById('reviews-section') || document.getElementById('reviews');
-          if (el) el.scrollIntoView({ behavior: 'smooth' });
-        } else if (hash === '#pricing' || hash === '#pricing-section' || hash.startsWith('#pricing-')) {
-          const el = document.getElementById('pricing-section');
-          if (el) el.scrollIntoView({ behavior: 'smooth' });
-        } else if (hash === '#review-form' || hash === '#form' || hash === '#rate') {
-          const el = document.getElementById('review-form');
-          if (el) el.scrollIntoView({ behavior: 'smooth' });
-        } else if (hash === '#contact' || hash === '#contacts' || hash === '#contact-section') {
-          const el = document.getElementById('contact-section');
-          if (el) el.scrollIntoView({ behavior: 'smooth' });
+      if (pathname.startsWith('/pricing') || hash.startsWith('#pricing')) {
+        setCurrentPage('pricing');
+      } else {
+        setCurrentPage('reviews');
+        if (hash === '#review-form' || hash === '#form' || hash === '#rate') {
+          setTimeout(() => {
+            const el = document.getElementById('review-form');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }, 150);
         }
-      }, 250);
-
-      return () => clearTimeout(timer);
+      }
     };
 
-    handleDeepLink();
-    window.addEventListener('hashchange', handleDeepLink);
-    return () => window.removeEventListener('hashchange', handleDeepLink);
+    window.addEventListener('popstate', handleUrlChange);
+    window.addEventListener('hashchange', handleUrlChange);
+    return () => {
+      window.removeEventListener('popstate', handleUrlChange);
+      window.removeEventListener('hashchange', handleUrlChange);
+    };
   }, []);
+
+  const scrollToForm = () => {
+    if (currentPage !== 'reviews') {
+      navigate('reviews', { scrollToForm: true });
+    } else {
+      const el = document.getElementById('review-form');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   const currentLogo = settings.logoUrl || '/logo.png';
   const currentShopName = settings.shopName || 'Pattancute';
-  const currentShopSubtitle = settings.shopSubtitle || 'Pattancute.shop';
+  const currentShopSubtitle = settings.shopSubtitle || 'pattancute.wo-nad.workers.dev';
+  const lineUrl = settings.contacts?.line?.url || 'https://line.me/R/ti/p/@078yzbej';
 
   return (
     <div className="min-h-screen w-full max-w-full overflow-x-hidden relative flex flex-col font-sans selection:bg-pattan-pink-light selection:text-pattan-blue-deep">
@@ -193,13 +208,13 @@ export function App() {
       {/* 2. Tactile Pastel Sparkle Tap Effect */}
       <CuteSparkleTrail />
 
-      {/* 2. Glass Sticky Top Nav Bar */}
-      <header className="sticky top-0 z-40 w-full bg-white/75 dark:bg-slate-900/75 backdrop-blur-xl border-b border-white/80 dark:border-slate-800 transition-colors">
-        <div className="max-w-4xl mx-auto px-3 sm:px-4 h-16 flex items-center justify-between gap-2">
-          {/* Brand */}
+      {/* 3. Glass Sticky Top Nav Bar */}
+      <header className="sticky top-0 z-40 w-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-white/80 dark:border-slate-800 transition-colors">
+        <div className="max-w-5xl mx-auto px-3 sm:px-4 h-16 flex items-center justify-between gap-2">
+          {/* Brand Logo & Name */}
           <div
             className="flex items-center gap-2 sm:gap-2.5 cursor-pointer group shrink-0"
-            onClick={scrollToTop}
+            onClick={() => navigate('reviews')}
           >
             <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-white shadow-sticker p-0.5 overflow-hidden flex items-center justify-center transition-transform group-hover:scale-105">
               <img src={currentLogo} alt={currentShopName} className="w-full h-full object-contain" />
@@ -214,32 +229,43 @@ export function App() {
             </div>
           </div>
 
-          {/* Navigation Links (Desktop) & Actions: Admin Panel + Theme Toggle + Jump to Form */}
+          {/* Center: Dedicated Page Navigation Tabs (Desktop & Tablet) */}
+          <nav className="flex items-center p-1 rounded-full bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/60 dark:border-slate-700 shadow-inner-soft">
+            <button
+              type="button"
+              onClick={() => navigate('reviews')}
+              className={`px-3 sm:px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-200 flex items-center gap-1.5 cursor-pointer ${
+                currentPage === 'reviews'
+                  ? 'bg-white dark:bg-slate-700 text-pattan-blue-deep dark:text-white shadow-sm font-black'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+              }`}
+              aria-label="ไปยังหน้าเครดิตและรีวิวร้าน"
+            >
+              <MessageSquare className={`w-3.5 h-3.5 ${currentPage === 'reviews' ? 'text-pattan-blue' : 'text-slate-400'}`} />
+              <span>รีวิว & เครดิตร้าน</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => navigate('pricing')}
+              className={`px-3 sm:px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-200 flex items-center gap-1.5 cursor-pointer ${
+                currentPage === 'pricing'
+                  ? 'bg-gradient-to-r from-pattan-pink to-[#E06B9A] text-white shadow-sm font-black'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-pattan-pink'
+              }`}
+              aria-label="ไปยังหน้าเรทราคาหารแอพ"
+            >
+              <Tag className={`w-3.5 h-3.5 ${currentPage === 'pricing' ? 'text-white' : 'text-slate-400'}`} />
+              <span>เรทราคาหารแอพ</span>
+            </button>
+          </nav>
+
+          {/* Right Actions: Admin Panel + Theme Toggle + Page CTA Button */}
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-            {/* Quick Section Nav (Desktop) */}
-            <div className="hidden md:flex items-center gap-1 mr-1">
-              <button
-                type="button"
-                onClick={() => scrollToPricing()}
-                className="px-3 py-1.5 rounded-full text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-pattan-pink hover:bg-pink-50/70 dark:hover:bg-slate-800 transition flex items-center gap-1.5 cursor-pointer"
-              >
-                <Tag className="w-3.5 h-3.5 text-pattan-pink" />
-                <span>เรทราคาแอพ</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={scrollToReviews}
-                className="px-3 py-1.5 rounded-full text-xs font-bold text-slate-600 dark:text-slate-300 hover:text-pattan-blue hover:bg-blue-50/70 dark:hover:bg-slate-800 transition flex items-center gap-1.5 cursor-pointer"
-              >
-                <span>💬 รีวิวลูกค้า</span>
-              </button>
-            </div>
-
             <button
               onClick={() => setShowAdminModal(true)}
               type="button"
-              className="px-2.5 py-1.5 sm:px-3.5 sm:py-2 rounded-full bg-white/85 dark:bg-slate-800/85 backdrop-blur-md border border-pattan-blue/20 dark:border-slate-700 text-pattan-blue-deep dark:text-pattan-blue-light hover:text-pattan-blue hover:scale-105 active:scale-95 transition-all shadow-xs flex items-center gap-1 text-xs font-bold cursor-pointer"
+              className="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-full bg-white/85 dark:bg-slate-800/85 backdrop-blur-md border border-pattan-blue/20 dark:border-slate-700 text-pattan-blue-deep dark:text-pattan-blue-light hover:text-pattan-blue hover:scale-105 active:scale-95 transition-all shadow-xs flex items-center gap-1 text-xs font-bold cursor-pointer"
               title="เข้าสู่ระบบหลังบ้าน (Admin Dashboard)"
               aria-label="เข้าสู่ระบบหลังบ้าน"
             >
@@ -248,79 +274,113 @@ export function App() {
             </button>
 
             <ThemeToggle />
-            <button
-              onClick={scrollToForm}
-              type="button"
-              className="btn-jelly hidden sm:inline-flex items-center gap-2 min-h-[40px] px-5 py-2 rounded-full bg-gradient-to-r from-pattan-pink to-[#E26698] text-white font-bold text-xs sm:text-sm shadow-jelly-pink hover:shadow-lg transition-all"
-            >
-              <Star className="w-3.5 h-3.5 fill-white text-white shrink-0" />
-              <span className="tracking-wide font-sans">ให้เครดิตร้าน</span>
-            </button>
+
+            {/* Dynamic CTA button depending on current page */}
+            {currentPage === 'reviews' ? (
+              <button
+                onClick={scrollToForm}
+                type="button"
+                className="btn-jelly hidden sm:inline-flex items-center gap-1.5 min-h-[40px] px-4 py-2 rounded-full bg-gradient-to-r from-pattan-pink to-[#E26698] text-white font-bold text-xs sm:text-sm shadow-jelly-pink hover:shadow-lg transition-all cursor-pointer"
+              >
+                <Star className="w-3.5 h-3.5 fill-white text-white shrink-0" />
+                <span className="tracking-wide">ให้เครดิตร้าน</span>
+              </button>
+            ) : (
+              <a
+                href={lineUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-jelly hidden sm:inline-flex items-center gap-1.5 min-h-[40px] px-4 py-2 rounded-full bg-[#06C755] hover:bg-[#05b34c] text-white font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer"
+              >
+                <MessageCircle className="w-4 h-4 fill-white shrink-0" />
+                <span>สั่งซื้อทาง LINE</span>
+              </a>
+            )}
           </div>
         </div>
       </header>
 
-      {/* 3. Main Content Flow */}
+      {/* 4. Main Content Flow (Separated Pages) */}
       <main className="flex-1 relative z-10">
-        {/* Hero Section */}
-        <Hero
-          onScrollToForm={scrollToForm}
-          totalReviews={stats.total}
-          averageRating={stats.average}
-          settings={settings}
-        />
+        {currentPage === 'reviews' ? (
+          /* ================= PAGE 1: REVIEWS & STORE CREDITS ================= */
+          <div className="animate-fade-in space-y-6">
+            {/* Hero Section */}
+            <Hero
+              onScrollToForm={scrollToForm}
+              totalReviews={stats.total}
+              averageRating={stats.average}
+              settings={settings}
+            />
 
-        {/* Section Divider: Cute Cloud */}
-        <SectionDivider />
+            {/* Section Divider: Cute Cloud */}
+            <SectionDivider />
 
-        {/* Bento Grid Score Summary Section */}
-        <ScoreSummary stats={stats} bento={settings.bento} />
+            {/* Bento Grid Score Summary Section */}
+            <ScoreSummary stats={stats} bento={settings.bento} />
 
-        {/* Section Divider: Soft Wave */}
-        <SectionDivider variant="wave" />
+            {/* Section Divider: Soft Wave */}
+            <SectionDivider variant="wave" />
 
-        {/* App-by-app Pricing Rate Cards Section */}
-        <PricingSection pricing={settings.pricing} contacts={settings.contacts} />
+            {/* Review Form Section */}
+            <ReviewForm onReviewSubmitted={handleReviewSubmitted} />
 
-        {/* Section Divider: Cute Cloud */}
-        <SectionDivider />
+            {/* Section Divider: Cloud */}
+            <SectionDivider />
 
-        {/* Review Form Section */}
-        <ReviewForm onReviewSubmitted={handleReviewSubmitted} />
+            {/* Review List Section */}
+            <ReviewList
+              reviews={reviews}
+              isLoadingInitial={isLoadingInitial}
+              isLoadingMore={isLoadingMore}
+              hasMore={hasMore}
+              onLoadMore={handleLoadMore}
+              onScrollToForm={scrollToForm}
+              onReviewUpdated={handleReviewUpdated}
+            />
 
-        {/* Section Divider: Cloud */}
-        <SectionDivider />
+            {/* Contact Shop Section */}
+            <ContactSection contacts={settings.contacts} shopName={settings.shopName} />
+          </div>
+        ) : (
+          /* ================= PAGE 2: APP PRICING / RATE CARDS ================= */
+          <div className="animate-fade-in space-y-6">
+            {/* Dedicated Pricing Page Hero Banner */}
+            <PricingHero
+              shopName={settings.shopName}
+              totalApps={settings.pricing?.length || 15}
+            />
 
-        {/* Review List Section */}
-        <ReviewList
-          reviews={reviews}
-          isLoadingInitial={isLoadingInitial}
-          isLoadingMore={isLoadingMore}
-          hasMore={hasMore}
-          onLoadMore={handleLoadMore}
-          onScrollToForm={scrollToForm}
-          onReviewUpdated={handleReviewUpdated}
-        />
+            {/* Section Divider */}
+            <SectionDivider variant="wave" />
 
-        {/* Contact Shop Section */}
-        <ContactSection contacts={settings.contacts} shopName={settings.shopName} />
+            {/* App-by-app Pricing Rate Cards Section */}
+            <PricingSection
+              pricing={settings.pricing}
+              contacts={settings.contacts}
+            />
+
+            {/* Contact Shop Section */}
+            <ContactSection contacts={settings.contacts} shopName={settings.shopName} />
+          </div>
+        )}
       </main>
 
-      {/* 4. Footer */}
+      {/* 5. Footer */}
       <Footer onOpenAdmin={() => setShowAdminModal(true)} settings={settings} />
 
-      {/* 5. Floating Music Button */}
+      {/* 6. Floating Music Button */}
       <MusicPlayer musicSettings={settings.music} />
 
-      {/* 6. Mobile Bottom Floating Glass Nav Pill */}
+      {/* 7. Mobile Bottom Floating Glass Nav Pill */}
       <BottomNav
-        onScrollToTop={scrollToTop}
-        onScrollToPricing={scrollToPricing}
-        onScrollToReviews={scrollToReviews}
-        onScrollToForm={scrollToForm}
+        currentPage={currentPage}
+        onNavigateToReviews={() => navigate('reviews')}
+        onNavigateToPricing={() => navigate('pricing')}
+        onScrollToForm={() => navigate('reviews', { scrollToForm: true })}
       />
 
-      {/* 7. Full Comprehensive Admin Dashboard Modal */}
+      {/* 8. Full Comprehensive Admin Dashboard Modal */}
       <AdminModal
         isOpen={showAdminModal}
         onClose={() => setShowAdminModal(false)}
