@@ -30,6 +30,14 @@ export function App() {
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [settings, setSettings] = useState(defaultSettings);
   const [showAdminModal, setShowAdminModal] = useState(false);
+  const [adminInitialTab, setAdminInitialTab] = useState('overview');
+  const [adminInitialAppId, setAdminInitialAppId] = useState('');
+
+  const openAdmin = (tab = 'overview', appId = '') => {
+    setAdminInitialTab(tab || 'overview');
+    setAdminInitialAppId(appId || '');
+    setShowAdminModal(true);
+  };
 
   // Separate Pages State: 'reviews' (Credit & Review Page) | 'pricing' (App Rates Page)
   const getInitialPage = () => {
@@ -209,32 +217,32 @@ export function App() {
       <CuteSparkleTrail />
 
       {/* 3. Glass Sticky Top Nav Bar */}
-      <header className="sticky top-0 z-40 w-full bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-white/80 dark:border-slate-800 transition-colors">
-        <div className="max-w-5xl mx-auto px-3 sm:px-4 h-16 flex items-center justify-between gap-2">
+      <header className="sticky top-0 z-40 w-full bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border-b border-white/80 dark:border-slate-800 transition-colors">
+        <div className="max-w-6xl mx-auto px-3 sm:px-4 h-14 sm:h-16 flex items-center justify-between gap-2">
           {/* Brand Logo & Name */}
           <div
-            className="flex items-center gap-2 sm:gap-2.5 cursor-pointer group shrink-0"
+            className="flex items-center gap-2 sm:gap-2.5 cursor-pointer group min-w-0 shrink"
             onClick={() => navigate('reviews')}
           >
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-white shadow-sticker p-0.5 overflow-hidden flex items-center justify-center transition-transform group-hover:scale-105">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-white shadow-sticker p-0.5 overflow-hidden flex items-center justify-center transition-transform group-hover:scale-105 shrink-0">
               <img src={currentLogo} alt={currentShopName} className="w-full h-full object-contain" />
             </div>
-            <div>
-              <span className="font-extrabold text-base sm:text-xl text-pattan-blue dark:text-pattan-blue-light tracking-tight block leading-none font-display">
+            <div className="min-w-0">
+              <span className="font-extrabold text-base sm:text-lg text-pattan-blue dark:text-pattan-blue-light tracking-tight block leading-none font-display truncate">
                 {currentShopName}
               </span>
-              <span className="text-[9px] sm:text-[10px] font-black text-pattan-pink tracking-wider">
+              <span className="hidden sm:block text-[10px] font-black text-pattan-pink tracking-wider truncate mt-0.5">
                 {currentShopSubtitle}
               </span>
             </div>
           </div>
 
-          {/* Center: Dedicated Page Navigation Tabs (Never breaks/wraps on any screen) */}
-          <nav className="flex items-center p-1 rounded-full bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/60 dark:border-slate-700 shadow-inner-soft shrink-0 select-none">
+          {/* Center (Desktop md+): Dedicated Page Navigation Tabs */}
+          <nav className="hidden md:flex items-center p-1 rounded-full bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/60 dark:border-slate-700 shadow-inner-soft shrink-0 select-none">
             <button
               type="button"
               onClick={() => navigate('reviews')}
-              className={`px-3 sm:px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-200 flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
+              className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-200 flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
                 currentPage === 'reviews'
                   ? 'bg-white dark:bg-slate-700 text-pattan-blue-deep dark:text-white shadow-sm font-black'
                   : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
@@ -242,16 +250,13 @@ export function App() {
               aria-label="ไปยังหน้าเครดิตและรีวิวร้าน"
             >
               <MessageSquare className={`w-3.5 h-3.5 shrink-0 ${currentPage === 'reviews' ? 'text-pattan-blue' : 'text-slate-400'}`} />
-              <span className="whitespace-nowrap leading-none">
-                <span className="md:hidden">รีวิวร้าน</span>
-                <span className="hidden md:inline">รีวิว &amp; เครดิตร้าน</span>
-              </span>
+              <span className="whitespace-nowrap leading-none">รีวิว &amp; เครดิตร้าน</span>
             </button>
 
             <button
               type="button"
               onClick={() => navigate('pricing')}
-              className={`px-3 sm:px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-200 flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
+              className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-200 flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
                 currentPage === 'pricing'
                   ? 'bg-gradient-to-r from-pattan-pink to-[#E06B9A] text-white shadow-sm font-black'
                   : 'text-slate-500 dark:text-slate-400 hover:text-pattan-pink'
@@ -259,23 +264,20 @@ export function App() {
               aria-label="ไปยังหน้าเรทราคาหารแอพ"
             >
               <Tag className={`w-3.5 h-3.5 shrink-0 ${currentPage === 'pricing' ? 'text-white' : 'text-slate-400'}`} />
-              <span className="whitespace-nowrap leading-none">
-                <span className="md:hidden">เรทราคา</span>
-                <span className="hidden md:inline">เรทราคาหารแอพ</span>
-              </span>
+              <span className="whitespace-nowrap leading-none">เรทราคาหารแอพ</span>
             </button>
           </nav>
 
-          {/* Right Actions: Admin Panel + Theme Toggle + Page CTA Button */}
+          {/* Right Actions: Prominent Admin Panel Button + Theme Toggle + Page CTA */}
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
             <button
-              onClick={() => setShowAdminModal(true)}
+              onClick={() => openAdmin(currentPage === 'pricing' ? 'pricing' : 'overview')}
               type="button"
-              className="px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-full bg-white/85 dark:bg-slate-800/85 backdrop-blur-md border border-pattan-blue/20 dark:border-slate-700 text-pattan-blue-deep dark:text-pattan-blue-light hover:text-pattan-blue hover:scale-105 active:scale-95 transition-all shadow-xs flex items-center gap-1 text-xs font-bold cursor-pointer whitespace-nowrap shrink-0"
+              className="h-9 px-3 sm:px-3.5 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-pattan-blue-deep dark:hover:bg-slate-100 hover:scale-105 active:scale-95 transition-all shadow-sm flex items-center gap-1.5 text-xs font-bold cursor-pointer whitespace-nowrap shrink-0"
               title="เข้าสู่ระบบหลังบ้าน (Admin Dashboard)"
               aria-label="เข้าสู่ระบบหลังบ้าน"
             >
-              <Lock className="w-3.5 h-3.5 text-pattan-blue shrink-0" />
+              <Lock className="w-3.5 h-3.5 text-pattan-pink dark:text-pattan-pink-deep shrink-0" />
               <span className="text-[11px] sm:text-xs font-bold">หลังบ้าน</span>
             </button>
 
@@ -286,7 +288,7 @@ export function App() {
               <button
                 onClick={scrollToForm}
                 type="button"
-                className="btn-jelly hidden md:inline-flex items-center gap-1.5 min-h-[40px] px-4 py-2 rounded-full bg-gradient-to-r from-pattan-pink to-[#E26698] text-white font-bold text-xs sm:text-sm shadow-jelly-pink hover:shadow-lg transition-all cursor-pointer whitespace-nowrap shrink-0"
+                className="btn-jelly hidden lg:inline-flex items-center gap-1.5 min-h-[38px] px-4 py-2 rounded-full bg-gradient-to-r from-pattan-pink to-[#E26698] text-white font-bold text-xs shadow-jelly-pink hover:shadow-lg transition-all cursor-pointer whitespace-nowrap shrink-0"
               >
                 <Star className="w-3.5 h-3.5 fill-white text-white shrink-0" />
                 <span className="tracking-wide">ให้เครดิตร้าน</span>
@@ -296,13 +298,44 @@ export function App() {
                 href={lineUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-jelly hidden md:inline-flex items-center gap-1.5 min-h-[40px] px-4 py-2 rounded-full bg-[#06C755] hover:bg-[#05b34c] text-white font-bold text-xs sm:text-sm shadow-md transition-all cursor-pointer whitespace-nowrap shrink-0"
+                className="btn-jelly hidden lg:inline-flex items-center gap-1.5 min-h-[38px] px-4 py-2 rounded-full bg-[#06C755] hover:bg-[#05b34c] text-white font-bold text-xs shadow-md transition-all cursor-pointer whitespace-nowrap shrink-0"
               >
                 <MessageCircle className="w-4 h-4 fill-white shrink-0" />
                 <span>สั่งซื้อทาง LINE</span>
               </a>
             )}
           </div>
+        </div>
+
+        {/* Mobile Sub-Row (< md): Clean Full-Width Segmented Page Switcher */}
+        <div className="md:hidden px-3 pb-2.5">
+          <nav className="grid grid-cols-2 p-1 rounded-2xl bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/60 dark:border-slate-700 select-none">
+            <button
+              type="button"
+              onClick={() => navigate('reviews')}
+              className={`py-1.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap ${
+                currentPage === 'reviews'
+                  ? 'bg-white dark:bg-slate-700 text-pattan-blue-deep dark:text-white shadow-xs font-black'
+                  : 'text-slate-500 dark:text-slate-400'
+              }`}
+            >
+              <MessageSquare className={`w-3.5 h-3.5 shrink-0 ${currentPage === 'reviews' ? 'text-pattan-blue' : 'text-slate-400'}`} />
+              <span>รีวิว &amp; เครดิตร้าน</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => navigate('pricing')}
+              className={`py-1.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap ${
+                currentPage === 'pricing'
+                  ? 'bg-gradient-to-r from-pattan-pink to-[#E06B9A] text-white shadow-xs font-black'
+                  : 'text-slate-500 dark:text-slate-400'
+              }`}
+            >
+              <Tag className={`w-3.5 h-3.5 shrink-0 ${currentPage === 'pricing' ? 'text-white' : 'text-slate-400'}`} />
+              <span>เรทราคาหารแอพ</span>
+            </button>
+          </nav>
         </div>
       </header>
 
@@ -349,21 +382,20 @@ export function App() {
             <ContactSection contacts={settings.contacts} shopName={settings.shopName} />
           </div>
         ) : (
-          /* ================= PAGE 2: APP PRICING / RATE CARDS ================= */
-          <div className="animate-fade-in space-y-6">
-            {/* Dedicated Pricing Page Hero Banner */}
+          /* ================= PAGE 2: MODERN APP PRICING WORKSPACE ================= */
+          <div className="animate-fade-in">
+            {/* Compact Modern Pricing Header with Admin Access */}
             <PricingHero
               shopName={settings.shopName}
               totalApps={settings.pricing?.length || 15}
+              onOpenAdmin={() => openAdmin('pricing')}
             />
 
-            {/* Section Divider */}
-            <SectionDivider variant="wave" />
-
-            {/* App-by-app Pricing Rate Cards Section */}
+            {/* Modern Master-Detail App Pricing Workspace */}
             <PricingSection
               pricing={settings.pricing}
               contacts={settings.contacts}
+              onOpenAdmin={openAdmin}
             />
 
             {/* Contact Shop Section */}
@@ -373,7 +405,7 @@ export function App() {
       </main>
 
       {/* 5. Footer */}
-      <Footer onOpenAdmin={() => setShowAdminModal(true)} settings={settings} />
+      <Footer onOpenAdmin={() => openAdmin(currentPage === 'pricing' ? 'pricing' : 'overview')} settings={settings} />
 
       {/* 6. Floating Music Button */}
       <MusicPlayer musicSettings={settings.music} />
@@ -392,6 +424,8 @@ export function App() {
         onClose={() => setShowAdminModal(false)}
         settings={settings}
         stats={stats}
+        initialTab={adminInitialTab}
+        initialAppId={adminInitialAppId}
         onSettingsUpdated={(newSettings) => setSettings(newSettings)}
         onLogoUpdated={(newLogoUrl) => setSettings((prev) => ({ ...prev, logoUrl: newLogoUrl }))}
         onReviewDeleted={() => fetchReviews(null, false)}

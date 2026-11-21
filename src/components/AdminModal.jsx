@@ -39,17 +39,27 @@ export function AdminModal({
   onSettingsUpdated,
   onLogoUpdated,
   onReviewDeleted,
+  initialTab = 'overview',
+  initialAppId = '',
 }) {
   const [token, setToken] = useState('');
   const [isAuthed, setIsAuthed] = useState(false);
-  const [activeTab, setActiveTab] = useState('overview'); // 'overview' | 'content' | 'logo' | 'music' | 'bento' | 'contacts' | 'reviews'
+  const [activeTab, setActiveTab] = useState(initialTab || 'overview'); // 'overview' | 'pricing' | 'content' | 'logo' | 'music' | 'bento' | 'contacts' | 'reviews'
 
   // Draft form settings state
   const [form, setForm] = useState(defaultSettings);
   const [newQuoteInput, setNewQuoteInput] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [statusMessage, setStatusMessage] = useState({ text: '', type: '' });
-  const [adminAppId, setAdminAppId] = useState('netflix');
+  const [adminAppId, setAdminAppId] = useState(initialAppId || 'netflix');
+
+  // Sync requested initialTab / initialAppId when opening modal
+  useEffect(() => {
+    if (isOpen) {
+      if (initialTab) setActiveTab(initialTab);
+      if (initialAppId) setAdminAppId(initialAppId);
+    }
+  }, [isOpen, initialTab, initialAppId]);
 
   // Logo Tab State
   const [selectedLogoFile, setSelectedLogoFile] = useState(null);
