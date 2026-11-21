@@ -1,6 +1,7 @@
 import React from 'react';
 import { Star, ShieldCheck, CheckCircle2, ArrowDown, PenLine } from 'lucide-react';
 import { BoutiqueSeal } from './BoutiqueSeal';
+import { InteractiveMonkey } from './InteractiveMonkey';
 
 export function Hero({
   onScrollToForm,
@@ -35,7 +36,7 @@ export function Hero({
 
         {/* Rotating Boutique Verification Seal orbiting top-left */}
         <div className="absolute -top-6 -left-10 sm:-left-12 z-20 text-pattan-blue-deep/75 dark:text-pattan-blue-light/75">
-          <BoutiqueSeal size={76} text="VERIFIED CLUB · 100% REAL · CREDITS · " />
+          <BoutiqueSeal size={76} text="VERIFIED CLUB · 100% REAL · " />
         </div>
 
         {/* Layered Double-Frame Logo Medallion */}
@@ -50,12 +51,12 @@ export function Hero({
           </div>
         </div>
 
-        {/* Adorable Crayon Monkey Mascot sitting gracefully beside the logo */}
-        <img
-          src="/mascot-monkey.png"
-          alt="มาสคอตร้าน"
-          className="absolute -bottom-2 -right-12 sm:-right-16 z-20 w-20 h-20 sm:w-24 sm:h-24 object-contain select-none drop-shadow-[0_6px_12px_rgba(27,42,74,0.1)] transition-transform duration-300 hover:-rotate-3 hover:scale-105"
-          loading="eager"
+        {/* Interactive Crayon Monkey Mascot sitting beside the logo */}
+        <InteractiveMonkey
+          className="absolute -bottom-2 -right-12 sm:-right-16 z-20"
+          imgClassName="w-20 h-20 sm:w-24 sm:h-24"
+          quotes={settings?.mascotQuotes}
+          eager
         />
 
         {/* Crisp Verified Mark */}

@@ -1,6 +1,7 @@
 import React from 'react';
 import { ExternalLink, Instagram, Facebook, Video, MessageCircle, Headphones } from 'lucide-react';
 import { siteConfig } from '../config';
+import { InteractiveMonkey } from './InteractiveMonkey';
 
 export function ContactSection({ contacts, shopName = 'Pattancute' }) {
   const c = contacts || siteConfig.contacts;
@@ -12,18 +13,24 @@ export function ContactSection({ contacts, shopName = 'Pattancute' }) {
 
   return (
     <section id="contact-section" className="w-full max-w-3xl mx-auto px-4 mb-20 scroll-mt-24 font-sans">
-      <div className="card-bento p-6 sm:p-8 relative overflow-hidden">
-        <div className="absolute -top-16 -right-16 w-48 h-48 rounded-full bg-pattan-pink/10 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-16 -left-16 w-48 h-48 rounded-full bg-pattan-blue/10 blur-3xl pointer-events-none" />
+      <div className="card-bento p-6 sm:p-8 relative">
+        <div className="absolute inset-0 overflow-hidden rounded-bento-lg pointer-events-none">
+          <div className="absolute -top-16 -right-16 w-48 h-48 rounded-full bg-pattan-pink/10 blur-3xl" />
+          <div className="absolute -bottom-16 -left-16 w-48 h-48 rounded-full bg-pattan-blue/10 blur-3xl" />
+        </div>
 
         <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
           <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-5">
-            {/* Signature Mascot (Placed in ONE dedicated spot across the site) */}
-            <img
-              src="/mascot-monkey.png"
-              alt="มาสคอตร้าน"
-              className="w-24 h-24 sm:w-28 sm:h-28 object-contain shrink-0 select-none drop-shadow-[0_6px_12px_rgba(27,42,74,0.08)] transition-transform duration-300 hover:-rotate-3 hover:scale-105"
-              loading="lazy"
+            {/* Interactive Crayon Monkey Mascot */}
+            <InteractiveMonkey
+              className="shrink-0"
+              imgClassName="w-24 h-24 sm:w-28 sm:h-28"
+              quotes={[
+                'ทักแชทสอบถามได้เลยนะคะ ♡',
+                'แอดมินตอบไว พร้อมดูแลค่ะ ✦',
+                'สนใจแอพไหนทัก LINE ได้เลย',
+                'ยินดีให้บริการเสมอนะคะ ✨',
+              ]}
             />
 
             <div className="space-y-2 text-center sm:text-left">
