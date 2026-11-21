@@ -17,18 +17,28 @@ export function ContactSection({ contacts, shopName = 'Pattancute' }) {
         <div className="absolute -bottom-16 -left-16 w-48 h-48 rounded-full bg-pattan-blue/10 blur-3xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-          <div className="space-y-2 text-center sm:text-left">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 text-[11px] font-bold border border-emerald-200/70 dark:border-emerald-800/60">
-              <Headphones className="w-3.5 h-3.5 text-emerald-600" />
-              <span>{badgeText}</span>
-            </div>
+          <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-5">
+            {/* Signature Mascot (Placed in ONE dedicated spot across the site) */}
+            <img
+              src="/mascot-monkey.png"
+              alt="มาสคอตร้าน"
+              className="w-24 h-24 sm:w-28 sm:h-28 object-contain shrink-0 select-none drop-shadow-[0_6px_12px_rgba(27,42,74,0.08)] transition-transform duration-300 hover:-rotate-3 hover:scale-105"
+              loading="lazy"
+            />
 
-            <h3 className="text-xl sm:text-2xl font-extrabold text-pattan-blue-deep dark:text-white font-display tracking-tight">
-              ติดต่อร้าน <span className="font-brand font-bold text-pattan-pink-deep dark:text-pattan-pink">{shopName}</span>
-            </h3>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-md leading-relaxed">
-              สอบถามรายละเอียด สั่งซื้อแพ็กเกจ หรือแจ้งปัญหาการใช้งาน ทีมแอดมินพร้อมดูแลตลอดค่ะ
-            </p>
+            <div className="space-y-2 text-center sm:text-left">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 text-[11px] font-bold border border-emerald-200/70 dark:border-emerald-800/60">
+                <Headphones className="w-3.5 h-3.5 text-emerald-600" />
+                <span>{badgeText}</span>
+              </div>
+
+              <h3 className="text-xl sm:text-2xl font-extrabold text-pattan-blue-deep dark:text-white font-display tracking-tight">
+                ติดต่อร้าน <span className="font-brand font-bold text-pattan-pink-deep dark:text-pattan-pink">{shopName}</span>
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-md leading-relaxed">
+                สอบถามรายละเอียด สั่งซื้อแพ็กเกจ หรือแจ้งปัญหาการใช้งาน ทีมแอดมินพร้อมดูแลตลอดค่ะ
+              </p>
+            </div>
           </div>
 
           {/* Primary LINE CTA */}
