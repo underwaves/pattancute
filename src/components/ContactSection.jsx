@@ -11,7 +11,7 @@ export function ContactSection({ contacts, shopName = 'Pattancute' }) {
   const badgeText = c.badgeText || 'บริการตอบแชทไว ยินดีให้คำปรึกษา';
 
   return (
-    <section className="w-full max-w-3xl mx-auto px-4 mb-20 font-sans">
+    <section id="contact-section" className="w-full max-w-3xl mx-auto px-4 mb-20 scroll-mt-24 font-sans">
       <div className="card-bento p-6 sm:p-8 relative overflow-hidden">
         <div className="absolute -top-16 -right-16 w-48 h-48 rounded-full bg-pattan-pink/10 blur-3xl pointer-events-none" />
         <div className="absolute -bottom-16 -left-16 w-48 h-48 rounded-full bg-pattan-blue/10 blur-3xl pointer-events-none" />

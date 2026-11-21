@@ -202,6 +202,11 @@ export function App() {
     }
   };
 
+  const scrollToContact = () => {
+    const el = document.getElementById('contact-section');
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  };
+
   const currentLogo = settings.logoUrl || '/logo.png';
   const currentShopName = settings.shopName || 'Pattancute';
   const currentShopSubtitle = settings.shopSubtitle || 'pattancute.wo-nad.workers.dev';
@@ -414,6 +419,7 @@ export function App() {
         onNavigateToReviews={() => navigate('reviews')}
         onNavigateToPricing={() => navigate('pricing')}
         onScrollToForm={() => navigate('reviews', { scrollToForm: true })}
+        onScrollToContact={scrollToContact}
       />
 
       {/* 8. Full Comprehensive Admin Dashboard Modal */}
