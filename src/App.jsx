@@ -229,8 +229,8 @@ export function App() {
             </div>
           </div>
 
-          {/* Center: Dedicated Page Navigation Tabs (Desktop & Mobile) */}
-          <nav className="flex items-center p-1 rounded-full bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/60 dark:border-slate-700 shadow-inner-soft shrink-0">
+          {/* Center: Dedicated Page Navigation Tabs (Never breaks/wraps on any screen) */}
+          <nav className="flex items-center p-1 rounded-full bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/60 dark:border-slate-700 shadow-inner-soft shrink-0 select-none">
             <button
               type="button"
               onClick={() => navigate('reviews')}
@@ -242,9 +242,9 @@ export function App() {
               aria-label="ไปยังหน้าเครดิตและรีวิวร้าน"
             >
               <MessageSquare className={`w-3.5 h-3.5 shrink-0 ${currentPage === 'reviews' ? 'text-pattan-blue' : 'text-slate-400'}`} />
-              <span className="whitespace-nowrap">
-                <span className="sm:hidden">รีวิวร้าน</span>
-                <span className="hidden sm:inline">รีวิว &amp; เครดิตร้าน</span>
+              <span className="whitespace-nowrap leading-none">
+                <span className="md:hidden">รีวิวร้าน</span>
+                <span className="hidden md:inline">รีวิว &amp; เครดิตร้าน</span>
               </span>
             </button>
 
@@ -259,9 +259,9 @@ export function App() {
               aria-label="ไปยังหน้าเรทราคาหารแอพ"
             >
               <Tag className={`w-3.5 h-3.5 shrink-0 ${currentPage === 'pricing' ? 'text-white' : 'text-slate-400'}`} />
-              <span className="whitespace-nowrap">
-                <span className="sm:hidden">เรทราคา</span>
-                <span className="hidden sm:inline">เรทราคาหารแอพ</span>
+              <span className="whitespace-nowrap leading-none">
+                <span className="md:hidden">เรทราคา</span>
+                <span className="hidden md:inline">เรทราคาหารแอพ</span>
               </span>
             </button>
           </nav>

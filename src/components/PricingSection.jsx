@@ -74,19 +74,18 @@ export function PricingSection({ pricing = defaultPricing, contacts }) {
       {/* Anchor for #pricing deep link */}
       <span id="pricing" className="absolute -top-24" />
 
-      {/* Section Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-pattan-pink/20 to-pattan-yellow/30 flex items-center justify-center text-pattan-pink-deep shadow-xs">
-            <Tag className="w-5 h-5 text-pattan-pink-deep" />
+      {/* 1. App Selection Header Row */}
+      <div className="flex items-center justify-between gap-3 mb-3.5">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-xl bg-pattan-pink/20 flex items-center justify-center text-pattan-pink-deep">
+            <Tag className="w-4 h-4" />
           </div>
           <div>
-            <h2 className="text-xl sm:text-2xl font-black text-pattan-blue dark:text-pattan-blue-light font-display flex items-center gap-1.5">
-              <span>เรทราคาหารแอพแท้ 100%</span>
-              <Sparkles className="w-4 h-4 text-pattan-yellow fill-pattan-yellow inline" />
+            <h2 className="text-base sm:text-lg font-black text-pattan-blue-deep dark:text-white leading-tight">
+              เลือกแอพที่ต้องการ ({apps.length} แอพ)
             </h2>
-            <p className="text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400">
-              จิ้มเลือกไอคอนแอพเพื่อดูแพ็กเกจและราคาได้ทันทีค่ะ
+            <p className="text-[11px] sm:text-xs text-slate-400 dark:text-slate-400">
+              จิ้มไอคอนแอพเพื่อดูแพ็กเกจและราคาได้ทันทีค่ะ
             </p>
           </div>
         </div>
@@ -95,75 +94,89 @@ export function PricingSection({ pricing = defaultPricing, contacts }) {
         <button
           type="button"
           onClick={handleCopyAppLink}
-          className="self-start sm:self-auto inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 hover:text-pattan-blue hover:border-pattan-blue/50 active:scale-95 transition shadow-xs cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200 hover:text-pattan-pink hover:border-pattan-pink/50 transition shadow-xs cursor-pointer shrink-0"
           title={`คัดลอกลิงก์เรทราคา ${selectedApp.name}`}
         >
           {copiedLink ? (
             <>
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-              <span className="text-emerald-600 dark:text-emerald-400 font-extrabold">คัดลอกลิงก์แล้ว! ✨</span>
+              <span className="text-emerald-600 dark:text-emerald-400 font-extrabold">คัดลอกแล้ว! ✨</span>
             </>
           ) : (
             <>
               <Share2 className="w-3.5 h-3.5 text-pattan-pink" />
-              <span>แชร์ลิงก์เรทราคานี้</span>
+              <span className="hidden sm:inline">แชร์ลิงก์เรทราคานี้</span>
+              <span className="sm:hidden">แชร์ลิงก์</span>
             </>
           )}
         </button>
       </div>
 
-      {/* 1. App Icon Selection Pills / Grid */}
-      <div className="card-bento p-3 sm:p-4 mb-6 overflow-x-auto scrollbar-none">
-        <div className="flex sm:flex-wrap items-center gap-2 min-w-max sm:min-w-0">
-          {apps.map((app) => {
-            const isSelected = app.id === selectedAppId;
-            return (
-              <button
-                key={app.id}
-                type="button"
-                onClick={() => {
-                  setSelectedAppId(app.id);
-                  setSelectedSubGroup('all');
-                  if (window.history && window.history.replaceState) {
-                    window.history.replaceState(null, '', `/pricing#pricing-${app.id}`);
-                  }
-                }}
-                className={`group relative flex items-center gap-2 px-3.5 py-2.5 rounded-2xl font-bold text-xs sm:text-sm transition-all duration-200 active:scale-95 cursor-pointer shrink-0 ${
-                  isSelected
-                    ? 'bg-white dark:bg-slate-700 text-slate-900 dark:text-white shadow-md border-2'
-                    : 'bg-slate-50/80 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 hover:bg-white hover:shadow-xs border border-transparent'
+      {/* 2. Bento App Tiles Grid (Symmetric 3/4/5 Columns, zero empty void!) */}
+      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2.5 sm:gap-3 mb-6">
+        {apps.map((app) => {
+          const isSelected = app.id === selectedAppId;
+          const minPrice = app.plans?.length > 0
+            ? Math.min(...app.plans.map((p) => parseInt(p.price, 10) || 999))
+            : null;
+
+          return (
+            <button
+              key={app.id}
+              type="button"
+              onClick={() => {
+                setSelectedAppId(app.id);
+                setSelectedSubGroup('all');
+                if (window.history && window.history.replaceState) {
+                  window.history.replaceState(null, '', `/pricing#pricing-${app.id}`);
+                }
+              }}
+              className={`group relative flex flex-col items-center justify-between p-2.5 sm:p-3.5 rounded-3xl transition-all duration-200 active:scale-95 cursor-pointer text-center ${
+                isSelected
+                  ? 'bg-white dark:bg-slate-800 shadow-bento ring-2 ring-pattan-pink scale-[1.02] -translate-y-1'
+                  : 'bg-white/80 dark:bg-slate-850/80 hover:bg-white dark:hover:bg-slate-800 border border-white/80 dark:border-slate-750 hover:shadow-xs hover:-translate-y-0.5'
+              }`}
+            >
+              {/* Active Indicator Top Pill */}
+              {isSelected && (
+                <div className="absolute -top-2 left-1/2 -translate-x-1/2 z-10">
+                  <span className="px-2 py-0.5 rounded-full text-[9px] font-black bg-gradient-to-r from-pattan-pink to-[#E06B9A] text-white shadow-xs whitespace-nowrap">
+                    เลือกอยู่ ✓
+                  </span>
+                </div>
+              )}
+
+              {/* App Brand Icon Squircle Container */}
+              <div
+                className={`w-11 h-11 sm:w-13 sm:h-13 rounded-2xl flex items-center justify-center text-2xl sm:text-3xl mb-1.5 transition-transform group-hover:scale-105 shadow-xs ${
+                  isSelected ? 'ring-2 ring-pattan-pink/30 dark:ring-slate-700' : ''
                 }`}
                 style={{
-                  borderColor: isSelected ? app.color || '#5B86C8' : 'transparent',
+                  backgroundColor: `${app.color}15`,
                 }}
               >
-                {/* App Brand Color Accent Dot or Icon */}
-                <span className="text-lg leading-none">{app.icon || '📱'}</span>
-                <span>{app.name}</span>
+                {app.icon || '📱'}
+              </div>
 
-                {/* Optional Tag on Tab */}
-                {app.badge && (
-                  <span
-                    className={`text-[9px] px-1.5 py-0.5 rounded-full font-black ${
-                      isSelected
-                        ? 'bg-rose-100 text-rose-600 dark:bg-rose-950 dark:text-rose-300'
-                        : 'bg-slate-200/70 text-slate-500 dark:bg-slate-700 dark:text-slate-400'
-                    }`}
-                  >
-                    {app.badge}
-                  </span>
-                )}
-              </button>
-            );
-          })}
-        </div>
+              {/* App Name */}
+              <span className="text-[11px] sm:text-sm font-black text-slate-800 dark:text-white truncate max-w-full leading-tight mb-1">
+                {app.name}
+              </span>
+
+              {/* Starting Price Pill */}
+              <span className="text-[9px] sm:text-[10px] font-extrabold text-pattan-pink-deep dark:text-pattan-pink bg-pink-50 dark:bg-pink-950/40 px-2 py-0.5 rounded-full border border-pink-100/60 dark:border-pink-900/40 whitespace-nowrap">
+                {minPrice && minPrice < 999 ? `เริ่ม ฿${minPrice}` : `${app.plans?.length || 0} แพ็ก`}
+              </span>
+            </button>
+          );
+        })}
       </div>
 
-      {/* 2. Active Selected App Header Banner */}
+      {/* 3. Selected App Showcase Banner */}
       <div className="relative overflow-hidden rounded-3xl p-5 sm:p-6 mb-6 bg-gradient-to-br from-white/95 to-slate-50/90 dark:from-slate-800/95 dark:to-slate-850/90 border border-white dark:border-slate-700 shadow-bento">
         {/* Ambient brand color aura */}
         <div
-          className="absolute -top-12 -right-12 w-48 h-48 rounded-full blur-3xl opacity-25 pointer-events-none"
+          className="absolute -top-12 -right-12 w-48 h-48 rounded-full blur-3xl opacity-20 pointer-events-none"
           style={{ backgroundColor: selectedApp.color || '#5B86C8' }}
         />
 
@@ -171,7 +184,7 @@ export function PricingSection({ pricing = defaultPricing, contacts }) {
           <div className="flex items-center gap-3.5">
             <div
               className="w-13 h-13 rounded-2xl flex items-center justify-center text-3xl shadow-md border-2 border-white dark:border-slate-700 shrink-0"
-              style={{ backgroundColor: `${selectedApp.color}15` }}
+              style={{ backgroundColor: `${selectedApp.color}18` }}
             >
               {selectedApp.icon || '📱'}
             </div>
@@ -183,6 +196,11 @@ export function PricingSection({ pricing = defaultPricing, contacts }) {
                 {selectedApp.category && (
                   <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300">
                     {selectedApp.category}
+                  </span>
+                )}
+                {selectedApp.badge && (
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-600 dark:bg-rose-950/60 dark:text-rose-300">
+                    {selectedApp.badge}
                   </span>
                 )}
               </div>
@@ -198,7 +216,7 @@ export function PricingSection({ pricing = defaultPricing, contacts }) {
         </div>
       </div>
 
-      {/* Subcategory Group Filter Pills (e.g. เมลปิดรับเคลม / เมลปิดไม่เคลม, Gold VIP / Premium 4K) */}
+      {/* 4. Subcategory Group Filter Pills (e.g. เมลปิดรับเคลม / เมลปิดไม่เคลม, Gold VIP / Premium 4K) */}
       {uniqueGroups.length > 1 && (
         <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-6 scrollbar-none select-none">
           <button
@@ -240,7 +258,7 @@ export function PricingSection({ pricing = defaultPricing, contacts }) {
         </div>
       )}
 
-      {/* 3. Pricing Cards Grid for Selected App */}
+      {/* 5. Pricing Cards Grid for Selected App */}
       {displayedPlans.length === 0 ? (
         <div className="card-bento p-8 text-center">
           <p className="text-sm font-bold text-slate-500">กำลังอัปเดตแพ็กเกจราคาของแอพนี้ กรุณาสอบถามแอดมินทาง LINE ได้เลยค่ะ 🌸</p>
