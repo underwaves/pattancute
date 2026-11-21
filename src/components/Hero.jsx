@@ -33,9 +33,9 @@ export function Hero({
       <div className="relative my-1">
         <div className="absolute -inset-6 bg-gradient-to-tr from-pattan-pink/25 via-transparent to-pattan-blue/25 rounded-full blur-2xl opacity-80 pointer-events-none" />
 
-        {/* Rotating Boutique Verification Seal orbiting top-right */}
-        <div className="absolute -top-6 -right-10 sm:-right-12 z-20 text-pattan-blue-deep/75 dark:text-pattan-blue-light/75">
-          <BoutiqueSeal size={78} text="VERIFIED CLUB · 100% REAL · CREDITS · " />
+        {/* Rotating Boutique Verification Seal orbiting top-left */}
+        <div className="absolute -top-6 -left-10 sm:-left-12 z-20 text-pattan-blue-deep/75 dark:text-pattan-blue-light/75">
+          <BoutiqueSeal size={76} text="VERIFIED CLUB · 100% REAL · CREDITS · " />
         </div>
 
         {/* Layered Double-Frame Logo Medallion */}
@@ -50,9 +50,17 @@ export function Hero({
           </div>
         </div>
 
+        {/* Adorable Crayon Monkey Mascot sitting gracefully beside the logo */}
+        <img
+          src="/mascot-monkey.png"
+          alt="มาสคอตร้าน"
+          className="absolute -bottom-2 -right-12 sm:-right-16 z-20 w-20 h-20 sm:w-24 sm:h-24 object-contain select-none drop-shadow-[0_6px_12px_rgba(27,42,74,0.1)] transition-transform duration-300 hover:-rotate-3 hover:scale-105"
+          loading="eager"
+        />
+
         {/* Crisp Verified Mark */}
         <div
-          className="absolute -bottom-1.5 -left-1.5 w-8 h-8 rounded-full bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-700 shadow-sm flex items-center justify-center"
+          className="absolute -bottom-1.5 -left-1.5 z-20 w-8 h-8 rounded-full bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-700 shadow-sm flex items-center justify-center"
           title="ร้านค้ายืนยันตัวตนแล้ว"
         >
           <CheckCircle2 className="w-5 h-5 text-emerald-500 fill-emerald-50 dark:fill-emerald-950" />
