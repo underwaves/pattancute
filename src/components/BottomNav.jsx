@@ -16,7 +16,7 @@ export function BottomNav({
 
   return (
     <nav
-      className="fixed bottom-4 sm:hidden inset-x-3 max-w-[370px] mx-auto z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-white/90 dark:border-slate-700/80 rounded-full shadow-glass-nav px-2.5 py-1.5 flex items-center justify-between font-sans"
+      className="fixed bottom-4 sm:hidden inset-x-3 max-w-[370px] mx-auto z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200/80 dark:border-slate-800 rounded-2xl shadow-glass-nav px-2.5 py-1.5 flex items-center justify-between font-sans"
       style={{ paddingBottom: 'calc(0.35rem + env(safe-area-inset-bottom, 0px))' }}
       aria-label="เมนูนำทางหลัก"
     >
@@ -60,14 +60,14 @@ export function BottomNav({
         <span className="text-[10px] mt-0.5">เรทราคา</span>
       </button>
 
-      {/* 3. Leave Credit (Highlighted Pill) */}
+      {/* 3. Leave Credit (Highlighted Button) */}
       <button
         onClick={onScrollToForm}
         type="button"
-        className="flex items-center justify-center gap-1 px-3.5 h-9 rounded-full bg-gradient-to-r from-pattan-pink to-[#E26698] text-white shadow-xs active:scale-95 transition shrink-0 cursor-pointer"
+        className="flex items-center justify-center gap-1 px-3.5 h-9 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xs active:scale-95 transition shrink-0 cursor-pointer"
         aria-label="ให้คะแนนและรีวิวร้าน"
       >
-        <Star className="w-3.5 h-3.5 text-white fill-white" />
+        <Star className="w-3.5 h-3.5 text-pattan-pink fill-pattan-pink" />
         <span className="text-[11px] font-bold tracking-tight">ให้คะแนน</span>
       </button>
 

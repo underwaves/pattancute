@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Star, MessageCircle, ChevronDown, Sparkles, Image as ImageIcon, CheckCircle2, Pencil, X, Share2, Check } from 'lucide-react';
-import { CuteMonkey } from './CuteMonkey';
+import { Star, MessageCircle, ChevronDown, Image as ImageIcon, CheckCircle2, Pencil, X, Share2, MessageSquarePlus } from 'lucide-react';
 import { ImageModal } from './ImageModal';
 import { getEditToken, decodeHtml } from '../myReviews';
 
@@ -266,23 +265,23 @@ function AnimatedReviewCard({ review, index, onImageClick, onEdit }) {
 
       {/* Attached Images Grid */}
       {review.images && review.images.length > 0 && (
-        <div className="mt-4 flex flex-wrap gap-3 pl-0.5">
+        <div className="mt-4 flex flex-wrap gap-2.5 pl-0.5">
           {review.images.map((imgUrl, idx) => (
             <button
               key={idx}
               type="button"
               onClick={() => onImageClick(imgUrl)}
-              className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-2xl overflow-hidden p-1 bg-white shadow-sticker -rotate-1 hover:rotate-0 hover:scale-105 active:scale-95 transition-all group focus:outline-none focus:ring-2 focus:ring-pattan-blue"
+              className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 hover:scale-[1.03] active:scale-95 transition-all group focus:outline-none focus:ring-2 focus:ring-pattan-blue shadow-xs"
               title="คลิกเพื่อดูรูปขนาดเต็ม"
               aria-label={`ดูรูปภาพที่ ${idx + 1}`}
             >
               <img
                 src={imgUrl}
                 alt={`รูปรีวิวโดย ${review.name} ${idx + 1}`}
-                className="w-full h-full object-cover rounded-xl"
+                className="w-full h-full object-cover"
                 loading="lazy"
               />
-              <div className="absolute inset-1 rounded-xl bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+              <div className="absolute inset-0 bg-slate-900/25 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
                 <ImageIcon className="w-5 h-5 drop-shadow" />
               </div>
             </button>
@@ -355,16 +354,15 @@ export function ReviewList({
       {/* Section Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-pattan-blue/20 to-pattan-pink/20 flex items-center justify-center text-pattan-blue shadow-xs">
+          <div className="w-10 h-10 rounded-xl bg-pattan-blue-soft dark:bg-slate-800 border border-pattan-blue/15 flex items-center justify-center text-pattan-blue">
             <MessageCircle className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-xl sm:text-2xl font-black text-pattan-blue dark:text-pattan-blue-light font-display flex items-center gap-1.5">
-              <span>รีวิวและความประทับใจ</span>
-              <Sparkles className="w-4 h-4 text-pattan-yellow fill-pattan-yellow inline" />
+            <h2 className="text-lg sm:text-xl font-extrabold text-pattan-blue-deep dark:text-white font-display">
+              รีวิวและความประทับใจจากลูกค้า
             </h2>
-            <p className="text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400">
-              ส่งตรงจากลูกค้าคนสำคัญ เรียงจากใหม่สุดไปเก่าสุด
+            <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+              ความคิดเห็นจริงจากผู้ใช้บริการ เรียงจากล่าสุด
             </p>
           </div>
         </div>
@@ -457,30 +455,24 @@ export function ReviewList({
           ))}
         </div>
       ) : reviews.length === 0 ? (
-        /* 2. Modern Cute Empty State with Sign */
-        <div className="card-bento p-8 sm:p-12 text-center relative overflow-hidden">
-          <div className="flex justify-center mb-4 anim-float">
-            <div className="flex flex-col items-center">
-              <CuteMonkey className="w-24 h-24 mx-auto" mood="happy" />
-              {/* Cute Signboard held by monkey */}
-              <div className="mt-2 inline-flex items-center gap-1 px-4 py-1.5 rounded-full bg-white shadow-sticker border-2 border-pattan-pink text-xs font-black text-pattan-pink-deep">
-                <span>ยังไม่มีรีวิว เป็นคนแรกเลย! 💖</span>
-              </div>
-            </div>
+        /* 2. Refined Clean Empty State */
+        <div className="card-bento p-8 sm:p-10 text-center">
+          <div className="w-12 h-12 rounded-2xl bg-pattan-blue-soft dark:bg-slate-800 border border-pattan-blue/15 text-pattan-blue flex items-center justify-center mx-auto mb-4">
+            <MessageSquarePlus className="w-6 h-6" />
           </div>
-          <h3 className="text-xl font-black text-pattan-blue-deep font-display mt-2">
-            เปิดกล่องรีวิวความประทับใจ
+          <h3 className="text-lg font-extrabold text-pattan-blue-deep dark:text-white font-display">
+            ยังไม่มีรีวิวในขณะนี้
           </h3>
-          <p className="mt-1 text-sm font-semibold text-pattan-text-muted max-w-sm mx-auto leading-relaxed">
-            เคยสั่งซื้อสินค้าหรือพูดคุยกับร้าน Pattancute แล้วหรือยังคะ? แวะมาส่งกำลังใจให้เราได้น้า~
+          <p className="mt-1.5 text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-sm mx-auto leading-relaxed">
+            หากเคยใช้บริการกับทางร้าน สามารถร่วมแบ่งปันประสบการณ์เพื่อเป็นข้อมูลให้ลูกค้าท่านอื่นได้เลยค่ะ
           </p>
           <button
             onClick={onScrollToForm}
             type="button"
-            className="btn-jelly mt-6 min-h-[48px] px-8 py-3 rounded-full bg-gradient-to-r from-pattan-pink to-[#E06B9A] text-white font-black text-sm shadow-jelly-pink flex items-center justify-center gap-2 mx-auto"
+            className="btn-jelly mt-5 min-h-[44px] px-6 py-2.5 rounded-xl bg-slate-900 dark:bg-white hover:bg-pattan-blue-deep dark:hover:bg-slate-100 text-white dark:text-slate-900 font-bold text-xs shadow-sm inline-flex items-center justify-center gap-2 cursor-pointer"
           >
-            <Sparkles className="w-4 h-4 text-pattan-yellow fill-pattan-yellow" />
-            <span>เขียนรีวิวคนแรกเลย ✨</span>
+            <MessageSquarePlus className="w-4 h-4 text-pattan-pink dark:text-pattan-pink-deep" />
+            <span>เขียนรีวิวคนแรก</span>
           </button>
         </div>
       ) : filteredReviews.length === 0 ? (

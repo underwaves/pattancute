@@ -10,11 +10,10 @@ import { Decorations } from './components/Decorations';
 import { ThemeToggle } from './components/ThemeToggle';
 import { BottomNav } from './components/BottomNav';
 import { SectionDivider } from './components/SectionDivider';
-import { CuteSparkleTrail } from './components/CuteSparkleTrail';
 import { AdminModal } from './components/AdminModal';
 import { PricingHero } from './components/PricingHero';
 import { PricingSection } from './components/PricingSection';
-import { Star, Lock, Tag, MessageSquare, MessageCircle, Sparkles } from 'lucide-react';
+import { Star, Lock, Tag, MessageSquare, MessageCircle } from 'lucide-react';
 import { defaultSettings } from './config';
 
 export function App() {
@@ -210,41 +209,38 @@ export function App() {
 
   return (
     <div className="min-h-screen w-full max-w-full overflow-x-hidden relative flex flex-col font-sans selection:bg-pattan-pink-light selection:text-pattan-blue-deep">
-      {/* 1. Living Aurora Blobs + Subtle Paper Texture */}
+      {/* 1. Refined Ambient Mesh Background */}
       <Decorations />
 
-      {/* 2. Tactile Pastel Sparkle Tap Effect */}
-      <CuteSparkleTrail />
-
-      {/* 3. Glass Sticky Top Nav Bar */}
-      <header className="sticky top-0 z-40 w-full bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border-b border-white/80 dark:border-slate-800 transition-colors">
+      {/* 2. Glass Sticky Top Nav Bar */}
+      <header className="sticky top-0 z-40 w-full bg-white/85 dark:bg-slate-900/85 backdrop-blur-xl border-b border-slate-200/70 dark:border-slate-800 transition-colors">
         <div className="max-w-6xl mx-auto px-3 sm:px-4 h-14 sm:h-16 flex items-center justify-between gap-2">
           {/* Brand Logo & Name */}
           <div
-            className="flex items-center gap-2 sm:gap-2.5 cursor-pointer group min-w-0 shrink"
+            className="flex items-center gap-2.5 cursor-pointer group min-w-0 shrink"
             onClick={() => navigate('reviews')}
           >
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-white shadow-sticker p-0.5 overflow-hidden flex items-center justify-center transition-transform group-hover:scale-105 shrink-0">
-              <img src={currentLogo} alt={currentShopName} className="w-full h-full object-contain" />
+            <div className="w-9 h-9 rounded-xl bg-white dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 shadow-xs p-0.5 overflow-hidden flex items-center justify-center transition-transform group-hover:scale-105 shrink-0">
+              <img src={currentLogo} alt={currentShopName} className="w-full h-full object-contain rounded-lg" />
             </div>
             <div className="min-w-0">
-              <span className="font-extrabold text-base sm:text-lg text-pattan-blue dark:text-pattan-blue-light tracking-tight block leading-none font-display truncate">
+              <span className="font-extrabold text-base sm:text-lg text-pattan-blue-deep dark:text-white tracking-tight block leading-none font-display truncate">
                 {currentShopName}
               </span>
-              <span className="hidden sm:block text-[10px] font-black text-pattan-pink tracking-wider truncate mt-0.5">
+              <span className="hidden sm:block text-[10px] font-semibold text-slate-400 tracking-wide truncate mt-0.5">
                 {currentShopSubtitle}
               </span>
             </div>
           </div>
 
           {/* Center (Desktop md+): Dedicated Page Navigation Tabs */}
-          <nav className="hidden md:flex items-center p-1 rounded-full bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/60 dark:border-slate-700 shadow-inner-soft shrink-0 select-none">
+          <nav className="hidden md:flex items-center p-1 rounded-xl bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/70 dark:border-slate-700 shrink-0 select-none">
             <button
               type="button"
               onClick={() => navigate('reviews')}
-              className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-200 flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
+              className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
                 currentPage === 'reviews'
-                  ? 'bg-white dark:bg-slate-700 text-pattan-blue-deep dark:text-white shadow-sm font-black'
+                  ? 'bg-white dark:bg-slate-700 text-pattan-blue-deep dark:text-white shadow-xs'
                   : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
               }`}
               aria-label="ไปยังหน้าเครดิตและรีวิวร้าน"
@@ -256,14 +252,14 @@ export function App() {
             <button
               type="button"
               onClick={() => navigate('pricing')}
-              className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all duration-200 flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
+              className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all duration-200 flex items-center gap-1.5 cursor-pointer whitespace-nowrap shrink-0 ${
                 currentPage === 'pricing'
-                  ? 'bg-gradient-to-r from-pattan-pink to-[#E06B9A] text-white shadow-sm font-black'
-                  : 'text-slate-500 dark:text-slate-400 hover:text-pattan-pink'
+                  ? 'bg-white dark:bg-slate-700 text-pattan-blue-deep dark:text-white shadow-xs'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
               }`}
               aria-label="ไปยังหน้าเรทราคาหารแอพ"
             >
-              <Tag className={`w-3.5 h-3.5 shrink-0 ${currentPage === 'pricing' ? 'text-white' : 'text-slate-400'}`} />
+              <Tag className={`w-3.5 h-3.5 shrink-0 ${currentPage === 'pricing' ? 'text-pattan-pink-deep dark:text-pattan-pink' : 'text-slate-400'}`} />
               <span className="whitespace-nowrap leading-none">เรทราคาหารแอพ</span>
             </button>
           </nav>
@@ -273,7 +269,7 @@ export function App() {
             <button
               onClick={() => openAdmin(currentPage === 'pricing' ? 'pricing' : 'overview')}
               type="button"
-              className="h-9 px-3 sm:px-3.5 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-pattan-blue-deep dark:hover:bg-slate-100 hover:scale-105 active:scale-95 transition-all shadow-sm flex items-center gap-1.5 text-xs font-bold cursor-pointer whitespace-nowrap shrink-0"
+              className="h-9 px-3 sm:px-3.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-pattan-blue-deep dark:hover:bg-slate-100 active:scale-[0.98] transition-all shadow-xs flex items-center gap-1.5 text-xs font-bold cursor-pointer whitespace-nowrap shrink-0"
               title="เข้าสู่ระบบหลังบ้าน (Admin Dashboard)"
               aria-label="เข้าสู่ระบบหลังบ้าน"
             >
@@ -288,17 +284,17 @@ export function App() {
               <button
                 onClick={scrollToForm}
                 type="button"
-                className="btn-jelly hidden lg:inline-flex items-center gap-1.5 min-h-[38px] px-4 py-2 rounded-full bg-gradient-to-r from-pattan-pink to-[#E26698] text-white font-bold text-xs shadow-jelly-pink hover:shadow-lg transition-all cursor-pointer whitespace-nowrap shrink-0"
+                className="btn-jelly hidden lg:inline-flex items-center gap-1.5 h-9 px-4 rounded-xl bg-pattan-pink-deep hover:bg-pattan-pink-dark text-white font-bold text-xs shadow-xs transition-all cursor-pointer whitespace-nowrap shrink-0"
               >
                 <Star className="w-3.5 h-3.5 fill-white text-white shrink-0" />
-                <span className="tracking-wide">ให้เครดิตร้าน</span>
+                <span>ให้เครดิตร้าน</span>
               </button>
             ) : (
               <a
                 href={lineUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-jelly hidden lg:inline-flex items-center gap-1.5 min-h-[38px] px-4 py-2 rounded-full bg-[#06C755] hover:bg-[#05b34c] text-white font-bold text-xs shadow-md transition-all cursor-pointer whitespace-nowrap shrink-0"
+                className="btn-jelly hidden lg:inline-flex items-center gap-1.5 h-9 px-4 rounded-xl bg-[#06C755] hover:bg-[#05b34c] text-white font-bold text-xs shadow-xs transition-all cursor-pointer whitespace-nowrap shrink-0"
               >
                 <MessageCircle className="w-4 h-4 fill-white shrink-0" />
                 <span>สั่งซื้อทาง LINE</span>
@@ -309,13 +305,13 @@ export function App() {
 
         {/* Mobile Sub-Row (< md): Clean Full-Width Segmented Page Switcher */}
         <div className="md:hidden px-3 pb-2.5">
-          <nav className="grid grid-cols-2 p-1 rounded-2xl bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/60 dark:border-slate-700 select-none">
+          <nav className="grid grid-cols-2 p-1 rounded-xl bg-slate-100/90 dark:bg-slate-800/90 border border-slate-200/70 dark:border-slate-700 select-none">
             <button
               type="button"
               onClick={() => navigate('reviews')}
-              className={`py-1.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap ${
+              className={`py-1.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap ${
                 currentPage === 'reviews'
-                  ? 'bg-white dark:bg-slate-700 text-pattan-blue-deep dark:text-white shadow-xs font-black'
+                  ? 'bg-white dark:bg-slate-700 text-pattan-blue-deep dark:text-white shadow-xs'
                   : 'text-slate-500 dark:text-slate-400'
               }`}
             >
@@ -326,13 +322,13 @@ export function App() {
             <button
               type="button"
               onClick={() => navigate('pricing')}
-              className={`py-1.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap ${
+              className={`py-1.5 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer whitespace-nowrap ${
                 currentPage === 'pricing'
-                  ? 'bg-gradient-to-r from-pattan-pink to-[#E06B9A] text-white shadow-xs font-black'
+                  ? 'bg-white dark:bg-slate-700 text-pattan-blue-deep dark:text-white shadow-xs'
                   : 'text-slate-500 dark:text-slate-400'
               }`}
             >
-              <Tag className={`w-3.5 h-3.5 shrink-0 ${currentPage === 'pricing' ? 'text-white' : 'text-slate-400'}`} />
+              <Tag className={`w-3.5 h-3.5 shrink-0 ${currentPage === 'pricing' ? 'text-pattan-pink-deep dark:text-pattan-pink' : 'text-slate-400'}`} />
               <span>เรทราคาหารแอพ</span>
             </button>
           </nav>

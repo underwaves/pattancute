@@ -412,9 +412,9 @@ export function PricingSection({ pricing = defaultPricing, contacts, onOpenAdmin
         <div className="min-w-0 bg-white/90 dark:bg-slate-900/85 backdrop-blur-xl border border-white dark:border-slate-800 rounded-[28px] shadow-bento overflow-hidden">
           {/* Thin Dynamic Brand Color Top Ribbon */}
           <div
-            className="h-1.5 w-full transition-colors duration-300"
+            className="h-1 w-full transition-colors duration-300 opacity-85"
             style={{
-              background: `linear-gradient(90deg, ${brandColor}, #F58DB8, #5B86C8)`,
+              background: `linear-gradient(90deg, ${brandColor}, #DF6E9B, #4B72B0)`,
             }}
           />
 
@@ -553,14 +553,16 @@ export function PricingSection({ pricing = defaultPricing, contacts, onOpenAdmin
                       onClick={() => setSelectedSubGroup(grp)}
                       className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 cursor-pointer ${
                         active
-                          ? 'bg-gradient-to-r from-pattan-pink to-[#E06B9A] text-white shadow-xs font-black'
+                          ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 shadow-xs'
                           : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
                       }`}
                     >
                       <span>{grp}</span>
                       <span
                         className={`text-[10px] px-1.5 py-0.2 rounded-full ${
-                          active ? 'bg-white/25 text-white' : 'bg-slate-200/80 dark:bg-slate-700 text-slate-500'
+                          active
+                            ? 'bg-white/20 dark:bg-slate-900/15 text-white dark:text-slate-900'
+                            : 'bg-slate-200/80 dark:bg-slate-700 text-slate-500'
                         }`}
                       >
                         {count}

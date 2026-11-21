@@ -11,16 +11,16 @@ export function PricingHero({ shopName = 'Pattancute', totalApps = 15, onOpenAdm
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-4 border-b border-slate-200/70 dark:border-slate-800/80">
           {/* Left: Clean Modern Title & Subtitle */}
           <div className="space-y-1.5">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/90 dark:bg-slate-800/90 border border-pattan-pink/25 dark:border-slate-700 shadow-xs text-[11px] font-bold text-pattan-pink-deep dark:text-pattan-pink">
-              <Sparkles className="w-3 h-3 text-pattan-yellow fill-pattan-yellow" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/90 dark:bg-slate-800/90 border border-slate-200/80 dark:border-slate-700 shadow-xs text-[11px] font-semibold text-slate-600 dark:text-slate-300">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
               <span>ศูนย์รวมเรทราคาหารแอพแท้ 100%</span>
               <span className="text-slate-300 dark:text-slate-600">•</span>
-              <span className="text-pattan-blue dark:text-pattan-blue-light">{totalApps} แอพยอดฮิต</span>
+              <span className="text-pattan-blue-deep dark:text-pattan-blue-light font-bold">{totalApps} แอพยอดนิยม</span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-black text-pattan-blue-deep dark:text-white tracking-tight font-display leading-tight">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-pattan-blue-deep dark:text-white tracking-tight font-display leading-tight">
               เรทราคาหารแอพ{' '}
-              <span className="bg-gradient-to-r from-pattan-pink-deep via-pattan-pink to-pattan-blue bg-clip-text text-transparent">
+              <span className="text-pattan-pink-deep dark:text-pattan-pink">
                 {shopName}
               </span>
             </h1>

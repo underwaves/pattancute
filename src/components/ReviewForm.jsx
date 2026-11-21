@@ -1,24 +1,23 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Star, Camera, X, Send, AlertCircle, CheckCircle2, Check, Sparkles, Heart } from 'lucide-react';
-import { CuteMonkey } from './CuteMonkey';
+import { Star, Camera, X, Send, AlertCircle, Check, PenLine } from 'lucide-react';
 import { Confetti } from './Confetti';
 import { saveEditToken } from '../myReviews';
 
 const RATING_LABELS = {
-  5: 'ประทับใจมากที่สุด รักเลย ❤️✨',
-  4: 'สินค้าตรงปก บริการดีมาก 👍🌸',
-  3: 'พึงพอใจ ได้รับของครบถ้วน 😊',
-  2: 'พอใช้ อยากให้ปรับปรุงนิดนึง 🙂',
-  1: 'ต้องการให้ทางร้านปรับปรุงบริการ 💬',
+  5: 'ประทับใจมาก บริการดีเยี่ยม',
+  4: 'สินค้าตรงปก บริการดีมาก',
+  3: 'พึงพอใจ ได้รับบริการครบถ้วน',
+  2: 'พอใช้ มีจุดที่อยากให้ปรับปรุง',
+  1: 'ต้องการให้ทางร้านปรับปรุงบริการ',
 };
 
 const QUICK_TAGS = [
-  { label: '📦 แพ็คของน่ารักมาก', text: 'แพ็คของมาน่ารักมากเลยค่ะ มีความใส่ใจสุดๆ ' },
-  { label: '⚡ ส่งไวทันใจ', text: 'จัดส่งสินค้ารวดเร็วทันใจมากค่ะ ' },
-  { label: '🌸 แม่ค้าตอบไวน่ารัก', text: 'แม่ค้าใจดีตอบแชทไวและน่ารักมากค่ะ ' },
-  { label: '✨ สินค้าตรงปก 100%', text: 'สินค้าตรงปกของจริงน่ารักมากกก ' },
-  { label: '💖 มีของแถมน่ารัก', text: 'มีของแถมน่ารักๆ ใส่มาให้ด้วย ประทับใจมากค่ะ ' },
-  { label: '🥰 จะกลับมาซื้ออีก', text: 'ประทับใจสุดๆ ไว้จะกลับมาอุดหนุนอีกแน่นอนค่ะ ' },
+  { label: 'ส่งไวทันใจ', text: 'จัดส่งรวดเร็วทันใจมากค่ะ ' },
+  { label: 'แอดมินตอบไว ดูแลดี', text: 'แอดมินตอบแชทไวและให้คำแนะนำดีมากค่ะ ' },
+  { label: 'ใช้งานได้จริง ไม่มีสะดุด', text: 'ใช้งานได้จริง ชัดเจน ไม่มีสะดุดเลยค่ะ ' },
+  { label: 'ราคาคุ้มค่า', text: 'ราคาคุ้มค่ามาก ประทับใจค่ะ ' },
+  { label: 'บริการหลังการขายดี', text: 'ดูแลหลังการขายดีมาก ไว้ใจได้เลยค่ะ ' },
+  { label: 'จะกลับมาใช้บริการอีก', text: 'ประทับใจมากค่ะ ไว้จะกลับมาอุดหนุนอีกแน่นอน ' },
 ];
 
 export function ReviewForm({ onReviewSubmitted }) {
@@ -187,36 +186,17 @@ export function ReviewForm({ onReviewSubmitted }) {
       {showConfetti && <Confetti onComplete={() => setShowConfetti(false)} />}
 
       <div className="card-bento p-6 sm:p-9 relative overflow-hidden">
-        {/* Cute Mascot sticker floating in top-right, reacts dynamically to rating */}
-        <div className="absolute -top-3 -right-3 z-10 hidden sm:block anim-float">
-          <div className="p-1 rounded-full bg-white shadow-sticker transition-transform">
-            <CuteMonkey
-              className="w-13 h-13 max-w-full max-h-full"
-              mood={
-                (hoverRating || rating) === 5
-                  ? 'love'
-                  : (hoverRating || rating) === 4
-                  ? 'cheer'
-                  : (hoverRating || rating) === 3
-                  ? 'happy'
-                  : 'wink'
-              }
-            />
-          </div>
-        </div>
-
         {/* Header */}
-        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-pattan-blue/10">
-          <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-pattan-blue/20 to-pattan-pink/20 flex items-center justify-center text-pattan-blue shadow-xs">
-            <Sparkles className="w-5 h-5 text-pattan-yellow fill-pattan-yellow" />
+        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-slate-100 dark:border-slate-800">
+          <div className="w-10 h-10 rounded-xl bg-pattan-blue-soft dark:bg-slate-800 border border-pattan-blue/15 flex items-center justify-center text-pattan-blue">
+            <PenLine className="w-5 h-5" />
           </div>
           <div>
-            <h2 className="text-xl sm:text-2xl font-black text-pattan-blue dark:text-pattan-blue-light font-display flex items-center gap-1.5">
-              <span>ให้เครดิต &amp; เขียนรีวิว</span>
-              <Heart className="w-4 h-4 text-pattan-pink fill-pattan-pink" />
+            <h2 className="text-lg sm:text-xl font-extrabold text-pattan-blue-deep dark:text-white font-display">
+              ให้เครดิต &amp; เขียนรีวิว
             </h2>
-            <p className="text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400 mt-0.5">
-              ส่งต่อความน่ารักและความประทับใจของคุณได้ที่นี่น้า~
+            <p className="text-xs font-medium text-slate-500 dark:text-slate-400 mt-0.5">
+              แบ่งปันประสบการณ์การใช้งานจริงของคุณ เพื่อเป็นข้อมูลให้ลูกค้าท่านอื่น
             </p>
           </div>
         </div>
@@ -294,8 +274,8 @@ export function ReviewForm({ onReviewSubmitted }) {
               maxLength={40}
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="เช่น น้องมุก, คุณฟ้า, ลูกค้าประจำร้าน 🌸"
-              className="w-full min-h-[50px] px-4 rounded-2xl bg-white/80 dark:bg-slate-700/60 border border-slate-200/80 dark:border-slate-600 shadow-xs text-pattan-blue-deep dark:text-white placeholder:text-slate-400 focus:outline-none focus:bg-white focus:ring-4 focus:ring-pattan-blue/20 transition-all font-medium text-sm"
+              placeholder="เช่น คุณมุก, คุณฟ้า, ลูกค้าประจำ"
+              className="w-full min-h-[46px] px-4 rounded-xl bg-slate-50/80 dark:bg-slate-800/70 border border-slate-200/90 dark:border-slate-700 text-pattan-blue-deep dark:text-white placeholder:text-slate-400 focus:outline-none focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-pattan-blue/25 focus:border-pattan-blue transition-all font-medium text-sm"
             />
           </div>
 
@@ -354,15 +334,14 @@ export function ReviewForm({ onReviewSubmitted }) {
               maxLength={500}
               value={comment}
               onChange={(e) => setComment(e.target.value)}
-              placeholder="เล่าความประทับใจ เช่น สินค้าน่ารักมาก ตรงปกสุดๆ แม่ค้าใจดีตอบไว แพ็คของมาน่ารักมากเลยค่ะ ประทับใจมาก..."
-              className="w-full p-4 rounded-2xl bg-white/80 dark:bg-slate-700/60 border border-slate-200/80 dark:border-slate-600 shadow-xs text-pattan-blue-deep dark:text-white placeholder:text-slate-400 focus:outline-none focus:bg-white focus:ring-4 focus:ring-pattan-blue/20 transition-all resize-none font-medium leading-relaxed text-sm"
+              placeholder="บอกเล่าประสบการณ์การใช้บริการ เช่น ความเร็วในการจัดส่ง การดูแลจากแอดมิน หรือความประทับใจ..."
+              className="w-full p-4 rounded-xl bg-slate-50/80 dark:bg-slate-800/70 border border-slate-200/90 dark:border-slate-700 text-pattan-blue-deep dark:text-white placeholder:text-slate-400 focus:outline-none focus:bg-white dark:focus:bg-slate-800 focus:ring-2 focus:ring-pattan-blue/25 focus:border-pattan-blue transition-all resize-none font-medium leading-relaxed text-sm"
             />
 
-            {/* Quick Tag Stamp Chips */}
+            {/* Quick Tag Chips */}
             <div className="mt-2.5">
-              <div className="flex items-center gap-1.5 text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-1.5">
-                <Sparkles className="w-3 h-3 text-pattan-yellow fill-pattan-yellow" />
-                <span>แตะเพื่อใส่คำรีวิวยอดนิยม:</span>
+              <div className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 mb-1.5">
+                เลือกคำรีวิวยอดนิยม:
               </div>
               <div className="flex flex-wrap gap-1.5">
                 {QUICK_TAGS.map((tag) => (
@@ -370,52 +349,52 @@ export function ReviewForm({ onReviewSubmitted }) {
                     key={tag.label}
                     type="button"
                     onClick={() => handleAddQuickTag(tag.text)}
-                    className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-white/70 dark:bg-slate-700/60 hover:bg-white hover:text-pattan-blue dark:hover:text-pattan-blue-light border border-slate-200/60 dark:border-slate-600 text-slate-600 dark:text-slate-300 transition-all active:scale-95 shadow-xs cursor-pointer flex items-center gap-1"
+                    className="text-[11px] font-semibold px-3 py-1 rounded-lg bg-slate-100/80 dark:bg-slate-800 hover:bg-pattan-blue-soft hover:text-pattan-blue-deep dark:hover:text-pattan-blue-light border border-slate-200/60 dark:border-slate-700 text-slate-600 dark:text-slate-300 transition-all active:scale-95 cursor-pointer"
                   >
-                    <span>{tag.label}</span>
+                    + {tag.label}
                   </button>
                 ))}
               </div>
             </div>
           </div>
 
-          {/* 4. Image Attachments (0-3 images) with Sticker Polaroid Preview */}
+          {/* 4. Image Attachments (0-3 images) */}
           <div>
             <div className="flex justify-between items-center mb-2">
               <label className="text-sm font-bold text-pattan-blue-deep dark:text-slate-200">
-                แนบรูปภาพสินค้า/พัสดุ (ไม่บังคับ, สูงสุด 3 รูป)
+                แนบรูปภาพประกอบ (ไม่บังคับ, สูงสุด 3 รูป)
               </label>
               <span className="text-xs text-slate-400 font-medium">ไม่เกิน 3MB ต่อรูป (JPG, PNG, WebP)</span>
             </div>
 
-            {/* Polaroid Sticker Preview Area */}
+            {/* Clean Image Preview Grid */}
             {images.length > 0 && (
-              <div className="flex flex-wrap gap-3.5 mb-3">
+              <div className="flex flex-wrap gap-3 mb-3">
                 {images.map((img, index) => (
                   <div
                     key={img.id}
-                    className="relative w-20 h-20 sm:w-24 sm:h-24 p-1.5 bg-white rounded-2xl shadow-sticker -rotate-2 hover:rotate-0 transition-transform group"
+                    className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-white shadow-xs group"
                   >
                     <img
                       src={img.previewUrl}
                       alt={`พรีวิวรูปที่ ${index + 1}`}
-                      className="w-full h-full object-cover rounded-xl"
+                      className="w-full h-full object-cover"
                     />
                     <button
                       type="button"
                       onClick={() => handleRemoveImage(img.id)}
-                      className="absolute -top-1.5 -right-1.5 p-1 bg-black/80 hover:bg-rose-600 text-white rounded-full transition shadow-md focus:outline-none"
+                      className="absolute top-1 right-1 p-1 bg-slate-900/80 hover:bg-rose-600 text-white rounded-full transition shadow-sm focus:outline-none"
                       title="ลบรูปภาพนี้"
                       aria-label="ลบรูปภาพนี้"
                     >
-                      <X className="w-3.5 h-3.5" />
+                      <X className="w-3 h-3" />
                     </button>
                   </div>
                 ))}
               </div>
             )}
 
-            {/* Upload Box with Camera Icon */}
+            {/* Upload Box */}
             {images.length < 3 && (
               <div>
                 <input
@@ -429,32 +408,31 @@ export function ReviewForm({ onReviewSubmitted }) {
                 />
                 <label
                   htmlFor="image-upload"
-                  className="inline-flex items-center gap-2.5 min-h-[46px] px-5 py-2.5 rounded-2xl border-2 border-dashed border-[#5B86C8]/40 hover:border-pattan-blue bg-white/60 dark:bg-slate-700/40 hover:bg-white/90 cursor-pointer text-sm font-bold text-pattan-blue-deep dark:text-slate-200 transition active:scale-95 shadow-xs"
+                  className="inline-flex items-center gap-2 min-h-[42px] px-4 py-2 rounded-xl border border-dashed border-slate-300 dark:border-slate-600 hover:border-pattan-blue bg-slate-50/70 dark:bg-slate-800/50 hover:bg-white dark:hover:bg-slate-800 cursor-pointer text-xs font-bold text-slate-700 dark:text-slate-200 transition active:scale-[0.98]"
                 >
-                  <Camera className="w-4 h-4 text-pattan-pink" />
+                  <Camera className="w-4 h-4 text-pattan-blue" />
                   <span>เพิ่มรูปภาพรีวิว ({images.length}/3)</span>
                 </label>
               </div>
             )}
           </div>
 
-          {/* 5. Submit Jelly Button */}
+          {/* 5. Refined Submit Button */}
           <div className="pt-2">
             <button
               type="submit"
               disabled={isSubmitting}
-              className="btn-jelly w-full min-h-[52px] px-6 py-3.5 rounded-full bg-gradient-to-r from-pattan-blue via-[#6E99DC] to-pattan-pink disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold text-base shadow-jelly flex items-center justify-center gap-2.5"
+              className="btn-jelly w-full min-h-[48px] px-6 py-3 rounded-2xl bg-slate-900 dark:bg-white hover:bg-pattan-blue-deep dark:hover:bg-slate-100 disabled:opacity-60 disabled:cursor-not-allowed text-white dark:text-slate-900 font-bold text-sm shadow-jelly flex items-center justify-center gap-2 cursor-pointer"
             >
               {isSubmitting ? (
                 <>
-                  <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
                   <span>กำลังส่งรีวิว...</span>
                 </>
               ) : (
                 <>
-                  <Send className="w-4 h-4 text-white" />
-                  <span className="tracking-wide">ส่งรีวิวให้ร้าน Pattancute</span>
-                  <span className="text-pattan-yellow">✨</span>
+                  <Send className="w-4 h-4 text-pattan-pink dark:text-pattan-pink-deep" />
+                  <span>ส่งรีวิวให้เครดิตร้าน</span>
                 </>
               )}
             </button>
