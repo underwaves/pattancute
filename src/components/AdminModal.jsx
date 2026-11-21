@@ -1759,7 +1759,20 @@ export function AdminModal({
                                 </div>
                               </div>
 
-                              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                              <div className="grid grid-cols-1 sm:grid-cols-4 gap-2.5">
+                                <div>
+                                  <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-300 mb-1">
+                                    กลุ่มย่อย (Group Tag)
+                                  </label>
+                                  <input
+                                    type="text"
+                                    value={plan.group || ''}
+                                    onChange={(e) => updatePlan(pIdx, { group: e.target.value })}
+                                    placeholder="เช่น เมลปิดรับเคลม, Gold VIP"
+                                    className="w-full h-9 px-3 rounded-xl bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs"
+                                  />
+                                </div>
+
                                 <div>
                                   <label className="block text-[11px] font-bold text-slate-600 dark:text-slate-300 mb-1">
                                     ราคาขายจริง ฿ (Price)

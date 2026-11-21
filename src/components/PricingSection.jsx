@@ -5,8 +5,8 @@ import { defaultPricing } from '../config';
 export function PricingSection({ pricing = defaultPricing, contacts }) {
   const apps = Array.isArray(pricing) && pricing.length > 0 ? pricing : defaultPricing;
   const [selectedAppId, setSelectedAppId] = useState(apps[0]?.id || 'netflix');
+  const [selectedSubGroup, setSelectedSubGroup] = useState('all');
   const [copiedLink, setCopiedLink] = useState(false);
-  const [copiedPlanId, setCopiedPlanId] = useState(null);
 
   // Sync with URL hash if it contains #pricing-<appId>
   useEffect(() => {
@@ -17,6 +17,7 @@ export function PricingSection({ pricing = defaultPricing, contacts }) {
         const exists = apps.find((a) => a.id.toLowerCase() === targetApp);
         if (exists) {
           setSelectedAppId(exists.id);
+          setSelectedSubGroup('all');
         }
       }
     };
@@ -29,6 +30,15 @@ export function PricingSection({ pricing = defaultPricing, contacts }) {
   const plans = selectedApp.plans || [];
   const lineUrl = contacts?.line?.url || 'https://line.me/R/ti/p/@078yzbej';
   const lineId = contacts?.line?.id || '@078yzbej';
+
+  // Subcategory groups in plans (e.g. เมลปิดรับเคลม / เมลปิดไม่เคลม, Gold VIP / Premium 4K)
+  const uniqueGroups = Array.from(
+    new Set(plans.map((p) => p.group).filter(Boolean))
+  );
+
+  const displayedPlans = selectedSubGroup && selectedSubGroup !== 'all'
+    ? plans.filter((p) => p.group === selectedSubGroup)
+    : plans;
 
   // Copy app-specific pricing deep link
   const handleCopyAppLink = async () => {
@@ -60,7 +70,10 @@ export function PricingSection({ pricing = defaultPricing, contacts }) {
   };
 
   return (
-    <section id="pricing-section" className="w-full max-w-3xl mx-auto px-4 mb-16 scroll-mt-20 font-sans">
+    <section id="pricing-section" className="relative w-full max-w-4xl mx-auto px-4 mb-16 scroll-mt-20 font-sans">
+      {/* Anchor for #pricing deep link */}
+      <span id="pricing" className="absolute -top-24" />
+
       {/* Section Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div className="flex items-center gap-3">
@@ -110,6 +123,7 @@ export function PricingSection({ pricing = defaultPricing, contacts }) {
                 type="button"
                 onClick={() => {
                   setSelectedAppId(app.id);
+                  setSelectedSubGroup('all');
                   if (window.history && window.history.replaceState) {
                     window.history.replaceState(null, '', `#pricing-${app.id}`);
                   }
@@ -149,20 +163,20 @@ export function PricingSection({ pricing = defaultPricing, contacts }) {
       <div className="relative overflow-hidden rounded-3xl p-5 sm:p-6 mb-6 bg-gradient-to-br from-white/95 to-slate-50/90 dark:from-slate-800/95 dark:to-slate-850/90 border border-white dark:border-slate-700 shadow-bento">
         {/* Ambient brand color aura */}
         <div
-          className="absolute -top-12 -right-12 w-40 h-40 rounded-full blur-3xl opacity-30 pointer-events-none"
+          className="absolute -top-12 -right-12 w-48 h-48 rounded-full blur-3xl opacity-25 pointer-events-none"
           style={{ backgroundColor: selectedApp.color || '#5B86C8' }}
         />
 
         <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3.5">
             <div
-              className="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl shadow-md border-2 border-white dark:border-slate-700"
+              className="w-13 h-13 rounded-2xl flex items-center justify-center text-3xl shadow-md border-2 border-white dark:border-slate-700 shrink-0"
               style={{ backgroundColor: `${selectedApp.color}15` }}
             >
               {selectedApp.icon || '📱'}
             </div>
             <div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
                 <h3 className="text-lg sm:text-xl font-black text-slate-800 dark:text-white font-display">
                   {selectedApp.name}
                 </h3>
@@ -172,20 +186,62 @@ export function PricingSection({ pricing = defaultPricing, contacts }) {
                   </span>
                 )}
               </div>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                 {selectedApp.description || 'แพ็กเกจพรีเมียมราคาพิเศษ รับประกันดูแลตลอดการใช้งาน'}
               </p>
             </div>
           </div>
 
-          <div className="inline-flex items-center gap-1.5 self-start sm:self-auto text-xs font-bold text-pattan-pink-deep dark:text-pattan-pink bg-pink-50 dark:bg-pink-950/40 px-3 py-1 rounded-full border border-pink-100 dark:border-pink-900/50">
+          <div className="inline-flex items-center gap-1.5 self-start sm:self-auto text-xs font-bold text-pattan-pink-deep dark:text-pattan-pink bg-pink-50 dark:bg-pink-950/40 px-3.5 py-1 rounded-full border border-pink-100 dark:border-pink-900/50 shrink-0">
             <span>มีทั้งหมด {plans.length} แพ็กเกจ</span>
           </div>
         </div>
       </div>
 
+      {/* Subcategory Group Filter Pills (e.g. เมลปิดรับเคลม / เมลปิดไม่เคลม, Gold VIP / Premium 4K) */}
+      {uniqueGroups.length > 1 && (
+        <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-6 scrollbar-none select-none">
+          <button
+            type="button"
+            onClick={() => setSelectedSubGroup('all')}
+            className={`min-h-[34px] px-3.5 rounded-full text-xs font-black transition-all shrink-0 active:scale-95 cursor-pointer ${
+              selectedSubGroup === 'all'
+                ? 'bg-slate-800 text-white dark:bg-white dark:text-slate-900 shadow-xs'
+                : 'bg-white/80 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 hover:bg-white border border-slate-200/60 dark:border-slate-700'
+            }`}
+          >
+            ทั้งหมด ({plans.length})
+          </button>
+
+          {uniqueGroups.map((grp) => {
+            const count = plans.filter((p) => p.group === grp).length;
+            const isSelected = selectedSubGroup === grp;
+
+            return (
+              <button
+                key={grp}
+                type="button"
+                onClick={() => setSelectedSubGroup(grp)}
+                className={`min-h-[34px] px-3.5 rounded-full text-xs font-black transition-all shrink-0 active:scale-95 flex items-center gap-1.5 cursor-pointer ${
+                  isSelected
+                    ? 'bg-gradient-to-r from-pattan-pink to-[#E06B9A] text-white shadow-xs'
+                    : 'bg-white/80 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 hover:bg-white border border-slate-200/60 dark:border-slate-700'
+                }`}
+              >
+                <span>{grp}</span>
+                <span className={`text-[10px] px-1.5 py-0.2 rounded-full font-bold ${
+                  isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-500'
+                }`}>
+                  {count}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+
       {/* 3. Pricing Cards Grid for Selected App */}
-      {plans.length === 0 ? (
+      {displayedPlans.length === 0 ? (
         <div className="card-bento p-8 text-center">
           <p className="text-sm font-bold text-slate-500">กำลังอัปเดตแพ็กเกจราคาของแอพนี้ กรุณาสอบถามแอดมินทาง LINE ได้เลยค่ะ 🌸</p>
           <a
@@ -200,8 +256,8 @@ export function PricingSection({ pricing = defaultPricing, contacts }) {
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {plans.map((plan, idx) => {
-            const isPopular = plan.badge && (plan.badge.includes('ขายดี') || plan.badge.includes('ยอดนิยม') || plan.badge.includes('แนะนำ'));
+          {displayedPlans.map((plan, idx) => {
+            const isPopular = plan.badge && (plan.badge.includes('ขายดี') || plan.badge.includes('ยอดนิยม') || plan.badge.includes('แนะนำ') || plan.badge.includes('4K'));
 
             return (
               <div
@@ -223,9 +279,17 @@ export function PricingSection({ pricing = defaultPricing, contacts }) {
 
                 {/* Plan Header */}
                 <div>
-                  <div className="text-xs font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider mb-1">
-                    {plan.period || 'แพ็กเกจ'}
+                  <div className="flex items-center justify-between gap-2 mb-1.5">
+                    <span className="text-[11px] font-bold text-slate-400 dark:text-slate-400 uppercase tracking-wider">
+                      {plan.period || 'แพ็กเกจ'}
+                    </span>
+                    {plan.group && (
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700/80 text-slate-500 dark:text-slate-300">
+                        {plan.group}
+                      </span>
+                    )}
                   </div>
+
                   <h4 className="text-base font-black text-slate-800 dark:text-white leading-snug mb-3">
                     {plan.name}
                   </h4>
