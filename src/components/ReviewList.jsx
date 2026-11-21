@@ -210,14 +210,7 @@ function AnimatedReviewCard({ review, index, onImageClick, onEdit }) {
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
       }`}
     >
-      {/* Subtle Editorial Quotation Watermark */}
-      <span
-        aria-hidden="true"
-        className="pointer-events-none select-none absolute -top-2 right-5 text-7xl font-serif leading-none text-pattan-pink/12 dark:text-pattan-pink/10"
-      >
-        &ldquo;
-      </span>
-      {/* Review Header: Avatar, Name, Rating, Date */}
+      {/* Review Header: Avatar, Name, Rating */}
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex items-center gap-3">
           {/* Pastel Avatar */}
@@ -252,16 +245,6 @@ function AnimatedReviewCard({ review, index, onImageClick, onEdit }) {
               ))}
             </div>
           </div>
-        </div>
-
-        {/* Thai Relative Date badge (+ edited mark) */}
-        <div className="flex flex-col items-end gap-1 shrink-0">
-          <span className="text-xs font-bold text-pattan-text-muted bg-white/80 dark:bg-slate-700/60 px-2.5 py-1 rounded-full border border-slate-100 shadow-xs">
-            {formatThaiRelativeTime(review.created_at)}
-          </span>
-          {review.updated_at && (
-            <span className="text-[10px] font-semibold text-slate-400">(แก้ไขแล้ว)</span>
-          )}
         </div>
       </div>
 
