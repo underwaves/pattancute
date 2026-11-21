@@ -20,7 +20,7 @@ export function PricingHero({ shopName = 'Pattancute', totalApps = 15, onOpenAdm
 
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-pattan-blue-deep dark:text-white tracking-tight font-display leading-tight">
               เรทราคาหารแอพ{' '}
-              <span className="text-pattan-pink-deep dark:text-pattan-pink">
+              <span className="font-brand font-bold text-pattan-pink-deep dark:text-pattan-pink tracking-normal">
                 {shopName}
               </span>
             </h1>

@@ -37,7 +37,8 @@ export default {
       fontFamily: {
         sans: ['Plus Jakarta Sans', 'IBM Plex Sans Thai', 'system-ui', 'sans-serif'],
         display: ['Plus Jakarta Sans', 'IBM Plex Sans Thai', 'system-ui', 'sans-serif'],
-        cute: ['IBM Plex Sans Thai', 'Plus Jakarta Sans', 'sans-serif'],
+        brand: ['Fredoka', 'Mali', 'IBM Plex Sans Thai', 'sans-serif'],
+        cute: ['Fredoka', 'Mali', 'IBM Plex Sans Thai', 'sans-serif'],
       },
       borderRadius: {
         '3xl': '20px',

@@ -12,10 +12,12 @@ export function Footer({ onOpenAdmin, settings }) {
         <div className="space-y-1">
           <div className="flex items-center justify-center sm:justify-start gap-2 text-xs font-bold text-pattan-blue-deep dark:text-slate-200">
             <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0" />
-            <span>ระบบบันทึกรีวิวและเรทราคา {shopName} · โปร่งใส ตรวจสอบได้จริง 100%</span>
+            <span>
+              ระบบบันทึกรีวิวและเรทราคา <span className="font-brand text-sm text-pattan-pink-deep dark:text-pattan-pink">{shopName}</span> · โปร่งใส ตรวจสอบได้จริง 100%
+            </span>
           </div>
           <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
-            &copy; {currentYear} {shopName} &bull;{' '}
+            &copy; {currentYear} <span className="font-brand font-bold text-slate-700 dark:text-slate-200">{shopName}</span> &bull;{' '}
             <span className="text-slate-700 dark:text-slate-300 font-semibold">{shopSubtitle}</span> &bull; All rights reserved.
           </p>
         </div>

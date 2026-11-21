@@ -224,7 +224,7 @@ export function App() {
               <img src={currentLogo} alt={currentShopName} className="w-full h-full object-contain rounded-lg" />
             </div>
             <div className="min-w-0">
-              <span className="font-extrabold text-base sm:text-lg text-pattan-blue-deep dark:text-white tracking-tight block leading-none font-display truncate">
+              <span className="font-bold text-base sm:text-xl text-pattan-blue-deep dark:text-white tracking-normal block leading-tight font-brand truncate">
                 {currentShopName}
               </span>
               <span className="hidden sm:block text-[10px] font-semibold text-slate-400 tracking-wide truncate mt-0.5">

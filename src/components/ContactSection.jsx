@@ -24,7 +24,7 @@ export function ContactSection({ contacts, shopName = 'Pattancute' }) {
             </div>
 
             <h3 className="text-xl sm:text-2xl font-extrabold text-pattan-blue-deep dark:text-white font-display tracking-tight">
-              ติดต่อร้าน {shopName}
+              ติดต่อร้าน <span className="font-brand font-bold text-pattan-pink-deep dark:text-pattan-pink">{shopName}</span>
             </h3>
             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-md leading-relaxed">
               สอบถามรายละเอียด สั่งซื้อแพ็กเกจ หรือแจ้งปัญหาการใช้งาน ทีมแอดมินพร้อมดูแลตลอดค่ะ

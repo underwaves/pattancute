@@ -50,8 +50,8 @@ export function Hero({
         </div>
       </div>
 
-      {/* 3. Refined Editorial Typography */}
-      <h1 className="mt-5 text-3xl sm:text-5xl font-extrabold text-pattan-blue-deep dark:text-white font-display tracking-tight leading-tight">
+      {/* 3. Cute Brand Name Typography */}
+      <h1 className="mt-5 text-4xl sm:text-5xl font-bold text-pattan-blue-deep dark:text-white font-brand tracking-normal leading-tight">
         {displayTitle}
       </h1>
       <p className="mt-2.5 text-sm sm:text-base font-medium text-slate-500 dark:text-slate-400 max-w-xl leading-relaxed">
