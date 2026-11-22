@@ -127,31 +127,52 @@ function EditReviewModal({ review, onClose, onSaved }) {
   );
 }
 
-// Helper: Format Thai Relative Time (e.g. "เมื่อวานนี้", "2 วันที่แล้ว")
-function formatThaiRelativeTime(isoString) {
+// Helper: Format real Thai calendar date from database timestamp (e.g. "18 พ.ย. 2569")
+const THAI_MONTHS_SHORT = [
+  'ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
+  'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'
+];
+
+function formatThaiDate(isoString) {
   if (!isoString) return '';
   try {
     const d = new Date(isoString);
     if (isNaN(d.getTime())) return '';
-    const now = new Date();
-    const diffSec = Math.floor((now.getTime() - d.getTime()) / 1000);
-
-    if (diffSec < 60) return 'เมื่อสักครู่';
-    const diffMin = Math.floor(diffSec / 60);
-    if (diffMin < 60) return `${diffMin} นาทีที่แล้ว`;
-    const diffHour = Math.floor(diffMin / 60);
-    if (diffHour < 24) return `${diffHour} ชั่วโมงที่แล้ว`;
-    const diffDay = Math.floor(diffHour / 24);
-    if (diffDay === 1) return 'เมื่อวานนี้';
-    if (diffDay < 7) return `${diffDay} วันที่แล้ว`;
-
-    return new Intl.DateTimeFormat('th-TH', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    }).format(d);
+    if (typeof Intl !== 'undefined' && Intl.DateTimeFormat) {
+      return new Intl.DateTimeFormat('th-TH', {
+        timeZone: 'Asia/Bangkok',
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      }).format(d);
+    }
+    const utc = d.getTime() + d.getTimezoneOffset() * 60000;
+    const bkk = new Date(utc + 3600000 * 7);
+    return `${bkk.getDate()} ${THAI_MONTHS_SHORT[bkk.getMonth()]} ${bkk.getFullYear() + 543}`;
   } catch (e) {
-    return isoString;
+    return '';
+  }
+}
+
+function formatThaiFullDateTime(isoString) {
+  if (!isoString) return '';
+  try {
+    const d = new Date(isoString);
+    if (isNaN(d.getTime())) return '';
+    if (typeof Intl !== 'undefined' && Intl.DateTimeFormat) {
+      return new Intl.DateTimeFormat('th-TH', {
+        timeZone: 'Asia/Bangkok',
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      }).format(d) + ' น.';
+    }
+    return formatThaiDate(isoString);
+  } catch (e) {
+    return '';
   }
 }
 
@@ -210,7 +231,7 @@ function AnimatedReviewCard({ review, index, onImageClick, onEdit }) {
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
       }`}
     >
-      {/* Review Header: Avatar, Name, Rating */}
+      {/* Review Header: Avatar, Name, Rating, Real Date */}
       <div className="flex items-start justify-between gap-3 mb-3">
         <div className="flex items-center gap-3">
           {/* Pastel Avatar */}
@@ -246,6 +267,21 @@ function AnimatedReviewCard({ review, index, onImageClick, onEdit }) {
             </div>
           </div>
         </div>
+
+        {/* Real Date badge (+ edited mark) */}
+        {review.created_at && (
+          <div className="flex flex-col items-end gap-0.5 shrink-0 pt-0.5">
+            <span
+              title={formatThaiFullDateTime(review.created_at)}
+              className="text-xs font-semibold text-slate-500 dark:text-slate-400 bg-slate-100/80 dark:bg-slate-700/60 px-2.5 py-0.5 rounded-full border border-slate-200/60 dark:border-slate-600/60 shadow-2xs"
+            >
+              {formatThaiDate(review.created_at)}
+            </span>
+            {review.updated_at && (
+              <span className="text-[10px] font-medium text-slate-400 dark:text-slate-500">(แก้ไขแล้ว)</span>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Comment Text */}
