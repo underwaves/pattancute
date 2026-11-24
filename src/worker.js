@@ -111,20 +111,24 @@ async function getValidAdminToken(env) {
   try {
     const row = await env.DB.prepare("SELECT value FROM site_settings WHERE key = 'admin_token'").first();
     if (row && row.value) {
-      return row.value;
+      return String(row.value).trim();
     }
   } catch (e) {
     console.warn('Could not read admin_token from D1:', e);
   }
-  return env.ADMIN_TOKEN || 'pattan_admin_0011533306ebaf9ced65c67d50614207';
+  // Return env.ADMIN_TOKEN if set, otherwise null (fail-closed, never fall back to hardcoded secrets)
+  return env.ADMIN_TOKEN ? String(env.ADMIN_TOKEN).trim() : null;
 }
 
-// Helper: Verify admin authorization header
+// Helper: Verify admin authorization header with constant-time comparison
 async function verifyAdminAuth(request, env) {
   const authHeader = request.headers.get('Authorization') || '';
   const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : '';
+  if (!token) {
+    return false;
+  }
   const validToken = await getValidAdminToken(env);
-  if (!validToken || token !== validToken) {
+  if (!validToken || !safeEqual(token, validToken)) {
     return false;
   }
   return true;
@@ -539,11 +543,15 @@ async function handleApi(request, env, url) {
     });
   }
 
-  // 4.1 GET /api/settings - Fetch comprehensive site settings
+  // 4.1 GET /api/settings - Fetch comprehensive site settings (strictly public site config only)
   if (method === 'GET' && path === '/api/settings') {
     let settings = {};
     try {
-      const { results } = await env.DB.prepare('SELECT key, value FROM site_settings').all();
+      const { results } = await env.DB.prepare(`
+        SELECT key, value 
+        FROM site_settings 
+        WHERE key IN ('site_config', 'youtube_music_url', 'custom_logo_url')
+      `).all();
       const map = {};
       for (const r of results || []) {
         map[r.key] = r.value;
@@ -628,12 +636,55 @@ async function handleApi(request, env, url) {
     });
   }
 
-  // 4.3 POST /api/admin/verify - Verify admin token validity
+  // 4.3 POST /api/admin/verify - Verify admin token validity (with brute-force defense)
   if (method === 'POST' && path === '/api/admin/verify') {
+    const clientIp =
+      request.headers.get('cf-connecting-ip') ||
+      request.headers.get('x-forwarded-for')?.split(',')[0].trim() ||
+      '127.0.0.1';
+    const ipHash = await hashIp(clientIp);
+    const adminLockKey = `admin_lock_${ipHash}`;
+
+    // Rate limiting: max 5 failed attempts per 15 minutes
+    const fifteenMinAgo = new Date(Date.now() - 15 * 60 * 1000).toISOString();
+    const attempts = await env.DB.prepare(`
+      SELECT COUNT(*) as count 
+      FROM rate_limits 
+      WHERE ip_hash = ? AND created_at >= ?
+    `).bind(adminLockKey, fifteenMinAgo).first();
+
+    if (attempts && attempts.count >= 5) {
+      return jsonResponse(
+        {
+          error: 'กรอกรหัสผ่านผิดเกินกำหนด (จำกัดไม่เกิน 5 ครั้ง) เพื่อความปลอดภัยกรุณารอ 15 นาทีค่ะ',
+        },
+        429
+      );
+    }
+
     const isAuthed = await verifyAdminAuth(request, env);
     if (!isAuthed) {
-      return jsonResponse({ error: 'รหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้งค่ะ' }, 401);
+      // Record failed attempt in rate_limits
+      try {
+        await env.DB.prepare(`
+          INSERT INTO rate_limits (ip_hash, created_at) VALUES (?, datetime('now'))
+        `).bind(adminLockKey).run();
+      } catch (e) {}
+
+      const remaining = Math.max(0, 4 - (attempts?.count || 0));
+      return jsonResponse(
+        {
+          error: `รหัสผ่านไม่ถูกต้อง (เหลือโอกาสลองอีก ${remaining} ครั้งค่ะ)`,
+        },
+        401
+      );
     }
+
+    // Success: clear failed attempts for this IP
+    try {
+      await env.DB.prepare('DELETE FROM rate_limits WHERE ip_hash = ?').bind(adminLockKey).run();
+    } catch (e) {}
+
     return jsonResponse({ success: true, message: 'ยืนยันตัวตนสำเร็จ' });
   }
 
@@ -651,8 +702,8 @@ async function handleApi(request, env, url) {
     }
 
     const { newPassword } = body || {};
-    if (!newPassword || typeof newPassword !== 'string' || newPassword.trim().length < 4) {
-      return jsonResponse({ error: 'รหัสผ่านใหม่ต้องมีความยาวอย่างน้อย 4 ตัวอักษรค่ะ' }, 400);
+    if (!newPassword || typeof newPassword !== 'string' || newPassword.trim().length < 8) {
+      return jsonResponse({ error: 'รหัสผ่านใหม่ต้องมีความยาวอย่างน้อย 8 ตัวอักษรค่ะ' }, 400);
     }
 
     const cleanNewPassword = newPassword.trim();

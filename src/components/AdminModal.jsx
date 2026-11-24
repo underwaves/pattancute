@@ -82,9 +82,11 @@ export function AdminModal({
   // Authentication & Security Tab State
   const [loginError, setLoginError] = useState('');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [showActiveToken, setShowActiveToken] = useState(false);
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const [passwordMsg, setPasswordMsg] = useState({ text: '', type: '' });
 
@@ -129,10 +131,10 @@ export function AdminModal({
     return () => clearTimeout(timer);
   }, [passwordMsg.text]);
 
-  // Load saved token from localStorage whenever modal opens
+  // Load saved token from storage whenever modal opens
   useEffect(() => {
     if (!isOpen) return;
-    const saved = localStorage.getItem('admin_token') || '';
+    const saved = localStorage.getItem('admin_token') || sessionStorage.getItem('admin_token') || '';
     if (saved) {
       setToken(saved);
       setIsAuthed(true);
@@ -190,6 +192,7 @@ export function AdminModal({
 
   const handleLogout = () => {
     localStorage.removeItem('admin_token');
+    sessionStorage.removeItem('admin_token');
     setToken('');
     setIsAuthed(false);
     setLoginError('');
@@ -205,8 +208,8 @@ export function AdminModal({
       return;
     }
 
-    if (newPassword.trim().length < 4) {
-      setPasswordMsg({ text: 'รหัสผ่านใหม่ต้องมีความยาวอย่างน้อย 4 ตัวอักษรค่ะ', type: 'error' });
+    if (newPassword.trim().length < 8) {
+      setPasswordMsg({ text: 'รหัสผ่านใหม่ต้องมีความยาวอย่างน้อย 8 ตัวอักษรค่ะ', type: 'error' });
       return;
     }
 
@@ -591,14 +594,24 @@ export function AdminModal({
                     <span>{loginError}</span>
                   </div>
                 )}
-                <input
-                  type="password"
-                  required
-                  value={token}
-                  onChange={(e) => setToken(e.target.value)}
-                  placeholder="กรอกรหัส Admin Token หลังบ้าน"
-                  className="w-full h-11 px-4 rounded-xl bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-sm text-center font-mono focus:outline-none focus:ring-2 focus:ring-pattan-blue/30"
-                />
+                <div className="relative">
+                  <input
+                    type={showLoginPassword ? 'text' : 'password'}
+                    required
+                    value={token}
+                    onChange={(e) => setToken(e.target.value)}
+                    placeholder="กรอกรหัส Admin Token หลังบ้าน"
+                    className="w-full h-11 px-4 pr-11 rounded-xl bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-sm text-center font-mono focus:outline-none focus:ring-2 focus:ring-pattan-blue/30"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowLoginPassword(!showLoginPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer p-1"
+                    title={showLoginPassword ? 'ซ่อนรหัสผ่าน' : 'แสดงรหัสผ่าน'}
+                  >
+                    {showLoginPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
                 <button
                   type="submit"
                   disabled={isLoggingIn}
@@ -2213,13 +2226,38 @@ export function AdminModal({
                     )}
 
                     <form onSubmit={handleChangePassword} className="space-y-4">
-                      {/* Current Token Display */}
+                      {/* Current Token Display (Protected & Masked by default) */}
                       <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700">
-                        <label className="block text-[11px] font-bold text-slate-500 dark:text-slate-400 mb-1">
-                          รหัสผ่านปัจจุบันที่กำลังใช้งาน (Active Token)
-                        </label>
-                        <div className="font-mono text-xs text-slate-700 dark:text-slate-300 truncate select-all bg-white dark:bg-slate-700 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600">
-                          {token}
+                        <div className="flex items-center justify-between mb-1.5">
+                          <label className="text-[11px] font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                            <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
+                            รหัสผ่านปัจจุบันที่กำลังใช้งาน (Active Token)
+                          </label>
+                          <button
+                            type="button"
+                            onClick={() => setShowActiveToken(!showActiveToken)}
+                            className="text-[11px] font-bold text-pattan-blue hover:underline inline-flex items-center gap-1 cursor-pointer"
+                          >
+                            {showActiveToken ? (
+                              <>
+                                <EyeOff className="w-3.5 h-3.5" /> ซ่อนรหัส
+                              </>
+                            ) : (
+                              <>
+                                <Eye className="w-3.5 h-3.5" /> แสดงรหัส
+                              </>
+                            )}
+                          </button>
+                        </div>
+                        <div className="font-mono text-xs text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-700 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-600 flex items-center justify-between">
+                          <span className="truncate">
+                            {showActiveToken
+                              ? token
+                              : (token ? '•'.repeat(Math.min(Math.max(token.length, 10), 18)) : '(ยังไม่ได้เข้าสู่ระบบ)')}
+                          </span>
+                          <span className="text-[10px] font-semibold text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800 shrink-0 ml-2">
+                            เชื่อมต่อปลอดภัย
+                          </span>
                         </div>
                       </div>
 
@@ -2233,7 +2271,7 @@ export function AdminModal({
                             type={showPassword ? 'text' : 'password'}
                             value={newPassword}
                             onChange={(e) => setNewPassword(e.target.value)}
-                            placeholder="ระบุรหัสผ่านใหม่ (อย่างน้อย 4 ตัวอักษร)"
+                            placeholder="ระบุรหัสผ่านใหม่ (อย่างน้อย 8 ตัวอักษร)"
                             className="w-full h-11 px-3.5 pr-10 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-pattan-blue/30"
                           />
                           <button
